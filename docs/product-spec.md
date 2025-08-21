@@ -25,29 +25,24 @@ This MVP is intended as:
 ## 3. In Scope (MVP)
 
 - **Authentication & Orgs**
-
   - Sign up, login, logout.
   - Each user belongs to an org (multi-tenant).
   - (Optional later) invite teammates.
 
 - **QR Creation**
-
   - Create QR with name, slug (auto-generated, editable later).
   - Provide initial target URL.
   - Generate and download QR in SVG/PNG.
 
 - **Link Management**
-
   - Update target URL anytime.
   - Maintain version history and rollback.
 
 - **Redirect Service**
-
   - Public short link (`r.domain.com/:slug`) with fast 302 redirect.
   - Log each scan event (timestamp, referrer, coarse geo, IP hash).
 
 - **Analytics**
-
   - Total and unique scans.
   - Daily scans trend (sparkline).
   - Recent scans table.
@@ -55,7 +50,6 @@ This MVP is intended as:
   - Export CSV.
 
 - **Dashboard**
-
   - List of all QRs in org.
   - Detail page with history and analytics.
 
