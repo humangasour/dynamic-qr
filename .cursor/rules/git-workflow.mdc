@@ -1,0 +1,55 @@
+# Git Workflow & Commit Standards
+
+## Branch Strategy
+
+- Use **short-lived feature branches** for all development
+- Create branches from `main` for new features
+- Use descriptive branch names: `feat/qr-creation`, `fix/analytics-chart`, `chore/deps-update`
+- Delete feature branches after merging via Pull Request
+
+## Commit Messages
+
+Follow **conventional commit format** with scope and list-based descriptions:
+
+```
+feat(auth): implement Supabase authentication flow
+- Add sign up and login forms
+- Implement session management
+- Add protected route middleware
+
+fix(qr): resolve SVG download issue
+- Fix MIME type handling
+- Add proper error boundaries
+- Improve user feedback
+
+chore(deps): update dependencies
+- Upgrade Next.js to 15.5.0
+- Update TypeScript to 5.x
+- Resolve security vulnerabilities
+
+docs(readme): update project status
+- Add current development progress
+- Update tech stack information
+- Include setup instructions
+```
+
+## Pull Request Process
+
+- Create PRs for all feature work
+- Include clear description of changes
+- Reference related issues or requirements
+- Request code review from team members
+- Ensure all CI checks pass before merging
+
+## Code Quality Gates
+
+- All TypeScript compilation must pass (`npm run typecheck`)
+- ESLint must pass without errors (`npm run lint`)
+- Prettier formatting must be consistent
+- Tests must pass (when implemented)
+- No console.log statements in production code
+  description:
+  globs:
+  alwaysApply: false
+
+---

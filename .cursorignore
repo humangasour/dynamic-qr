@@ -1,0 +1,30 @@
+# Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
+# dependencies
+node_modules/
+package-lock.json
+
+# build output
+.next/
+out/
+build/
+dist/
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# coverage & test artifacts
+coverage/
+*.tsbuildinfo
+playwright-report/
+test-results/
+
+# IDE/editor
+.vscode/
+.idea/
+
+# misc
+.DS_Store
+.vercel/
+.husky/_/

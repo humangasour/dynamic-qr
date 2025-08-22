@@ -1,0 +1,55 @@
+# Architecture Patterns
+
+## Project Structure
+
+- Follow Next.js 15 App Router conventions
+- Use `src/app/` for pages and layouts
+- Create `src/components/` for reusable UI components
+- Use `src/lib/` for utilities and shared functions
+- Place API routes in `src/app/api/`
+- Use `src/types/` for TypeScript interfaces and types
+
+## Database & Backend
+
+- Use Supabase for authentication, database, and storage
+- Implement Row Level Security (RLS) for multi-tenancy
+- Use tRPC for type-safe API calls
+- Validate all inputs with Zod schemas
+- Handle errors gracefully with proper HTTP status codes
+
+## Authentication & Security
+
+- Implement Supabase Auth with email/password
+- Use RLS policies to ensure data isolation between organizations
+- Hash sensitive data (IP addresses for analytics)
+- Implement proper session management
+- Use environment variables for sensitive configuration
+
+## QR Code Architecture
+
+- Generate QR codes as SVG/PNG using appropriate libraries
+- Store QR metadata in Supabase (name, slug, target URL, version history)
+- Implement redirect service with Vercel Edge Middleware
+- Log scan events with timestamp, referrer, geo data, and hashed IP
+- Support version history and rollback functionality
+
+## Analytics Implementation
+
+- Store scan events in Supabase with proper indexing
+- Create SQL views for aggregated analytics
+- Implement real-time updates using Supabase subscriptions
+- Export data to CSV format
+- Respect user privacy by hashing IP addresses
+
+## Component Architecture
+
+- Use composition over inheritance
+- Implement proper prop interfaces
+- Use React.memo for performance optimization when needed
+- Implement proper loading and error states
+- Use semantic HTML elements for accessibility
+  description:
+  globs:
+  alwaysApply: false
+
+---

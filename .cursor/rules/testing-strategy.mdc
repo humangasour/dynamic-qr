@@ -1,0 +1,65 @@
+# Testing Strategy
+
+## Testing Stack
+
+- **Unit Tests**: Vitest for fast, isolated testing
+- **Component Tests**: Testing Library for React component testing
+- **E2E Tests**: Playwright for full user journey testing
+- **Type Checking**: TypeScript compiler for static analysis
+
+## Test Coverage Requirements
+
+- **Critical Paths**: Authentication, QR creation, redirects, analytics
+- **User Flows**: Sign up → create QR → scan → edit → view analytics
+- **Edge Cases**: Error handling, validation, security boundaries
+- **Performance**: Load testing for redirect service
+
+## Unit Testing Guidelines
+
+- Test all utility functions and business logic
+- Mock external dependencies (Supabase, Stripe)
+- Test error handling and edge cases
+- Use descriptive test names that explain the scenario
+- Group related tests using `describe` blocks
+
+## Component Testing
+
+- Test component rendering and user interactions
+- Verify proper prop handling and state management
+- Test accessibility features (keyboard navigation, ARIA)
+- Mock API calls and test loading/error states
+- Test form validation and submission flows
+
+## E2E Testing Scenarios
+
+- **Authentication Flow**: Sign up, login, logout
+- **QR Management**: Create, edit, delete QR codes
+- **Redirect Service**: Scan QR codes and verify redirects
+- **Analytics Dashboard**: View and export analytics data
+- **Billing Flow**: Upgrade plans and payment processing
+
+## Test Data Management
+
+- Use factories for creating test data
+- Clean up test data after each test
+- Use separate test database or mock Supabase
+- Implement proper test isolation
+
+## Performance Testing
+
+- Test QR code generation performance
+- Verify redirect service response times
+- Test analytics queries with realistic data volumes
+- Monitor memory usage and bundle sizes
+
+## Security Testing
+
+- Test authentication and authorization
+- Verify RLS policies work correctly
+- Test input validation and sanitization
+- Ensure no sensitive data exposure in tests
+  description:
+  globs:
+  alwaysApply: false
+
+---

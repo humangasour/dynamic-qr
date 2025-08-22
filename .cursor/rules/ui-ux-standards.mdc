@@ -1,0 +1,60 @@
+# UI/UX Standards
+
+## Design System
+
+- Use **Tailwind CSS v4** for all styling
+- Follow mobile-first responsive design principles
+- Implement consistent spacing using Tailwind's spacing scale
+- Use semantic color tokens for theming
+
+## Component Guidelines
+
+- Create reusable, composable components
+- Implement proper loading states and skeleton screens
+- Use consistent error handling with user-friendly messages
+- Implement proper focus management and keyboard navigation
+- Use ARIA labels and roles for accessibility
+
+## Layout & Navigation
+
+- Implement responsive navigation that works on all devices
+- Use consistent page layouts with proper header/footer
+- Implement breadcrumbs for complex navigation flows
+- Ensure proper visual hierarchy with typography and spacing
+
+## Forms & Inputs
+
+- Use Zod for form validation with real-time feedback
+- Implement proper error states and success confirmations
+- Use appropriate input types (email, password, URL, etc.)
+- Implement proper form accessibility with labels and descriptions
+- Show loading states during form submission
+
+## Data Display
+
+- Use appropriate data visualization for analytics (charts, tables, cards)
+- Implement proper empty states for no data scenarios
+- Use pagination for large datasets
+- Implement search and filtering where appropriate
+- Show loading skeletons while data loads
+
+## QR Code Specific UI
+
+- Display QR codes prominently with download options
+- Show QR code metadata clearly (name, slug, target URL)
+- Implement version history with clear timestamps
+- Provide easy editing interface for target URLs
+- Show scan analytics in an intuitive dashboard format
+
+## Accessibility Requirements
+
+- Ensure proper color contrast ratios
+- Implement keyboard navigation for all interactive elements
+- Use semantic HTML elements
+- Provide alternative text for images and icons
+- Test with screen readers and keyboard-only navigation
+  description:
+  globs:
+  alwaysApply: false
+
+---

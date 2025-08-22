@@ -1,0 +1,44 @@
+# Dynamic QR Project Overview
+
+This is a **Dynamic QR Codes SaaS application** built with modern web technologies. The project creates reprogrammable QR codes that point to short links that owners can update anytime, with analytics dashboards.
+
+## Project Goals
+
+- Build a robust, accessible MVP with clean architecture
+- Showcase full-stack development skills
+- Provide complete SaaS flow: signup → create QR → scan → analytics → upgrade
+- Position for future expansion (events, merch, India SMBs)
+
+## Tech Stack
+
+- **Frontend**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4
+- **Backend**: Next.js API Routes + tRPC, Zod validation
+- **Database**: Supabase (Postgres, Auth, Row Level Security, Storage)
+- **Edge**: Vercel Edge Middleware for redirects
+- **Payments**: Stripe
+- **Testing**: Vitest, Testing Library, Playwright
+
+## Key Features (MVP)
+
+- Authentication & multi-tenant organizations
+- QR creation with downloadable SVG/PNG
+- Link management with version history
+- Public redirect service with analytics
+- Dashboard with scan analytics
+- Stripe billing (Free: 3 QRs, Pro: 100 QRs)
+
+## Project Status
+
+🚧 In development - targeting 6-8 focused dev days to MVP completion
+
+## File Structure
+
+- Main entry: [src/app/page.tsx](mdc:src/app/page.tsx)
+- Layout: [src/app/layout.tsx](mdc:src/app/layout.tsx)
+- Configuration: [package.json](mdc:package.json), [tsconfig.json](mdc:tsconfig.json)
+- Documentation: [docs/product-spec.md](mdc:docs/product-spec.md)
+  description:
+  globs:
+  alwaysApply: false
+
+---

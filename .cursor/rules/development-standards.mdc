@@ -1,0 +1,48 @@
+# Development Standards
+
+## Code Quality
+
+- Use TypeScript strict mode (already configured in [tsconfig.json](mdc:tsconfig.json))
+- Follow ESLint rules (configured in [eslint.config.mjs](mdc:eslint.config.mjs))
+- Use Prettier for consistent formatting
+- Run `npm run typecheck` before committing
+
+## React & Next.js Patterns
+
+- Use Next.js 15 App Router patterns
+- Prefer server components by default, use client components only when needed
+- Use React 19 features and patterns
+- Follow Next.js file-based routing conventions
+
+## TypeScript Best Practices
+
+- Use strict typing - avoid `any` type
+- Define proper interfaces for all data structures
+- Use Zod for runtime validation
+- Leverage TypeScript path aliases: `@/*` maps to `./src/*`
+
+## Styling
+
+- Use Tailwind CSS v4 for styling
+- Follow mobile-first responsive design
+- Use CSS variables for theming when needed
+- Ensure accessibility (contrast, keyboard navigation, ARIA labels)
+
+## State Management
+
+- Use React hooks for local state
+- Consider tRPC for server state management
+- Use Supabase client for real-time features
+- Implement proper error boundaries
+
+## Testing
+
+- Write unit tests with Vitest
+- Use Testing Library for component tests
+- Implement E2E tests with Playwright
+- Test authentication flows and QR code functionality
+  description:
+  globs:
+  alwaysApply: false
+
+---
