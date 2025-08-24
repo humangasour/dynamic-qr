@@ -10,14 +10,19 @@
     "prepare": "husky",
     "typecheck": "tsc --noEmit",
     "format": "prettier . --check",
-    "format:write": "prettier . --write"
+    "format:write": "prettier --write",
+    "pre-commit": "husky run .husky/pre-commit",
+    "pre-push": "husky run .husky/pre-push",
+    "commit-msg": "husky run .husky/commit-msg",
+    "prepare-commit-msg": "husky run .husky/prepare-commit-msg",
+    "check-all": "npm run format && npm run lint && npm run typecheck && npm run build"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,md,css}": [
+    "*.{json,md,css,yml,yaml}": [
       "prettier --write"
     ]
   },
