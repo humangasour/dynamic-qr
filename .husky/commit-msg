@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+# Conventional commit regex pattern
+# Format: type(scope): description
+# Examples: feat(auth): add login functionality, chore(deps): update packages
+commit_regex='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,50}'
+
+if ! grep -qE "$commit_regex" "$1"; then
+    echo "❌ Invalid commit message format!"
+    echo ""
+    echo "Please use conventional commit format:"
+    echo "  type(scope): description"
+    echo ""
+    echo "Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+    echo "Examples:"
+    echo "  feat(auth): add login functionality"
+    echo "  fix(ui): resolve button alignment issue"
+    echo "  chore(deps): update dependencies"
+    echo "  docs(readme): update installation instructions"
+    echo ""
+    exit 1
+fi
+
+echo "✅ Commit message format is valid!"

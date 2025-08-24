@@ -1,0 +1,25 @@
+echo "🚀 Running pre-push checks..."
+
+# Run type checking
+echo "🔧 Running TypeScript type check..."
+npm run typecheck
+
+# Run linting
+echo "🧹 Running ESLint..."
+npm run lint
+
+# Check formatting
+echo "✨ Checking code formatting..."
+npm run format
+
+# Build the project to ensure it compiles
+echo "🏗️ Building project..."
+npm run build
+
+# Verify build output exists
+if [ ! -d ".next" ]; then
+  echo "❌ Build failed: .next directory not found"
+  exit 1
+fi
+
+echo "✅ Pre-push checks passed! Ready to push."

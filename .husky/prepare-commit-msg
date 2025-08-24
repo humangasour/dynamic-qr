@@ -1,0 +1,37 @@
+#!/usr/bin/env sh
+
+# Only add template if no commit message is provided
+if [ -z "$2" ]; then
+    # Get the branch name
+    branch=$(git branch --show-current)
+    
+    # Extract ticket/issue number if it exists (e.g., feature/ABC-123-description)
+    ticket=$(echo "$branch" | grep -o '[A-Z]\+-[0-9]\+' | head -1)
+    
+    # Create template based on branch type
+    if [[ "$branch" == feature/* ]]; then
+        type="feat"
+    elif [[ "$branch" == fix/* ]]; then
+        type="fix"
+    elif [[ "$branch" == chore/* ]]; then
+        type="chore"
+    elif [[ "$branch" == docs/* ]]; then
+        type="docs"
+    elif [[ "$branch" == refactor/* ]]; then
+        type="refactor"
+    else
+        type="feat"
+    fi
+    
+    # Create scope from branch name
+    scope=$(echo "$branch" | sed 's/^[^/]*\///' | sed 's/-[0-9].*//' | sed 's/-.*//')
+    
+    # Build the template
+    if [ -n "$ticket" ]; then
+        template="$type($scope): [$ticket] "
+    else
+        template="$type($scope): "
+    fi
+    
+    echo "$template" > "$1"
+fi

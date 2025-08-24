@@ -1,1 +1,19 @@
+echo "🔍 Running pre-commit checks..."
+
+# Run lint-staged for staged files
+echo "📝 Running lint-staged..."
 npx lint-staged
+
+# Run type checking on the entire project
+echo "🔧 Running TypeScript type check..."
+npm run typecheck
+
+# Run ESLint on the entire project
+echo "🧹 Running ESLint..."
+npm run lint
+
+# Check formatting on the entire project
+echo "✨ Checking code formatting..."
+npm run format
+
+echo "✅ Pre-commit checks passed!"
