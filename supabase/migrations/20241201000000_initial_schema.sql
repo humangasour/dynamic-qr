@@ -101,13 +101,17 @@ CREATE INDEX IF NOT EXISTS idx_scan_events_referrer ON public.scan_events(referr
 CREATE INDEX IF NOT EXISTS idx_scan_events_geo ON public.scan_events(country, city);
 
 -- ===== Triggers for updated_at timestamps
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION public.update_updated_at_column()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$;
 
 -- Apply updated_at trigger to tables that need it
 CREATE TRIGGER update_orgs_updated_at 
