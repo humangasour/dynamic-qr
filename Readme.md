@@ -29,9 +29,48 @@ Each QR code points to a short link that the owner can **update anytime**, with 
 
 ---
 
+## CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+### Workflows
+
+- **`ci.yml`** - Basic CI pipeline (linting, type checking, formatting, build)
+- **`ci-advanced.yml`** - Advanced CI with matrix testing across Node.js versions and security checks
+- **`deploy.yml`** - Deployment to Vercel (requires secrets setup)
+
+### Local Development
+
+Before pushing, ensure your code passes all checks:
+
+```bash
+# Check formatting
+npm run format
+
+# Lint code
+npm run lint
+
+# Type check
+npm run typecheck
+
+# Build
+npm run build
+```
+
+### Required Secrets (for deployment)
+
+If using the deploy workflow, add these secrets to your GitHub repository:
+
+- `VERCEL_TOKEN` - Your Vercel API token
+- `ORG_ID` - Your Vercel organization ID
+- `PROJECT_ID` - Your Vercel project ID
+
+---
+
 ## Documentation
 
 - [Product Spec](./docs/product-spec.md)
+- [Husky Workflow](./docs/husky-workflow.md)
 
 ---
 
