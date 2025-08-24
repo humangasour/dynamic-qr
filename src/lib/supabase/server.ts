@@ -1,17 +1,26 @@
 // Server-side Supabase utilities
 // This file should only be imported in server components or API routes
 
-import { supabaseAdmin, isAdminClientAvailable } from './client';
+import { getSupabaseAdminClient, isAdminClientAvailable } from './client';
 
 // Server-side database operations that bypass RLS
 export const serverDb = {
   // Generic select function
-  select: async <T>(table: string, columns: string = '*', filters?: Record<string, unknown>) => {
+  select: async <T>(
+    table: string,
+    columns: string = '*',
+    filters?: Record<string, string | number | boolean>,
+  ) => {
     if (!isAdminClientAvailable()) {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    let query = supabaseAdmin!.from(table).select(columns);
+    const client = getSupabaseAdminClient();
+    if (!client) {
+      throw new Error('Admin client not available. This function must be called server-side.');
+    }
+
+    let query = client.from(table).select(columns);
 
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
@@ -29,17 +38,31 @@ export const serverDb = {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    const { data: result, error } = await supabaseAdmin!.from(table).insert(data).select();
+    const client = getSupabaseAdminClient();
+    if (!client) {
+      throw new Error('Admin client not available. This function must be called server-side.');
+    }
+
+    const { data: result, error } = await client.from(table).insert(data).select();
     return { data: result as T[], error };
   },
 
   // Generic update function
-  update: async <T>(table: string, data: Partial<T>, filters: Record<string, unknown>) => {
+  update: async <T>(
+    table: string,
+    data: Partial<T>,
+    filters: Record<string, string | number | boolean>,
+  ) => {
     if (!isAdminClientAvailable()) {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    let query = supabaseAdmin!.from(table).update(data);
+    const client = getSupabaseAdminClient();
+    if (!client) {
+      throw new Error('Admin client not available. This function must be called server-side.');
+    }
+
+    let query = client.from(table).update(data);
 
     Object.entries(filters).forEach(([key, value]) => {
       query = query.eq(key, value);
@@ -50,12 +73,17 @@ export const serverDb = {
   },
 
   // Generic delete function
-  delete: async (table: string, filters: Record<string, unknown>) => {
+  delete: async (table: string, filters: Record<string, string | number | boolean>) => {
     if (!isAdminClientAvailable()) {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    let query = supabaseAdmin!.from(table).delete();
+    const client = getSupabaseAdminClient();
+    if (!client) {
+      throw new Error('Admin client not available. This function must be called server-side.');
+    }
+
+    let query = client.from(table).delete();
 
     Object.entries(filters).forEach(([key, value]) => {
       query = query.eq(key, value);
@@ -71,7 +99,12 @@ export const serverDb = {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    const { data, error } = await supabaseAdmin!.rpc(functionName, params);
+    const client = getSupabaseAdminClient();
+    if (!client) {
+      throw new Error('Admin client not available. This function must be called server-side.');
+    }
+
+    const { data, error } = await client.rpc(functionName, params);
     return { data: data as T, error };
   },
 };
@@ -84,7 +117,12 @@ export const serverAuth = {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    const { data, error } = await supabaseAdmin!.auth.admin.getUserById(userId);
+    const client = getSupabaseAdminClient();
+    if (!client) {
+      throw new Error('Admin client not available. This function must be called server-side.');
+    }
+
+    const { data, error } = await client.auth.admin.getUserById(userId);
     return { data, error };
   },
 
@@ -94,7 +132,12 @@ export const serverAuth = {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    const { data, error } = await supabaseAdmin!.auth.admin.updateUserById(userId, attributes);
+    const client = getSupabaseAdminClient();
+    if (!client) {
+      throw new Error('Admin client not available. This function must be called server-side.');
+    }
+
+    const { data, error } = await client.auth.admin.updateUserById(userId, attributes);
     return { data, error };
   },
 
@@ -104,7 +147,12 @@ export const serverAuth = {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    const { data, error } = await supabaseAdmin!.auth.admin.deleteUser(userId);
+    const client = getSupabaseAdminClient();
+    if (!client) {
+      throw new Error('Admin client not available. This function must be called server-side.');
+    }
+
+    const { data, error } = await client.auth.admin.deleteUser(userId);
     return { data, error };
   },
 };

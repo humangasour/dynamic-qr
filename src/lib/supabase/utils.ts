@@ -1,71 +1,15 @@
-import type { AuthError, RealtimeChannel } from '@supabase/supabase-js';
+// Simplified Supabase utilities that work with the lazy client
+import { getSupabaseClient } from './client';
 
-import { supabase, supabaseAdmin } from './client';
-
-// Authentication helpers
-export const auth = {
-  // Get current user
-  getCurrentUser: async () => {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser();
-    return { user, error };
-  },
-
-  // Get current session
-  getCurrentSession: async () => {
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.getSession();
-    return { session, error };
-  },
-
-  // Sign in with email and password
-  signIn: async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { data, error };
-  },
-
-  // Sign up with email and password
-  signUp: async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    return { data, error };
-  },
-
-  // Sign out
-  signOut: async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
-  },
-
-  // Reset password
-  resetPassword: async (email: string) => {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email);
-    return { data, error };
-  },
-
-  // Update password
-  updatePassword: async (password: string) => {
-    const { data, error } = await supabase.auth.updateUser({
-      password,
-    });
-    return { data, error };
-  },
-};
-
-// Database helpers
 export const db = {
   // Generic select function
-  select: async <T>(table: string, columns: string = '*', filters?: Record<string, unknown>) => {
-    let query = supabase.from(table).select(columns);
+  select: async <T>(
+    table: string,
+    columns: string = '*',
+    filters?: Record<string, string | number | boolean>,
+  ) => {
+    const client = getSupabaseClient();
+    let query = client.from(table).select(columns);
 
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
@@ -79,14 +23,19 @@ export const db = {
 
   // Generic insert function
   insert: async <T>(table: string, data: Partial<T>) => {
-    const { data: result, error } = await supabase.from(table).insert(data).select();
-
+    const client = getSupabaseClient();
+    const { data: result, error } = await client.from(table).insert(data).select();
     return { data: result as T[], error };
   },
 
   // Generic update function
-  update: async <T>(table: string, data: Partial<T>, filters: Record<string, unknown>) => {
-    let query = supabase.from(table).update(data);
+  update: async <T>(
+    table: string,
+    data: Partial<T>,
+    filters: Record<string, string | number | boolean>,
+  ) => {
+    const client = getSupabaseClient();
+    let query = client.from(table).update(data);
 
     Object.entries(filters).forEach(([key, value]) => {
       query = query.eq(key, value);
@@ -97,8 +46,9 @@ export const db = {
   },
 
   // Generic delete function
-  delete: async (table: string, filters: Record<string, unknown>) => {
-    let query = supabase.from(table).delete();
+  delete: async (table: string, filters: Record<string, string | number | boolean>) => {
+    const client = getSupabaseClient();
+    let query = client.from(table).delete();
 
     Object.entries(filters).forEach(([key, value]) => {
       query = query.eq(key, value);
@@ -107,139 +57,52 @@ export const db = {
     const { data, error } = await query;
     return { data, error };
   },
+};
 
-  // Admin operations (bypass RLS)
-  admin: {
-    select: async <T>(table: string, columns: string = '*', filters?: Record<string, unknown>) => {
-      if (!supabaseAdmin) {
-        throw new Error(
-          'Admin client not available. This operation requires server-side execution.',
-        );
-      }
+// Simple auth utilities
+export const auth = {
+  // Get current session
+  getSession: async () => {
+    const client = getSupabaseClient();
+    return client.auth.getSession();
+  },
 
-      let query = supabaseAdmin.from(table).select(columns);
+  // Sign in
+  signIn: async (email: string, password: string) => {
+    const client = getSupabaseClient();
+    return client.auth.signInWithPassword({ email, password });
+  },
 
-      if (filters) {
-        Object.entries(filters).forEach(([key, value]) => {
-          query = query.eq(key, value);
-        });
-      }
+  // Sign up
+  signUp: async (email: string, password: string) => {
+    const client = getSupabaseClient();
+    return client.auth.signUp({ email, password });
+  },
 
-      const { data, error } = await query;
-      return { data: data as T[], error };
-    },
-
-    insert: async <T>(table: string, data: Partial<T>) => {
-      if (!supabaseAdmin) {
-        throw new Error(
-          'Admin client not available. This operation requires server-side execution.',
-        );
-      }
-
-      const { data: result, error } = await supabaseAdmin.from(table).insert(data).select();
-
-      return { data: result as T[], error };
-    },
-
-    update: async <T>(table: string, data: Partial<T>, filters: Record<string, unknown>) => {
-      if (!supabaseAdmin) {
-        throw new Error(
-          'Admin client not available. This operation requires server-side execution.',
-        );
-      }
-
-      let query = supabaseAdmin.from(table).update(data);
-
-      Object.entries(filters).forEach(([key, value]) => {
-        query = query.eq(key, value);
-      });
-
-      const { data: result, error } = await query.select();
-      return { data: result as T[], error };
-    },
-
-    delete: async (table: string, filters: Record<string, unknown>) => {
-      if (!supabaseAdmin) {
-        throw new Error(
-          'Admin client not available. This operation requires server-side execution.',
-        );
-      }
-
-      let query = supabaseAdmin.from(table).delete();
-
-      Object.entries(filters).forEach(([key, value]) => {
-        query = query.eq(key, value);
-      });
-
-      const { data, error } = await query;
-      return { data, error };
-    },
+  // Sign out
+  signOut: async () => {
+    const client = getSupabaseClient();
+    return client.auth.signOut();
   },
 };
 
-// Error handling helpers
-export const handleSupabaseError = (error: AuthError | Error | unknown): string => {
-  if (error && typeof error === 'object' && 'message' in error) {
-    return (error as { message: string }).message;
-  }
-
-  if (error && typeof error === 'object' && 'error_description' in error) {
-    return (error as { error_description: string }).error_description;
-  }
-
-  return 'An unexpected error occurred';
-};
-
-// Real-time subscription helpers
-export const realtime = {
-  // Subscribe to table changes
-  subscribe: () => {
-    // Note: This is a simplified version to avoid type issues
-    // For production use, implement proper realtime subscriptions
-    console.warn('Realtime subscriptions are simplified in this version');
-    return null;
-  },
-
-  // Unsubscribe from channel
-  unsubscribe: (channel: RealtimeChannel | null) => {
-    if (channel) {
-      supabase.removeChannel(channel);
-    }
-  },
-};
-
-// Storage helpers
+// Storage utilities
 export const storage = {
   // Upload file
-  upload: async (
-    bucket: string,
-    path: string,
-    file: File,
-    options?: { cacheControl?: string; upsert?: boolean },
-  ) => {
-    const { data, error } = await supabase.storage.from(bucket).upload(path, file, options);
-
-    return { data, error };
+  upload: async (bucket: string, path: string, file: File) => {
+    const client = getSupabaseClient();
+    return client.storage.from(bucket).upload(path, file);
   },
 
   // Download file
   download: async (bucket: string, path: string) => {
-    const { data, error } = await supabase.storage.from(bucket).download(path);
-
-    return { data, error };
+    const client = getSupabaseClient();
+    return client.storage.from(bucket).download(path);
   },
 
   // Get public URL
   getPublicUrl: (bucket: string, path: string) => {
-    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-
-    return data.publicUrl;
-  },
-
-  // Delete file
-  delete: async (bucket: string, path: string) => {
-    const { data, error } = await supabase.storage.from(bucket).remove([path]);
-
-    return { data, error };
+    const client = getSupabaseClient();
+    return client.storage.from(bucket).getPublicUrl(path);
   },
 };
