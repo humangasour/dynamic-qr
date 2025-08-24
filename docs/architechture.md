@@ -49,3 +49,89 @@ daily_aggregates
   qr_id (fk), day (date), scans (int), uniques (int)
   pk: (qr_id, day)
 ```
+
+## 4. Security Architecture
+
+### 4.1 Row Level Security (RLS)
+
+All tables have RLS enabled with comprehensive policies ensuring multi-tenant data isolation.
+
+### 4.2 Security Functions
+
+```sql
+-- Core security functions for RLS policies
+get_user_org_id()           -- Returns current user's organization ID
+is_org_member(org_id)       -- Checks if user belongs to organization
+has_org_role(org_id, role)  -- Checks user's role in organization
+```
+
+### 4.3 Access Control Matrix
+
+| Resource             | Owner       | Admin       | Editor      | Viewer      | Public           |
+| -------------------- | ----------- | ----------- | ----------- | ----------- | ---------------- |
+| **Organizations**    | Full CRUD   | View        | View        | View        | None             |
+| **Users**            | Own profile | Own profile | Own profile | Own profile | None             |
+| **QR Codes**         | Full CRUD   | Full CRUD   | Full CRUD   | View        | Read active only |
+| **QR Versions**      | Full CRUD   | Full CRUD   | Full CRUD   | View        | None             |
+| **Scan Events**      | View        | View        | View        | View        | Insert only      |
+| **Daily Aggregates** | View        | View        | View        | View        | None             |
+
+### 4.4 Public Access Policies
+
+- **Redirect Service**: Public read access to active QR codes
+- **Analytics Collection**: Public insert access to scan events
+- **Dashboard**: Authenticated users see only their org's data
+
+## 5. Database Schema Details
+
+### 5.1 Extensions & Enums
+
+```sql
+-- Extensions
+uuid-ossp, pgcrypto
+
+-- Enums
+plan_t: 'free' | 'pro'
+member_role_t: 'owner' | 'admin' | 'editor' | 'viewer'
+qr_status_t: 'active' | 'archived'
+```
+
+### 5.2 Performance Indexes
+
+- **Organization queries**: `idx_qr_codes_org_id`, `idx_org_members_user_id`
+- **QR lookups**: `idx_qr_codes_slug`, `idx_qr_codes_status_active`
+- **Analytics**: `idx_scan_events_qr_ts`, `idx_scan_events_geo`
+- **Versioning**: `idx_qr_versions_qr_created`
+
+### 5.3 Automatic Timestamps
+
+Triggers automatically update `updated_at` columns on all relevant tables.
+
+## 6. Development Workflow
+
+### 6.1 Local Development
+
+```bash
+# Start local Supabase
+supabase start
+
+# Apply migrations
+supabase db reset
+
+# Generate new migrations
+supabase db diff --schema public -f description
+```
+
+### 6.2 Migration Strategy
+
+- **Schema-first approach**: Define complete schema in `schema.sql`
+- **Automatic migration generation**: Supabase CLI creates migration files
+- **Version control**: All schema changes tracked in git
+- **Rollback capability**: Can revert to any migration point
+
+### 6.3 Security Best Practices
+
+- **SECURITY DEFINER**: All functions use proper security context
+- **Explicit search paths**: Functions set `search_path = ''` for security
+- **RLS policies**: Comprehensive access control at database level
+- **Input validation**: Zod schemas for API validation
