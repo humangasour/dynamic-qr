@@ -103,15 +103,17 @@ This MVP is intended as:
 1. ~~Finalize architecture doc (tech stack, schema, RLS policies).~~
 2. ~~Set up repo with Next.js, Supabase, tRPC, Tailwind, shadcn/ui.~~
 3. ~~Begin with foundation tasks: auth + orgs + schema.~~
+4. ~~Generate Supabase TS types and set up migrations with seed + RLS.~~
 
-🔄 **IN PROGRESS:**
+🎯 **NEXT:**  
+5. Implement **vertical slice for redirect flow**:
 
-4. Build core QR flows, then redirect + analytics.
-5. Add billing and polish for portfolio presentation.
+- `/r/[slug]` route with 302 redirect.
+- Fire-and-forget visit logging via RPC.
+- E2E test: seeded link → redirect works → visit logged.
 
-📋 **NEW:**
-
-6. Implement authentication flows using the new type-safe database layer.
-7. Create QR management interface with real-time updates.
-8. Build redirect service with analytics collection.
-9. Implement dashboard with scan analytics and version history.
+📋 **UPCOMING:**  
+6. Add authentication UI and session management.  
+7. Create QR management interface with create/edit flows.  
+8. Build analytics dashboard (counts, recent scans).  
+9. Add billing and polish for portfolio presentation.
