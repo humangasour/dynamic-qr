@@ -1,13 +1,18 @@
 // Server-side Supabase utilities
 // This file should only be imported in server components or API routes
 
+import type { Database } from '@/types';
+
 import { getSupabaseAdminClient, isAdminClientAvailable } from './client';
+
+type TableName = keyof Database['public']['Tables'];
+type FunctionName = keyof Database['public']['Functions'];
 
 // Server-side database operations that bypass RLS
 export const serverDb = {
   // Generic select function
   select: async <T>(
-    table: string,
+    table: TableName,
     columns: string = '*',
     filters?: Record<string, string | number | boolean>,
   ) => {
@@ -33,7 +38,7 @@ export const serverDb = {
   },
 
   // Generic insert function
-  insert: async <T>(table: string, data: Partial<T>) => {
+  insert: async <T>(table: TableName, data: Database['public']['Tables'][TableName]['Insert']) => {
     if (!isAdminClientAvailable()) {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
@@ -49,8 +54,8 @@ export const serverDb = {
 
   // Generic update function
   update: async <T>(
-    table: string,
-    data: Partial<T>,
+    table: TableName,
+    data: Partial<Database['public']['Tables'][TableName]['Update']>,
     filters: Record<string, string | number | boolean>,
   ) => {
     if (!isAdminClientAvailable()) {
@@ -73,7 +78,7 @@ export const serverDb = {
   },
 
   // Generic delete function
-  delete: async (table: string, filters: Record<string, string | number | boolean>) => {
+  delete: async (table: TableName, filters: Record<string, string | number | boolean>) => {
     if (!isAdminClientAvailable()) {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
@@ -94,7 +99,10 @@ export const serverDb = {
   },
 
   // Execute raw SQL (use with caution)
-  rpc: async <T>(functionName: string, params?: Record<string, unknown>) => {
+  rpc: async <T, F extends FunctionName>(
+    functionName: F,
+    params?: Database['public']['Functions'][F]['Args'],
+  ) => {
     if (!isAdminClientAvailable()) {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
