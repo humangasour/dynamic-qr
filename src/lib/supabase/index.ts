@@ -2,6 +2,9 @@
 export { supabase, supabaseAdmin, isSupabaseConfigured, isAdminClientAvailable } from './client';
 export * from './utils';
 
+// Database helper functions and types
+export * from './database-helpers';
+
 // Server-side utilities (only import in server components or API routes)
 export * from './server';
 

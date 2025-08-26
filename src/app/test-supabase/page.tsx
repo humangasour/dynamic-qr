@@ -42,7 +42,7 @@ export default function TestSupabasePage() {
 
         // Test basic connection by checking auth status
         // This is the most reliable way to test if Supabase is accessible
-        const { error } = await supabase.auth.getSession();
+        const { error } = await supabase.client.auth.getSession();
 
         if (error) {
           throw new Error(`Connection failed: ${error.message}`);

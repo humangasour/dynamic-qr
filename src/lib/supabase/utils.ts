@@ -1,10 +1,14 @@
 // Simplified Supabase utilities that work with the lazy client
+import type { Database } from '@/types';
+
 import { getSupabaseClient } from './client';
+
+type TableName = keyof Database['public']['Tables'];
 
 export const db = {
   // Generic select function
   select: async <T>(
-    table: string,
+    table: TableName,
     columns: string = '*',
     filters?: Record<string, string | number | boolean>,
   ) => {
@@ -22,7 +26,7 @@ export const db = {
   },
 
   // Generic insert function
-  insert: async <T>(table: string, data: Partial<T>) => {
+  insert: async <T>(table: TableName, data: Database['public']['Tables'][TableName]['Insert']) => {
     const client = getSupabaseClient();
     const { data: result, error } = await client.from(table).insert(data).select();
     return { data: result as T[], error };
@@ -30,8 +34,8 @@ export const db = {
 
   // Generic update function
   update: async <T>(
-    table: string,
-    data: Partial<T>,
+    table: TableName,
+    data: Partial<Database['public']['Tables'][TableName]['Update']>,
     filters: Record<string, string | number | boolean>,
   ) => {
     const client = getSupabaseClient();
@@ -46,7 +50,7 @@ export const db = {
   },
 
   // Generic delete function
-  delete: async (table: string, filters: Record<string, string | number | boolean>) => {
+  delete: async (table: TableName, filters: Record<string, string | number | boolean>) => {
     const client = getSupabaseClient();
     let query = client.from(table).delete();
 
