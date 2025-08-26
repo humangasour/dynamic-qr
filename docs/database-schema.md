@@ -299,6 +299,25 @@ supabase db push --db-url $PRODUCTION_DB_URL
 - Migrations are applied in chronological order
 - Rollback capability to any previous state
 
+### TypeScript Integration
+
+```bash
+# After schema changes, regenerate types
+supabase gen types typescript --project-id YOUR_PROJECT_ID > src/types/database.ts
+
+# Run type checks
+npm run typecheck
+
+# Verify no TypeScript errors
+tsc --noEmit
+```
+
+### Security Validation
+
+- **Function Security**: All functions use `SECURITY DEFINER` and `SET search_path = ''`
+- **RLS Testing**: Policies tested with sample data in local environment
+- **Production Security**: Security issues automatically flagged in Supabase Studio
+
 ## Security Best Practices
 
 1. **SECURITY DEFINER**: All functions use proper security context

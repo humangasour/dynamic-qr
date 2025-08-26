@@ -98,8 +98,20 @@ This MVP is intended as:
 
 ## 7. Next Steps
 
-1. Finalize architecture doc (tech stack, schema, RLS policies).
-2. Set up repo with Next.js, Supabase, tRPC, Tailwind, shadcn/ui.
-3. Begin with foundation tasks: auth + orgs + schema.
+✅ **COMPLETED:**
+
+1. ~~Finalize architecture doc (tech stack, schema, RLS policies).~~
+2. ~~Set up repo with Next.js, Supabase, tRPC, Tailwind, shadcn/ui.~~
+3. ~~Begin with foundation tasks: auth + orgs + schema.~~
+
+🔄 **IN PROGRESS:**
+
 4. Build core QR flows, then redirect + analytics.
 5. Add billing and polish for portfolio presentation.
+
+📋 **NEW:**
+
+6. Implement authentication flows using the new type-safe database layer.
+7. Create QR management interface with real-time updates.
+8. Build redirect service with analytics collection.
+9. Implement dashboard with scan analytics and version history.
