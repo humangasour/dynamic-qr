@@ -15,7 +15,12 @@
     "pre-push": "husky run .husky/pre-push",
     "commit-msg": "husky run .husky/commit-msg",
     "prepare-commit-msg": "husky run .husky/prepare-commit-msg",
-    "check-all": "npm run format && npm run lint && npm run typecheck && npm run build"
+    "check-all": "npm run format && npm run lint && npm run typecheck && npm run build",
+    "seed": "tsx scripts/seed.ts",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
@@ -35,17 +40,24 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "@typescript-eslint/parser": "^8.40.0",
+    "@vitest/ui": "^3.2.4",
+    "dotenv": "^16.4.5",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
     "eslint-config-prettier": "^10.1.8",
+    "jsdom": "^26.1.0",
     "lint-staged": "^16.1.5",
     "prettier": "^3.6.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.19.2",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   }
 }
