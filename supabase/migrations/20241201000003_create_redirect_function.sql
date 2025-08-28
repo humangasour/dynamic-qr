@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION public.handle_redirect(
 ) RETURNS TABLE(target_url TEXT)
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = ''
 AS $$
 DECLARE
   v_qr_id UUID;
