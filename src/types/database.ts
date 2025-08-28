@@ -278,6 +278,16 @@ export type Database = {
         Args: { org_id: string };
         Returns: boolean;
       };
+      handle_redirect: {
+        Args: {
+          p_slug: string;
+          p_ip: string;
+          p_user_agent: string;
+          p_referrer: string;
+          p_country: string;
+        };
+        Returns: { target_url: string }[];
+      };
     };
     Enums: {
       member_role_t: 'owner' | 'admin' | 'editor' | 'viewer';
