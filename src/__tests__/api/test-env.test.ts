@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { GET } from '../test-env/route';
+import { GET } from '@/app/api/test-env/route';
 
 // Mock environment variables
 vi.mock('process', () => ({
