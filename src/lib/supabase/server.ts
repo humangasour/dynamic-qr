@@ -3,7 +3,7 @@
 
 import type { Database } from '@/types';
 
-import { getSupabaseAdminClient, isAdminClientAvailable } from './client';
+import { getSupabaseAdminClient, isAdminClientAvailable } from './clients';
 
 type TableName = keyof Database['public']['Tables'];
 type FunctionName = keyof Database['public']['Functions'];

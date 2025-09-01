@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { Database } from '@/types';
-import { supabase, supabaseAdmin } from '@/lib/supabase/client';
+import { getSupabaseBrowserClient, getSupabaseAdminClient } from '@/lib/supabase/clients';
 
 // For integration tests, we need to import the real clients
 // but we'll handle the GoTrueClient warning by using a single instance
@@ -12,9 +12,9 @@ let supabaseAdminClient: SupabaseClient<Database> | null = null;
 // Initialize clients once to avoid multiple GoTrueClient instances
 const getClients = () => {
   if (!supabaseClient || !supabaseAdminClient) {
-    // Use the imported clients directly to avoid module resolution issues
-    supabaseClient = supabase.client;
-    supabaseAdminClient = supabaseAdmin.client;
+    // Use the imported client functions directly
+    supabaseClient = getSupabaseBrowserClient();
+    supabaseAdminClient = getSupabaseAdminClient();
   }
   return { supabaseClient, supabaseAdminClient };
 };

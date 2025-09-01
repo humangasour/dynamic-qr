@@ -1,7 +1,7 @@
 // Simplified Supabase utilities that work with the lazy client
 import type { Database } from '@/types';
 
-import { getSupabaseClient } from './client';
+import { getSupabaseBrowserClient } from './clients';
 
 type TableName = keyof Database['public']['Tables'];
 
@@ -12,7 +12,7 @@ export const db = {
     columns: string = '*',
     filters?: Record<string, string | number | boolean>,
   ) => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     let query = client.from(table).select(columns);
 
     if (filters) {
@@ -27,7 +27,7 @@ export const db = {
 
   // Generic insert function
   insert: async <T>(table: TableName, data: Database['public']['Tables'][TableName]['Insert']) => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     const { data: result, error } = await client.from(table).insert(data).select();
     return { data: result as T[], error };
   },
@@ -38,7 +38,7 @@ export const db = {
     data: Partial<Database['public']['Tables'][TableName]['Update']>,
     filters: Record<string, string | number | boolean>,
   ) => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     let query = client.from(table).update(data);
 
     Object.entries(filters).forEach(([key, value]) => {
@@ -51,7 +51,7 @@ export const db = {
 
   // Generic delete function
   delete: async (table: TableName, filters: Record<string, string | number | boolean>) => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     let query = client.from(table).delete();
 
     Object.entries(filters).forEach(([key, value]) => {
@@ -67,25 +67,25 @@ export const db = {
 export const auth = {
   // Get current session
   getSession: async () => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     return client.auth.getSession();
   },
 
   // Sign in
   signIn: async (email: string, password: string) => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     return client.auth.signInWithPassword({ email, password });
   },
 
   // Sign up
   signUp: async (email: string, password: string) => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     return client.auth.signUp({ email, password });
   },
 
   // Sign out
   signOut: async () => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     return client.auth.signOut();
   },
 };
@@ -94,19 +94,19 @@ export const auth = {
 export const storage = {
   // Upload file
   upload: async (bucket: string, path: string, file: File) => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     return client.storage.from(bucket).upload(path, file);
   },
 
   // Download file
   download: async (bucket: string, path: string) => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     return client.storage.from(bucket).download(path);
   },
 
   // Get public URL
   getPublicUrl: (bucket: string, path: string) => {
-    const client = getSupabaseClient();
+    const client = getSupabaseBrowserClient();
     return client.storage.from(bucket).getPublicUrl(path);
   },
 };

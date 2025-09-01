@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 
-import { supabase, isSupabaseConfigured, isAdminClientAvailable } from '@/lib';
+import {
+  getSupabaseBrowserClient,
+  isSupabaseConfigured,
+  isAdminClientAvailable,
+} from '@/lib/supabase/clients';
 
 export default function TestSupabasePage() {
   const [connectionStatus, setConnectionStatus] = useState<'loading' | 'success' | 'error'>(
@@ -42,7 +46,8 @@ export default function TestSupabasePage() {
 
         // Test basic connection by checking auth status
         // This is the most reliable way to test if Supabase is accessible
-        const { error } = await supabase.client.auth.getSession();
+        const supabase = getSupabaseBrowserClient();
+        const { error } = await supabase.auth.getSession();
 
         if (error) {
           throw new Error(`Connection failed: ${error.message}`);

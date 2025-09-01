@@ -1,6 +1,6 @@
 import { initTRPC } from '@trpc/server';
 
-import { getSupabaseClient } from '@/lib/supabase/client';
+import { getSupabaseBrowserClient } from '@/lib/supabase/clients';
 
 /**
  * 1. CONTEXT
@@ -11,7 +11,7 @@ import { getSupabaseClient } from '@/lib/supabase/client';
  */
 
 interface CreateContextOptions {
-  supabase: ReturnType<typeof getSupabaseClient>;
+  supabase: ReturnType<typeof getSupabaseBrowserClient>;
 }
 
 /**
@@ -38,7 +38,7 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
  */
 export const createTRPCContext = async () => {
   // Create Supabase client for server-side operations
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
 
   return createInnerTRPCContext({
     supabase,

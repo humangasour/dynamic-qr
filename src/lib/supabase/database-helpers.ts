@@ -4,7 +4,7 @@
 
 import type { Database } from '@/types';
 
-import { getSupabaseClient } from './client';
+import { getSupabaseBrowserClient } from './clients';
 
 // ===== Type Aliases for Easy Use
 
@@ -44,7 +44,7 @@ export type NewDailyAggregate = Database['public']['Tables']['daily_aggregates']
  * Create a new organization
  */
 export async function createOrganization(org: NewOrganization): Promise<Organization | null> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase.from('orgs').insert(org).select().single();
 
   if (error) {
@@ -59,7 +59,7 @@ export async function createOrganization(org: NewOrganization): Promise<Organiza
  * Get organizations for the current user (respects RLS policies)
  */
 export async function getUserOrganizations(): Promise<Organization[]> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase.from('orgs').select('*');
 
   if (error) {
@@ -77,7 +77,7 @@ export async function updateOrganization(
   id: string,
   updates: UpdateOrganization,
 ): Promise<Organization | null> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
     .from('orgs')
     .update(updates)
@@ -99,7 +99,7 @@ export async function updateOrganization(
  * Create a new QR code
  */
 export async function createQRCode(qr: NewQRCode): Promise<QRCode | null> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase.from('qr_codes').insert(qr).select().single();
 
   if (error) {
@@ -114,7 +114,7 @@ export async function createQRCode(qr: NewQRCode): Promise<QRCode | null> {
  * Get QR codes for an organization (respects RLS policies)
  */
 export async function getOrganizationQRCodes(orgId: string): Promise<QRCode[]> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase.from('qr_codes').select('*').eq('org_id', orgId);
 
   if (error) {
@@ -129,7 +129,7 @@ export async function getOrganizationQRCodes(orgId: string): Promise<QRCode[]> {
  * Get QR code by slug (for redirect service)
  */
 export async function getQRCodeBySlug(slug: string): Promise<QRCode | null> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
     .from('qr_codes')
     .select('*')
@@ -153,7 +153,7 @@ export async function updateQRCodeTarget(
   newTargetUrl: string,
   note?: string,
 ): Promise<QRCode | null> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
 
   // Start a transaction-like operation
   const { data: qrCode, error: updateError } = await supabase
@@ -195,7 +195,7 @@ export async function addUserToOrganization(
   userId: string,
   role: Database['public']['Enums']['member_role_t'] = 'viewer',
 ): Promise<OrgMember | null> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
     .from('org_members')
     .insert({
@@ -218,7 +218,7 @@ export async function addUserToOrganization(
  * Get organization members
  */
 export async function getOrganizationMembers(orgId: string): Promise<OrgMember[]> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase.from('org_members').select('*').eq('org_id', orgId);
 
   if (error) {
@@ -235,7 +235,7 @@ export async function getOrganizationMembers(orgId: string): Promise<OrgMember[]
  * Record a scan event
  */
 export async function recordScanEvent(scan: NewScanEvent): Promise<ScanEvent | null> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase.from('scan_events').insert(scan).select().single();
 
   if (error) {
@@ -250,7 +250,7 @@ export async function recordScanEvent(scan: NewScanEvent): Promise<ScanEvent | n
  * Get scan events for a QR code
  */
 export async function getQRCodeScans(qrId: string): Promise<ScanEvent[]> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
     .from('scan_events')
     .select('*')

@@ -1,5 +1,5 @@
 // Supabase client and utilities
-export { supabase, supabaseAdmin, isSupabaseConfigured, isAdminClientAvailable } from './client';
+export * from './clients';
 export * from './utils';
 
 // Database helper functions and types
