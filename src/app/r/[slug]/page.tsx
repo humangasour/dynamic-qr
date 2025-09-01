@@ -1,6 +1,7 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
+import type { Metadata } from 'next';
 
 import { trpc } from '@/lib/trpc/server-client';
 
@@ -8,6 +9,14 @@ interface RedirectPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata({ params }: RedirectPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  return {
+    title: 'Dynamic QR Codes - Redirect',
+    description: `Redirecting to target URL for QR code: ${slug}`,
+  };
 }
 
 /**
