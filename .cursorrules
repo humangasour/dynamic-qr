@@ -1,0 +1,47 @@
+# Dynamic QR Project Rules
+
+This project follows organized development standards defined in the `.cursor/rules/` directory.
+
+## Core Rules
+
+- **Git Workflow**: Follow conventional commits and feature branch workflow
+- **Testing Strategy**: Use layered testing approach with NO redundancy between layers
+- **UI/UX Standards**: Maintain consistent design patterns and accessibility
+- **Architecture Patterns**: Follow established patterns for scalability
+- **Development Standards**: Code quality, formatting, and best practices
+
+## Testing Rules (CRITICAL)
+
+**NO REDUNDANCY BETWEEN TEST LAYERS** - Each test layer must focus on what it can uniquely verify:
+
+1. **Unit Tests** (`*.unit.test.ts`): Function logic with mocked dependencies
+2. **Integration Tests** (`*.test.ts`): Database operations and real RPC calls
+3. **Route Tests** (`*.route.test.ts`): Next.js component behavior and tRPC integration
+4. **E2E Tests** (`*.spec.ts`): Browser behavior, UI rendering, and real user experience
+5. **E2E with Data** (`*-with-data.spec.ts`): Browser + real database integration
+
+**DO NOT** duplicate tests across layers. Write tests at the lowest appropriate layer.
+
+## File Organization
+
+- Tests go in `src/__tests__/` for unit/integration/route tests
+- E2E tests go in `e2e/` directory
+- Follow naming conventions: `*.unit.test.ts`, `*.test.ts`, `*.route.test.ts`, `*.spec.ts`
+
+## When Writing Tests
+
+- **Unit tests**: Test business logic with mocked dependencies
+- **Integration tests**: Test database operations and real function calls
+- **Route tests**: Test Next.js components and tRPC integration
+- **E2E tests**: Test browser behavior and UI rendering
+- **E2E with data**: Test complete user workflows with real data
+
+## Reference Documentation
+
+See `.cursor/rules/` directory for detailed guidelines on each area:
+
+- `.cursor/rules/testing-strategy.mdc` - Complete testing guidelines
+- `.cursor/rules/git-workflow.mdc` - Git and PR workflow
+- `.cursor/rules/ui-ux-standards.mdc` - Design and accessibility standards
+- `.cursor/rules/architecture-patterns.mdc` - System architecture patterns
+- `.cursor/rules/development-standards.mdc` - Code quality standards

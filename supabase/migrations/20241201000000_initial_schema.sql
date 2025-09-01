@@ -92,11 +92,14 @@ CREATE TABLE IF NOT EXISTS public.daily_aggregates (
 );
 
 -- ===== Indexes
+-- Core indexes for application functionality
 CREATE INDEX IF NOT EXISTS idx_org_members_user_id ON public.org_members(user_id);
 CREATE INDEX IF NOT EXISTS idx_qr_codes_org_id ON public.qr_codes(org_id);
 CREATE INDEX IF NOT EXISTS idx_qr_codes_status_active ON public.qr_codes(status) WHERE status = 'active';
 CREATE INDEX IF NOT EXISTS idx_qr_versions_qr_created ON public.qr_versions(qr_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_scan_events_qr_ts ON public.scan_events(qr_id, ts DESC);
+
+-- Analytics indexes (will be used for dashboard features)
 CREATE INDEX IF NOT EXISTS idx_scan_events_referrer ON public.scan_events(referrer);
 CREATE INDEX IF NOT EXISTS idx_scan_events_geo ON public.scan_events(country, city);
 

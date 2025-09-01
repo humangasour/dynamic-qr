@@ -69,30 +69,24 @@ CREATE POLICY "Org owners can delete their organizations" ON public.orgs
 
 -- Users: Users can only see their own profile
 CREATE POLICY "Users can view their own profile" ON public.users
-  FOR SELECT USING (auth.uid() = id);
+  FOR SELECT USING ((select auth.uid()) = id);
 
 CREATE POLICY "Users can update their own profile" ON public.users
-  FOR UPDATE USING (auth.uid() = id);
+  FOR UPDATE USING ((select auth.uid()) = id);
 
--- Organization Members: Users can see members of orgs they belong to
-CREATE POLICY "Users can view org members" ON public.org_members
-  FOR SELECT USING (public.is_org_member(org_id));
+-- Organization Members: Combined policy for viewing and managing members
+CREATE POLICY "Users can view and manage org members" ON public.org_members
+  FOR ALL USING (
+    public.is_org_member(org_id) OR 
+    public.has_org_role(org_id, 'owner')
+  );
 
-CREATE POLICY "Org owners can manage members" ON public.org_members
-  FOR ALL USING (public.has_org_role(org_id, 'owner'));
-
--- QR Codes: Users can only access QRs from their organizations
-CREATE POLICY "Users can view org QR codes" ON public.qr_codes
-  FOR SELECT USING (public.is_org_member(org_id));
-
-CREATE POLICY "Users can create QR codes in their org" ON public.qr_codes
-  FOR INSERT WITH CHECK (public.is_org_member(org_id));
-
-CREATE POLICY "Users can update QR codes in their org" ON public.qr_codes
-  FOR UPDATE USING (public.is_org_member(org_id));
-
-CREATE POLICY "Users can delete QR codes in their org" ON public.qr_codes
-  FOR DELETE USING (public.is_org_member(org_id));
+-- QR Codes: Combined policy for all operations on org QR codes
+CREATE POLICY "Users can manage org QR codes" ON public.qr_codes
+  FOR ALL USING (
+    public.is_org_member(org_id) OR 
+    status = 'active'  -- Allow public access to active QR codes for redirects
+  );
 
 -- QR Versions: Users can only access versions of QRs from their organizations
 CREATE POLICY "Users can view QR versions" ON public.qr_versions
@@ -130,10 +124,7 @@ CREATE POLICY "Users can view daily aggregates" ON public.daily_aggregates
   );
 
 -- ===== Public Access for Redirect Service
-
--- Allow public access to QR codes for redirect service (read-only)
-CREATE POLICY "Public can view active QR codes for redirects" ON public.qr_codes
-  FOR SELECT USING (status = 'active');
+-- Note: Public access to active QR codes is now handled in the combined policy above
 
 -- Allow public access to scan events for analytics collection
 CREATE POLICY "Public can insert scan events" ON public.scan_events

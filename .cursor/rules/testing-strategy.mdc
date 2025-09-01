@@ -2,10 +2,106 @@
 
 ## Testing Stack
 
-- **Unit Tests**: Vitest for fast, isolated testing
-- **Component Tests**: Testing Library for React component testing
-- **E2E Tests**: Playwright for full user journey testing
+- **Unit Tests**: Vitest for fast, isolated testing with mocked dependencies
+- **Integration Tests**: Vitest with real database for database operations and RPC functions
+- **Route Tests**: Vitest for Next.js route components and tRPC integration
+- **E2E Tests**: Playwright for browser behavior, UI rendering, and real user experience
 - **Type Checking**: TypeScript compiler for static analysis
+
+## Test Layer Separation - NO REDUNDANCY
+
+This project uses a layered testing approach where each layer focuses on what it can uniquely verify:
+
+### 1. Unit Tests (`src/__tests__/features/*/unit.test.ts`)
+
+**Purpose**: Test individual functions in isolation with mocked dependencies
+**Coverage**:
+
+- Business logic and utility functions
+- Function behavior and parameter handling
+- Error scenarios with mocked dependencies
+- Concurrent request handling
+- Function signature validation
+- Edge cases with mocked data
+
+**Guidelines**:
+
+- Mock all external dependencies (Supabase, Stripe, APIs)
+- Test error handling and edge cases
+- Use descriptive test names that explain the scenario
+- Group related tests using `describe` blocks
+- Test in complete isolation
+
+### 2. Integration Tests (`src/__tests__/features/*/test.ts`)
+
+**Purpose**: Test database operations and RPC functions with real database
+**Coverage**:
+
+- Database connection and queries
+- Real RPC function execution
+- Data persistence and retrieval
+- Database constraints and relationships
+- Real database error handling
+
+**Guidelines**:
+
+- Use test database or isolated schema
+- Clean up test data after each test
+- Test real database operations end-to-end
+- Verify data integrity and constraints
+
+### 3. Route Tests (`src/__tests__/features/*/route.test.ts`)
+
+**Purpose**: Test Next.js route components and tRPC integration
+**Coverage**:
+
+- Next.js component behavior
+- Header extraction and processing
+- tRPC client integration
+- Route logic and error handling
+- Component state management
+
+**Guidelines**:
+
+- Mock Next.js specific APIs (headers, redirect)
+- Test tRPC integration points
+- Verify proper error handling in components
+- Test component rendering and interactions
+
+### 4. E2E Tests (`e2e/*.spec.ts`)
+
+**Purpose**: Test browser-specific behavior and UI rendering
+**Coverage**:
+
+- Browser environment compatibility
+- UI rendering and styling
+- Responsive design (mobile/desktop)
+- Cross-browser compatibility
+- Accessibility features
+
+**Guidelines**:
+
+- Focus on browser-specific behavior
+- Test UI rendering and user interactions
+- Verify responsive design across viewports
+- Test accessibility and keyboard navigation
+
+### 5. E2E Tests with Real Data (`e2e/*-with-data.spec.ts`)
+
+**Purpose**: Test browser behavior with actual database data
+**Coverage**:
+
+- Real database integration in browser
+- Browser-specific edge cases
+- Real browser performance with database
+- End-to-end user workflows
+
+**Guidelines**:
+
+- Use real test data when needed
+- Test complete user journeys
+- Verify real database integration
+- Clean up test data after tests
 
 ## Test Coverage Requirements
 
@@ -14,29 +110,17 @@
 - **Edge Cases**: Error handling, validation, security boundaries
 - **Performance**: Load testing for redirect service
 
-## Unit Testing Guidelines
+## No Redundancy Principle
 
-- Test all utility functions and business logic
-- Mock external dependencies (Supabase, Stripe)
-- Test error handling and edge cases
-- Use descriptive test names that explain the scenario
-- Group related tests using `describe` blocks
+**CRITICAL**: Each test layer must focus on what it can uniquely verify:
 
-## Component Testing
+- **Unit tests**: Function logic with mocked dependencies
+- **Integration tests**: Database operations and real RPC calls
+- **Route tests**: Next.js component behavior and tRPC integration
+- **E2E tests**: Browser behavior, UI rendering, and real user experience
+- **E2E with data**: Browser + real database integration
 
-- Test component rendering and user interactions
-- Verify proper prop handling and state management
-- Test accessibility features (keyboard navigation, ARIA)
-- Mock API calls and test loading/error states
-- Test form validation and submission flows
-
-## E2E Testing Scenarios
-
-- **Authentication Flow**: Sign up, login, logout
-- **QR Management**: Create, edit, delete QR codes
-- **Redirect Service**: Scan QR codes and verify redirects
-- **Analytics Dashboard**: View and export analytics data
-- **Billing Flow**: Upgrade plans and payment processing
+**DO NOT** duplicate tests across layers. If a test can be written at a lower layer, write it there instead of in E2E.
 
 ## Test Data Management
 
@@ -44,6 +128,7 @@
 - Clean up test data after each test
 - Use separate test database or mock Supabase
 - Implement proper test isolation
+- Use descriptive test data names
 
 ## Performance Testing
 
@@ -58,8 +143,37 @@
 - Verify RLS policies work correctly
 - Test input validation and sanitization
 - Ensure no sensitive data exposure in tests
-  description:
-  globs:
-  alwaysApply: false
+
+## Running Tests
+
+```bash
+# Unit and integration tests
+npm test
+
+# E2E tests
+npm run test:e2e
+
+# All tests
+npm run test:all
+```
+
+## File Naming Convention
+
+- Unit tests: `*.unit.test.ts`
+- Integration tests: `*.test.ts` (main test file)
+- Route tests: `*.route.test.ts`
+- E2E tests: `*.spec.ts`
+- E2E with data: `*-with-data.spec.ts`
+
+## Best Practices
+
+1. **Write tests at the lowest appropriate layer** - Don't test function logic in E2E tests
+2. **Mock external dependencies** - Use mocks for unit tests, real services for integration
+3. **Test both success and failure cases** - Cover edge cases and error scenarios
+4. **Keep tests independent** - Each test should be self-contained
+5. **Use descriptive test names** - Make debugging easier
+6. **Group related tests** - Use `describe` blocks for organization
+7. **Clean up test data** - Always clean up after tests
+8. **Avoid test interdependence** - Tests should not rely on each other
 
 ---
