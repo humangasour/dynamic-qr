@@ -288,6 +288,14 @@ export type Database = {
         };
         Returns: { target_url: string }[];
       };
+      ensure_user_and_org: {
+        Args: {
+          p_user_id: string;
+          p_email: string;
+          p_name: string;
+        };
+        Returns: string;
+      };
     };
     Enums: {
       member_role_t: 'owner' | 'admin' | 'editor' | 'viewer';
