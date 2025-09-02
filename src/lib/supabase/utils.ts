@@ -1,9 +1,8 @@
 // Simplified Supabase utilities that work with the lazy client
-import type { Database } from '@/types';
+import type { TableName } from '@/types';
 
 import { getSupabaseBrowserClient } from './clients';
-
-type TableName = keyof Database['public']['Tables'];
+import { deleteRows, insertRows, selectRows, updateRows } from './crud';
 
 export const db = {
   // Generic select function
@@ -13,53 +12,32 @@ export const db = {
     filters?: Record<string, string | number | boolean>,
   ) => {
     const client = getSupabaseBrowserClient();
-    let query = client.from(table).select(columns);
-
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        query = query.eq(key, value);
-      });
-    }
-
-    const { data, error } = await query;
-    return { data: data as T[], error };
+    return selectRows<T>(client, table, columns, filters);
   },
 
   // Generic insert function
-  insert: async <T>(table: TableName, data: Database['public']['Tables'][TableName]['Insert']) => {
+  insert: async <T, TTable extends TableName>(
+    table: TTable,
+    data: import('@/types').Database['public']['Tables'][TTable]['Insert'],
+  ) => {
     const client = getSupabaseBrowserClient();
-    const { data: result, error } = await client.from(table).insert(data).select();
-    return { data: result as T[], error };
+    return insertRows<T, TTable>(client, table, data);
   },
 
   // Generic update function
-  update: async <T>(
-    table: TableName,
-    data: Partial<Database['public']['Tables'][TableName]['Update']>,
+  update: async <T, TTable extends TableName>(
+    table: TTable,
+    data: Partial<import('@/types').Database['public']['Tables'][TTable]['Update']>,
     filters: Record<string, string | number | boolean>,
   ) => {
     const client = getSupabaseBrowserClient();
-    let query = client.from(table).update(data);
-
-    Object.entries(filters).forEach(([key, value]) => {
-      query = query.eq(key, value);
-    });
-
-    const { data: result, error } = await query.select();
-    return { data: result as T[], error };
+    return updateRows<T, TTable>(client, table, data, filters);
   },
 
   // Generic delete function
   delete: async (table: TableName, filters: Record<string, string | number | boolean>) => {
     const client = getSupabaseBrowserClient();
-    let query = client.from(table).delete();
-
-    Object.entries(filters).forEach(([key, value]) => {
-      query = query.eq(key, value);
-    });
-
-    const { data, error } = await query;
-    return { data, error };
+    return deleteRows(client, table, filters);
   },
 };
 

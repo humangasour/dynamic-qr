@@ -1,12 +1,10 @@
 // Server-side Supabase utilities
 // This file should only be imported in server components or API routes
 
-import type { Database } from '@/types';
+import type { Database, TableName, FunctionName } from '@/types';
 
 import { getSupabaseAdminClient, isAdminClientAvailable } from './clients';
-
-type TableName = keyof Database['public']['Tables'];
-type FunctionName = keyof Database['public']['Functions'];
+import { deleteRows, insertRows, selectRows, updateRows } from './crud';
 
 // Server-side database operations that bypass RLS
 export const serverDb = {
@@ -25,20 +23,14 @@ export const serverDb = {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    let query = client.from(table).select(columns);
-
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        query = query.eq(key, value);
-      });
-    }
-
-    const { data, error } = await query;
-    return { data: data as T[], error };
+    return selectRows<T>(client, table, columns, filters);
   },
 
   // Generic insert function
-  insert: async <T>(table: TableName, data: Database['public']['Tables'][TableName]['Insert']) => {
+  insert: async <T, TTable extends TableName>(
+    table: TTable,
+    data: Database['public']['Tables'][TTable]['Insert'],
+  ) => {
     if (!isAdminClientAvailable()) {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
@@ -48,14 +40,13 @@ export const serverDb = {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    const { data: result, error } = await client.from(table).insert(data).select();
-    return { data: result as T[], error };
+    return insertRows<T, TTable>(client, table, data);
   },
 
   // Generic update function
-  update: async <T>(
-    table: TableName,
-    data: Partial<Database['public']['Tables'][TableName]['Update']>,
+  update: async <T, TTable extends TableName>(
+    table: TTable,
+    data: Partial<Database['public']['Tables'][TTable]['Update']>,
     filters: Record<string, string | number | boolean>,
   ) => {
     if (!isAdminClientAvailable()) {
@@ -67,14 +58,7 @@ export const serverDb = {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    let query = client.from(table).update(data);
-
-    Object.entries(filters).forEach(([key, value]) => {
-      query = query.eq(key, value);
-    });
-
-    const { data: result, error } = await query.select();
-    return { data: result as T[], error };
+    return updateRows<T, TTable>(client, table, data, filters);
   },
 
   // Generic delete function
@@ -88,14 +72,7 @@ export const serverDb = {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    let query = client.from(table).delete();
-
-    Object.entries(filters).forEach(([key, value]) => {
-      query = query.eq(key, value);
-    });
-
-    const { data, error } = await query;
-    return { data, error };
+    return deleteRows(client, table, filters);
   },
 
   // Execute raw SQL (use with caution)

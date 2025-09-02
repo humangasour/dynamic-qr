@@ -1,6 +1,7 @@
 // Supabase client and utilities
 export * from './clients';
 export * from './utils';
+export * from './crud';
 
 // Database helper functions and types
 export * from './database-helpers';
