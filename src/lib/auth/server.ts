@@ -5,7 +5,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { Session } from '@supabase/supabase-js';
 
-import { getSupabaseServerClient } from '@/lib/supabase/clients';
+import { getSupabaseServerClient } from '@/lib/supabase/clients/server-client';
 import type { Database } from '@/types';
 
 import { report, hasRolePermission } from './utils';
