@@ -1,10 +1,10 @@
 // Authentication utility functions
 // Helper functions and constants used across auth operations
 
-import type { Database } from '@/types';
+// (no local Database usage; types are re-exported from central types)
 
-// Role hierarchy for comparison (outside function for performance)
-export const ROLE_ORDER = { viewer: 1, editor: 2, admin: 3, owner: 4 } as const;
+// Re-export role helpers from roles.ts to keep existing imports working
+export { ROLE_ORDER, hasRolePermission, getHighestRole, isAdminRole, isOwnerRole } from './roles';
 
 // Production-ready error reporting
 export const report = (err: unknown) => {
@@ -16,38 +16,5 @@ export const report = (err: unknown) => {
   }
 };
 
-// Type for role comparison
-export type MemberRole = Database['public']['Enums']['member_role_t'];
-
-/**
- * Check if a user role has sufficient permissions for a required role
- */
-export function hasRolePermission(userRole: MemberRole, requiredRole: MemberRole): boolean {
-  return ROLE_ORDER[userRole] >= ROLE_ORDER[requiredRole];
-}
-
-/**
- * Get the highest role from a list of roles
- */
-export function getHighestRole(roles: MemberRole[]): MemberRole {
-  if (roles.length === 0) {
-    return 'viewer';
-  }
-  return roles.reduce((highest, current) =>
-    ROLE_ORDER[current] > ROLE_ORDER[highest] ? current : highest,
-  );
-}
-
-/**
- * Check if a role is considered an admin role (admin or owner)
- */
-export function isAdminRole(role: MemberRole): boolean {
-  return role === 'admin' || role === 'owner';
-}
-
-/**
- * Check if a role is considered an owner role
- */
-export function isOwnerRole(role: MemberRole): boolean {
-  return role === 'owner';
-}
+// Re-export the MemberRole type from central types
+export type { MemberRole } from '@/types/auth';

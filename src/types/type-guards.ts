@@ -1,12 +1,7 @@
 // ===== Type Guards for Database Types
 // Validation functions for runtime type checking
-
-import type { Database } from './database';
-
-// Extract types from the generated database types
-export type PlanType = Database['public']['Enums']['plan_t'];
-export type MemberRole = Database['public']['Enums']['member_role_t'];
-export type QRStatus = Database['public']['Enums']['qr_status_t'];
+import type { PlanType, MemberRole, QRStatus } from './auth';
+import { PLAN_TYPES, MEMBER_ROLES, QR_STATUSES } from './auth';
 
 // ===== Validation Functions
 
@@ -14,28 +9,27 @@ export type QRStatus = Database['public']['Enums']['qr_status_t'];
  * Check if a plan is valid
  */
 export function isValidPlan(plan: string): plan is PlanType {
-  return ['free', 'pro'].includes(plan);
+  return (PLAN_TYPES as readonly string[]).includes(plan);
 }
 
 /**
  * Check if a role is valid
  */
 export function isValidRole(role: string): role is MemberRole {
-  return ['owner', 'admin', 'editor', 'viewer'].includes(role);
+  return (MEMBER_ROLES as readonly string[]).includes(role);
 }
 
 /**
  * Check if a QR status is valid
  */
 export function isValidQRStatus(status: string): status is QRStatus {
-  return ['active', 'archived'].includes(status);
+  return (QR_STATUSES as readonly string[]).includes(status);
 }
 
 // ===== Constants from Generated Types
 
-export const PLAN_TYPES: PlanType[] = ['free', 'pro'];
-export const MEMBER_ROLES: MemberRole[] = ['owner', 'admin', 'editor', 'viewer'];
-export const QR_STATUSES: QRStatus[] = ['active', 'archived'];
+// Re-export canonical arrays (single source of truth lives in ./auth)
+export { PLAN_TYPES, MEMBER_ROLES, QR_STATUSES };
 
 // ===== Utility Functions
 
