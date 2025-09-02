@@ -41,6 +41,9 @@ export const userWithOrgSchema = z.object({
   org_role: memberRoleEnum,
 });
 
+// Inferred type for consumers to avoid duplicating interfaces
+export type UserWithOrg = z.infer<typeof userWithOrgSchema>;
+
 /** ---------- Auth flows ---------- */
 export const signInSchema = z.object({
   email: Email,

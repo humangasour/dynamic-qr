@@ -7,18 +7,9 @@ import { Session } from '@supabase/supabase-js';
 
 import { getSupabaseServerClient } from '@/lib/supabase/clients/server-client';
 import type { Database } from '@/types';
+import type { UserWithOrg } from '@/lib/auth/schemas';
 
 import { report, hasRolePermission } from './utils';
-
-export type UserWithOrg = {
-  id: string;
-  email: string;
-  name: string | null;
-  avatar_url: string | null;
-  org_id: string;
-  org_name: string;
-  org_role: Database['public']['Enums']['member_role_t'];
-};
 
 /**
  * Get user ID for access control (preferred over getSession for guards)
