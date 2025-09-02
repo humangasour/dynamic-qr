@@ -1,5 +1,5 @@
 import { createTRPCRouter, publicProcedure } from '@/lib/trpc/trpc';
-import { redirectInputSchema } from '@/lib/trpc/schemas';
+import { redirectInputSchema } from '@/schemas';
 
 /**
  * Redirect router containing all redirect-related procedures

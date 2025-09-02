@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
-import { redirectInputSchema, redirectOutputSchema } from '@/lib/trpc/schemas/redirect';
+import { redirectInputSchema, redirectOutputSchema } from '@/schemas';
 
 describe('tRPC Schema Validation', () => {
   describe('Redirect Input Schema', () => {
