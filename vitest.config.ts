@@ -24,6 +24,9 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
       '@test': resolve(__dirname, './tests'),
+      '@features': resolve(__dirname, './src/features'),
+      '@infra': resolve(__dirname, './src/infrastructure'),
+      '@shared': resolve(__dirname, './src/shared'),
     },
   },
 });
