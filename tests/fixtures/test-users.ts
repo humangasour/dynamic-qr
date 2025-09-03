@@ -1,3 +1,4 @@
+// E2E-oriented user fixtures (with credentials)
 export interface TestUser {
   id: string;
   email: string;
@@ -6,7 +7,7 @@ export interface TestUser {
   organizationId: string;
 }
 
-export const testUsers = {
+export const testUsersE2E = {
   admin: {
     id: 'admin-user-id',
     email: 'admin@example.com',
@@ -30,4 +31,4 @@ export const testUsers = {
   },
 } as const;
 
-export type TestUserRole = keyof typeof testUsers;
+export type TestUserRole = keyof typeof testUsersE2E;

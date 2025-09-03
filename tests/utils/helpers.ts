@@ -1,9 +1,63 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
 import { vi } from 'vitest';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
+import { testOrganizations, testQrCodes, testUsers } from '@test/fixtures';
 import type { Database } from '@/types';
 
-import { testOrganizations, testQrCodes, testUsers } from '../fixtures';
+// API test helpers
+export class ApiTestHelpers {
+  static mockRpcCall<T>(
+    mockClient: SupabaseClient<Database>,
+    functionName: string,
+    data: T,
+    error: { message: string; code?: string } | null = null,
+  ) {
+    (
+      mockClient.rpc as unknown as { mockImplementation: (fn: (name: string) => unknown) => void }
+    ).mockImplementation((fnName: string) => {
+      if (fnName === functionName) {
+        return Promise.resolve({ data, error });
+      }
+      return Promise.resolve({ data: null, error: { message: 'Function not found' } });
+    });
+  }
+
+  static mockHandleRedirect(
+    mockClient: SupabaseClient<Database>,
+    shouldReturnUrl: boolean = true,
+    targetUrl: string = 'https://example.com',
+  ) {
+    const data = shouldReturnUrl ? [{ target_url: targetUrl }] : [];
+    (
+      mockClient.rpc as unknown as { mockResolvedValue: (value: unknown) => void }
+    ).mockResolvedValue({ data, error: null });
+  }
+
+  static mockHandleRedirectError(
+    mockClient: SupabaseClient<Database>,
+    errorMessage: string = 'Test error',
+    errorCode: string = 'TEST_ERROR',
+  ) {
+    (
+      mockClient.rpc as unknown as { mockResolvedValue: (value: unknown) => void }
+    ).mockResolvedValue({ data: null, error: { message: errorMessage, code: errorCode } });
+  }
+
+  // Helper to simulate network delays
+  static async simulateNetworkDelay(ms: number = 100) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  // Helper to create mock fetch responses
+  static createMockFetchResponse(data: unknown, status: number = 200) {
+    return {
+      ok: status >= 200 && status < 300,
+      status,
+      json: () => Promise.resolve(data),
+      text: () => Promise.resolve(JSON.stringify(data)),
+    };
+  }
+}
 
 // Database test helpers
 export class DatabaseTestHelpers {
@@ -19,10 +73,7 @@ export class DatabaseTestHelpers {
         {
           select: vi.fn().mockReturnValue({
             eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: qrCode,
-                error: null,
-              }),
+              single: vi.fn().mockResolvedValue({ data: qrCode, error: null }),
             }),
           }),
         },
@@ -49,10 +100,7 @@ export class DatabaseTestHelpers {
         {
           insert: vi.fn().mockReturnValue({
             select: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: { id: 1 },
-                error: null,
-              }),
+              single: vi.fn().mockResolvedValue({ data: { id: 1 }, error: null }),
             }),
           }),
         },
@@ -64,7 +112,7 @@ export class DatabaseTestHelpers {
             select: vi.fn().mockReturnValue({
               single: vi.fn().mockResolvedValue({
                 data: null,
-                error: { message: 'Insert failed', code: 'PGRST301' },
+                error: { message: 'Insert failed', code: '23505' },
               }),
             }),
           }),
@@ -73,11 +121,7 @@ export class DatabaseTestHelpers {
     }
   }
 
-  static mockUserQuery(
-    mockClient: SupabaseClient<Database>,
-    userId: string,
-    shouldExist: boolean = true,
-  ) {
+  static mockUserQuery(mockClient: SupabaseClient<Database>, userId: string, shouldExist = true) {
     const user = testUsers.find((u) => u.id === userId);
 
     if (shouldExist && user) {
@@ -85,10 +129,7 @@ export class DatabaseTestHelpers {
         {
           select: vi.fn().mockReturnValue({
             eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: user,
-                error: null,
-              }),
+              single: vi.fn().mockResolvedValue({ data: user, error: null }),
             }),
           }),
         },
@@ -121,10 +162,7 @@ export class DatabaseTestHelpers {
         {
           select: vi.fn().mockReturnValue({
             eq: vi.fn().mockReturnValue({
-              single: vi.fn().mockResolvedValue({
-                data: org,
-                error: null,
-              }),
+              single: vi.fn().mockResolvedValue({ data: org, error: null }),
             }),
           }),
         },

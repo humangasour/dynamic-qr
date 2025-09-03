@@ -25,8 +25,8 @@ e2e/
 │   └── page-objects.ts        # Page object models
 ├── utils/                      # Utility functions
 │   └── test-helpers.ts        # Common test helpers
-├── fixtures/                   # Test data fixtures
-│   └── test-users.ts          # User test data
+├── fixtures/                   # (moved) Use shared fixtures in tests/fixtures
+│   └── (see tests/fixtures/test-users.ts)
 └── README.md                   # This file
 ```
 
@@ -80,7 +80,7 @@ npm run test:e2e:debug
 
 ### **3. Test Data Management**
 
-- Fixtures provide consistent test data
+- Fixtures provide consistent test data (shared in `tests/fixtures`)
 - Database helpers for setup/teardown
 - Isolated test data to prevent conflicts
 

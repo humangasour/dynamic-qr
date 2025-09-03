@@ -1,6 +1,6 @@
 import { beforeEach } from 'vitest';
 
-import { cleanupGlobalMocks, setupGlobalMocks } from './mocks';
+import { cleanupGlobalMocks, setupGlobalMocks } from './supabase';
 
 // Setup global mocks
 setupGlobalMocks();

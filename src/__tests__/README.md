@@ -6,18 +6,8 @@ This directory contains the test suite for the Dynamic QR application, organized
 
 ```
 src/
-├── __tests__/                    # Global test configuration and utilities
-│   ├── setup/                    # Test setup files
-│   │   ├── global.ts            # Global test setup
-│   │   ├── mocks.ts             # Global mocks
-│   │   └── test-utils.ts        # Shared test utilities
-│   ├── fixtures/                 # Test data and fixtures
-│   │   ├── qr-codes.ts          # QR code test data
-│   │   ├── users.ts             # User test data
-│   │   └── organizations.ts     # Organization test data
-│   └── helpers/                  # Test helper functions
-│       ├── database.ts          # Database test helpers
-│       ├── api.ts               # API test helpers
+├── __tests__/                    # Feature and unit test locations
+│   └── helpers/                  # UI helpers (component tests)
 │       └── ui.ts                # UI test helpers
 ├── app/
 │   ├── api/
@@ -166,31 +156,27 @@ The test configuration is defined in `vitest.config.ts`:
 
 ## Test Utilities
 
-### Global Setup (`src/__tests__/setup/`)
+### Global Setup and Utils (`tests/utils/`)
 
 - `global.ts` - Global test configuration and setup
-- `mocks.ts` - Shared mock implementations
+- `supabase.ts` - Shared Supabase mock + env
+- `helpers.ts` - API/DB helper utilities
 - `test-utils.ts` - Common test utility functions
 
-### Fixtures (`src/__tests__/fixtures/`)
+### Fixtures (`tests/fixtures/`)
 
 - `qr-codes.ts` - QR code test data
 - `users.ts` - User test data
 - `organizations.ts` - Organization test data
-
-### Helpers (`src/__tests__/helpers/`)
-
-- `database.ts` - Database-specific test helpers
-- `api.ts` - API testing utilities
-- `ui.ts` - UI component testing utilities
+- `test-users.ts` - E2E user credentials
 
 ### Usage Examples
 
 ```typescript
-// Using test utilities with @test alias
-import { TestUtils } from '@test/setup/test-utils';
-import { testQrCodes } from '@test/fixtures/qr-codes';
-import { DatabaseTestHelpers } from '@test/helpers/database';
+// Using test utilities with @test alias (now points to ./tests)
+import { TestUtils } from '@test/utils';
+import { testQrCodes } from '@test/fixtures';
+import { DatabaseTestHelpers } from '@test/utils';
 
 // Create test data
 const testQr = TestUtils.createTestQrCode({ slug: 'custom-slug' });
@@ -206,9 +192,7 @@ DatabaseTestHelpers.mockQrCodeQuery(mockClient, 'test-slug', true);
 
 The test suite uses the `@test` alias for clean imports:
 
-- `@test/setup/*` → `src/__tests__/setup/*`
-- `@test/fixtures/*` → `src/__tests__/fixtures/*`
-- `@test/helpers/*` → `src/__tests__/helpers/*`
+- `@test/*` → `tests/*`
 
 This alias is configured in both `tsconfig.json` and `vitest.config.ts` for full IDE and runtime support.
 

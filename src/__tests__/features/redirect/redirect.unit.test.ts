@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createMockSupabaseClient } from '@test/setup/mocks';
+import { createMockSupabaseClient } from '@test/utils';
 
 // Unit tests for redirect business logic with mocked dependencies
 describe('Redirect Feature Unit Tests', () => {
