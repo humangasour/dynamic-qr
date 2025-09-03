@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 
 import RedirectPage from '@/app/r/[slug]/page';
-import { trpc } from '@/lib/trpc/server-client';
+import { trpc } from '@infra/trpc/server-client';
 
 vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
@@ -13,7 +13,7 @@ vi.mock('next/headers', () => ({
   headers: vi.fn().mockResolvedValue(new Map()),
 }));
 
-vi.mock('@/lib/trpc/server-client', () => ({
+vi.mock('@infra/trpc/server-client', () => ({
   trpc: {
     public: {
       redirect: {

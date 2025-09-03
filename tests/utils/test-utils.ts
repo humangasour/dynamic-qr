@@ -2,8 +2,8 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { vi } from 'vitest';
 
 import { testOrganizations, testUsers } from '@test/fixtures';
-import type { Database } from '@/types';
-import { getSupabaseAdminClient } from '@/lib/supabase/clients';
+import type { Database } from '@shared/types';
+import { getSupabaseAdminClient } from '@infra/supabase/clients';
 
 // Generic test utilities and DB cleanup
 export class TestUtils {

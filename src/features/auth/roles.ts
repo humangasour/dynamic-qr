@@ -1,5 +1,5 @@
 // Role utilities and permissions
-import type { MemberRole } from '@/types/auth';
+import type { MemberRole } from '@shared/types/auth';
 
 export const ROLE_ORDER = { viewer: 1, editor: 2, admin: 3, owner: 4 } as const;
 

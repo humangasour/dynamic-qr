@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import type { PostgrestError } from '@supabase/supabase-js';
 
-import { getSupabaseAdminClient } from '@/lib/supabase/clients';
+import { getSupabaseAdminClient } from '@infra/supabase/clients';
 
 export async function isDbAvailable(): Promise<boolean> {
   try {

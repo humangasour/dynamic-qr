@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { createTestUserFromFixtures as createTestUser } from '@test/utils';
-import { hasRolePermission, getHighestRole, isAdminRole, isOwnerRole } from '@/lib/auth/utils';
+import { hasRolePermission, getHighestRole, isAdminRole, isOwnerRole } from '@features/auth/utils';
 
 // Unit tests for auth server functions that don't require Next.js context
 describe('Auth Server Unit Tests', () => {

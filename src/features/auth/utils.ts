@@ -7,7 +7,7 @@
 export { ROLE_ORDER, hasRolePermission, getHighestRole, isAdminRole, isOwnerRole } from './roles';
 
 // Error reporting is now centralized in src/utils/error
-export { report } from '@/utils/error';
+export { report } from '@shared/utils/error';
 
 // Re-export the MemberRole type from central types
-export type { MemberRole } from '@/types/auth';
+export type { MemberRole } from '@shared/types/auth';

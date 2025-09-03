@@ -1,7 +1,7 @@
 // Server-side Supabase utilities
 // This file should only be imported in server components or API routes
 
-import type { Database, TableName, FunctionName } from '@/types';
+import type { Database, TableName, FunctionName } from '@shared/types';
 
 import { getSupabaseAdminClient, isAdminClientAvailable } from './clients';
 import { deleteRows, insertRows, selectRows, updateRows } from './crud';
@@ -74,11 +74,14 @@ export const serverDb = {
 
     return deleteRows(client, table, filters);
   },
+};
 
-  // Execute raw SQL (use with caution)
-  rpc: async <T, F extends FunctionName>(
-    functionName: F,
-    params?: Database['public']['Functions'][F]['Args'],
+// Server-side RPC functions that bypass RLS if needed
+export const rpc = {
+  // Call an RPC function with parameters
+  call: async <T, TFunc extends FunctionName>(
+    fn: TFunc,
+    params: Database['public']['Functions'][TFunc]['Args'],
   ) => {
     if (!isAdminClientAvailable()) {
       throw new Error('Admin client not available. This function must be called server-side.');
@@ -89,15 +92,21 @@ export const serverDb = {
       throw new Error('Admin client not available. This function must be called server-side.');
     }
 
-    const { data, error } = await client.rpc(functionName, params);
-    return { data: data as T, error };
+    type RpcFn = <F extends FunctionName>(
+      fn: F,
+      params: Database['public']['Functions'][F]['Args'],
+    ) => Promise<{ data: unknown; error: unknown }>;
+    const rpcCall = client.rpc as unknown as RpcFn;
+    const { data, error } = await rpcCall(fn, params);
+    if (error) throw error;
+    return data as T;
   },
 };
 
-// Server-side auth operations
-export const serverAuth = {
+// Server-side Auth Admin operations (requires service role)
+export const authAdmin = {
   // Get user by ID
-  getUserById: async (userId: string) => {
+  getUser: async (userId: string) => {
     if (!isAdminClientAvailable()) {
       throw new Error('Admin client not available. This function must be called server-side.');
     }

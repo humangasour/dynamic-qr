@@ -1,5 +1,5 @@
-import { createTRPCRouter } from '@/lib/trpc/trpc';
-import { publicRouter } from '@/lib/trpc/routers/public';
+import { createTRPCRouter } from './trpc';
+import { publicRouter } from './routers/public';
 
 /**
  * This is the primary router for your server.

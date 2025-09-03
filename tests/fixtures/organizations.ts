@@ -1,4 +1,4 @@
-import type { Database } from '@/types';
+import type { Database } from '@shared/types';
 
 type Organization = Database['public']['Tables']['orgs']['Row'];
 

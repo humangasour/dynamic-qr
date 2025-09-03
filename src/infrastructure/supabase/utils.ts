@@ -1,5 +1,5 @@
 // Simplified Supabase utilities that work with the lazy client
-import type { TableName } from '@/types';
+import type { TableName } from '@shared/types';
 
 import { getSupabaseBrowserClient } from './clients';
 import { deleteRows, insertRows, selectRows, updateRows } from './crud';
@@ -18,7 +18,7 @@ export const db = {
   // Generic insert function
   insert: async <T, TTable extends TableName>(
     table: TTable,
-    data: import('@/types').Database['public']['Tables'][TTable]['Insert'],
+    data: import('@shared/types').Database['public']['Tables'][TTable]['Insert'],
   ) => {
     const client = getSupabaseBrowserClient();
     return insertRows<T, TTable>(client, table, data);
@@ -27,7 +27,7 @@ export const db = {
   // Generic update function
   update: async <T, TTable extends TableName>(
     table: TTable,
-    data: Partial<import('@/types').Database['public']['Tables'][TTable]['Update']>,
+    data: Partial<import('@shared/types').Database['public']['Tables'][TTable]['Update']>,
     filters: Record<string, string | number | boolean>,
   ) => {
     const client = getSupabaseBrowserClient();

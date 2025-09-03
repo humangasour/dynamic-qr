@@ -5,9 +5,9 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { Session } from '@supabase/supabase-js';
 
-import { getSupabaseServerClient } from '@/lib/supabase/clients/server-client';
-import type { Database } from '@/types';
-import type { UserWithOrg } from '@/schemas';
+import { getSupabaseServerClient } from '@infra/supabase/clients/server-client';
+import type { Database } from '@shared/types';
+import type { UserWithOrg } from '@shared/schemas';
 
 import { report, hasRolePermission } from './utils';
 

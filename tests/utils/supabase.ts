@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { vi } from 'vitest';
 
-import type { Database } from '@/types';
+import type { Database } from '@shared/types';
 
 // Global mocks for Supabase
 export const createMockSupabaseClient = () =>

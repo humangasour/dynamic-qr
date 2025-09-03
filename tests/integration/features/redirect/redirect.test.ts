@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import type { Database } from '@/types';
-import { getSupabaseBrowserClient, getSupabaseAdminClient } from '@/lib/supabase/clients';
+import type { Database } from '@shared/types';
+import { getSupabaseBrowserClient, getSupabaseAdminClient } from '@infra/supabase/clients';
 import { describeIfDb } from '@test/utils';
 
 // For integration tests, we need to import the real clients

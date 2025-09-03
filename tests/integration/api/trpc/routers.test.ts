@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { appRouter } from '@/lib/trpc/root';
-import { publicRouter } from '@/lib/trpc/routers/public';
+import { appRouter } from '@infra/trpc/root';
+import { publicRouter } from '@infra/trpc/routers/public';
 
 describe('tRPC Router Structure', () => {
   describe('App Router', () => {

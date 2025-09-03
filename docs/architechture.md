@@ -140,13 +140,14 @@ supabase db diff --schema public -f description
 
 ### 7.1 Generated Types
 
-- **Database Types**: Auto-generated from Supabase schema (`src/types/database.ts`)
+- **Database Types**: Auto-generated from Supabase schema (`src/shared/types/database.ts`)
 - **Type Safety**: Full TypeScript coverage for all database operations
 - **Runtime Validation**: Type guards for enums and data validation
 
 ### 7.2 Database Helpers
 
-- **CRUD Operations**: Type-safe functions for all tables (`src/lib/supabase/database-helpers.ts`)
+- **CRUD Operations**: Type-safe functions for all tables (`src/infrastructure/supabase/crud.ts`)
+- **Supabase Utils**: Convenience wrappers for db/auth/storage (`src/infrastructure/supabase/utils.ts`)
 - **Query Builders**: Simplified database interactions with full type safety
 - **Error Handling**: Consistent error patterns across the app
 
@@ -160,17 +161,52 @@ supabase db diff --schema public -f description
 ### 7.4 File Organization
 
 ```
-src/types/
-├── database.ts          # Generated Supabase types
-├── type-guards.ts       # Runtime validation functions
-└── index.ts            # Clean exports
-
-src/lib/supabase/
-├── client.ts           # Type-safe client
-├── server.ts           # Server-side operations
-├── utils.ts            # Client utilities
-├── database-helpers.ts # CRUD helper functions
-└── index.ts            # Main exports
+src/
+├── app/                         # Next.js route tree
+│
+├── features/                    # Business logic per domain feature
+│   └── auth/
+│       ├── server.ts            # Server-side auth helpers
+│       ├── utils.ts             # Auth helpers & re-exports
+│       └── roles.ts             # Role utilities
+│
+├── infrastructure/              # Integrations & adapters
+│   ├── supabase/
+│   │   ├── clients/
+│   │   │   ├── browser-client.ts
+│   │   │   ├── server-client.ts
+│   │   │   ├── admin-client.ts
+│   │   │   └── index.ts
+│   │   ├── server.ts            # Admin-side DB utilities (RLS-bypass)
+│   │   ├── utils.ts             # db/auth/storage convenience wrappers
+│   │   ├── crud.ts              # Generic typed CRUD helpers
+│   │   └── index.ts
+│   └── trpc/
+│       ├── routers/
+│       │   ├── public.ts
+│       │   └── redirect.ts
+│       ├── trpc.ts              # Core tRPC config
+│       ├── root.ts              # App router
+│       ├── client.ts            # React Query client binding
+│       ├── server-client.ts     # Server proxy client
+│       └── provider.tsx         # Provider
+│
+└── shared/                      # Cross-cutting shared code
+    ├── types/
+    │   ├── database.ts          # Generated Supabase types
+    │   ├── auth.ts              # Enum types and constants
+    │   ├── supabase.ts          # Helper aliases (TableName, etc.)
+    │   ├── type-guards.ts       # Runtime validation functions
+    │   └── index.ts
+    ├── schemas/
+    │   ├── auth.ts
+    │   ├── redirect.ts
+    │   └── index.ts
+    └── utils/
+        ├── error.ts
+        ├── date.ts
+        ├── random.ts
+        └── string.ts
 ```
 
 ## 8. CI/CD & Quality Assurance

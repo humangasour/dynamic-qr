@@ -1,4 +1,4 @@
-import { createTRPCRouter } from '@/lib/trpc/trpc';
+import { createTRPCRouter } from '../trpc';
 
 import { redirectRouter } from './redirect';
 

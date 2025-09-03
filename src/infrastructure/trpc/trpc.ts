@@ -1,6 +1,6 @@
 import { initTRPC } from '@trpc/server';
 
-import { getSupabaseBrowserClient } from '@/lib/supabase/clients';
+import { getSupabaseBrowserClient } from '@infra/supabase/clients';
 
 /**
  * 1. CONTEXT

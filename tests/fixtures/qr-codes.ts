@@ -1,4 +1,4 @@
-import type { Database } from '@/types';
+import type { Database } from '@shared/types';
 
 type QrCode = Database['public']['Tables']['qr_codes']['Row'];
 

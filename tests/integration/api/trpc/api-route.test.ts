@@ -12,14 +12,14 @@ describe('tRPC API Route', () => {
   });
 
   it('should have tRPC context creation function', async () => {
-    const { createTRPCContext } = await import('@/lib/trpc/trpc');
+    const { createTRPCContext } = await import('@infra/trpc/trpc');
 
     expect(createTRPCContext).toBeDefined();
     expect(typeof createTRPCContext).toBe('function');
   });
 
   it('should have app router defined', async () => {
-    const { appRouter } = await import('@/lib/trpc/root');
+    const { appRouter } = await import('@infra/trpc/root');
 
     expect(appRouter).toBeDefined();
     expect(appRouter.public).toBeDefined();

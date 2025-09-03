@@ -2,7 +2,7 @@
 import { createClient } from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import type { Database } from '@/types';
+import type { Database } from '@shared/types';
 
 let adminClient: SupabaseClient<Database> | null = null;
 

@@ -8,7 +8,7 @@ import {
   isAdminRole,
   isOwnerRole,
   type MemberRole,
-} from '@/lib/auth/utils';
+} from '@features/auth/utils';
 
 describe('Auth Utils', () => {
   describe('ROLE_ORDER', () => {
