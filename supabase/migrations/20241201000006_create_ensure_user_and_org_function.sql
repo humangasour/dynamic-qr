@@ -9,7 +9,7 @@ create or replace function public.ensure_user_and_org(
 ) returns uuid
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
   v_org_id uuid;

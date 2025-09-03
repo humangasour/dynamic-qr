@@ -1,33 +1,13 @@
 import { z } from 'zod';
 
-/** ---------- Reusable enums ---------- */
-export const planEnum = z.enum(['free', 'pro']);
-export const memberRoleEnum = z.enum(['viewer', 'editor', 'admin', 'owner']);
+import { memberRoleEnum } from './enums';
+import { UUID, Email } from './primitives';
 
 /** ---------- Primitives ---------- */
-const UUID = z.uuid();
-const ISODateTime = z.string().datetime({ offset: true }); // Supabase timestamptz → ISO8601 with timezone
-const Email = z.string().trim().toLowerCase().email();
+// moved to shared primitives for reuse
 
 /** ---------- DB-aligned entity schemas ---------- */
-// Note: DB allows null name; reflect that here to avoid parse errors.
-export const userSchema = z.object({
-  id: UUID,
-  email: Email,
-  name: z.string().min(1).max(255).nullable(),
-  avatar_url: z.url().nullable(),
-  created_at: ISODateTime,
-  updated_at: ISODateTime,
-});
-
-export const organizationSchema = z.object({
-  id: UUID,
-  name: z.string().min(1).max(255),
-  plan: planEnum,
-  stripe_customer_id: z.string().nullable(),
-  created_at: ISODateTime,
-  updated_at: ISODateTime,
-});
+// moved to shared entities for reuse across modules
 
 /** Returned by getCurrentUser (your server util) */
 export const userWithOrgSchema = z.object({
@@ -106,66 +86,9 @@ export const updateProfileSchema = z.object({
 });
 
 /** ---------- Organization mgmt ---------- */
-const orgName = z
-  .string()
-  .min(1, 'Organization name is required')
-  .max(255, 'Organization name must be less than 255 characters')
-  .regex(/^[a-zA-Z0-9\s\-_&.,()]+$/, 'Organization name contains invalid characters');
-
-export const createOrganizationSchema = z.object({ name: orgName });
-
-export const updateOrganizationSchema = z.object({
-  name: orgName.optional(),
-  plan: planEnum.optional(),
-});
-
-/** ---------- Members ---------- */
-export const inviteMemberSchema = z.object({
-  email: Email,
-  role: memberRoleEnum,
-});
-
-export const updateMemberRoleSchema = z.object({
-  userId: UUID,
-  role: memberRoleEnum,
-});
-
-/** ---------- RBAC helper ---------- */
-export const requireRoleSchema = z.object({
-  requiredRole: memberRoleEnum,
-  userRole: memberRoleEnum,
-});
-
-/** ---------- API response shapes (thin) ---------- */
-export const authResponseSchema = z.object({
-  user: userSchema.nullable(),
-  session: z
-    .object({
-      access_token: z.string(),
-      refresh_token: z.string(),
-      expires_in: z.number(),
-      expires_at: z.number(),
-      token_type: z.string(),
-    })
-    .nullable(),
-});
-
-export const errorResponseSchema = z.object({
-  error: z.string(),
-  message: z.string().optional(),
-  code: z.string().optional(),
-});
-
-/** ---------- Tiny helpers ---------- */
-export const validateEmail = (email: string) => Email.safeParse(email).success;
-
-export const validatePassword = (password: string): { valid: boolean; errors: string[] } => {
-  const r = strongPassword.safeParse(password);
-  if (r.success) return { valid: true, errors: [] };
-  const issues = r.error.issues.map((i) => i.message);
-  // Ensure we always include the length message if that was the cause
-  if (password.length < 8 && !issues.includes('Password must be at least 8 characters')) {
-    issues.unshift('Password must be at least 8 characters');
-  }
-  return { valid: false, errors: Array.from(new Set(issues)) };
-};
+/**
+ * Organization and RBAC schemas were moved to dedicated modules:
+ * - org schemas → src/shared/schemas/orgs.ts
+ * - role input schema → src/shared/schemas/roles.ts
+ * - http response schemas → src/shared/schemas/http.ts
+ */
