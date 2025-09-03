@@ -6,15 +6,8 @@
 // Re-export role helpers from roles.ts to keep existing imports working
 export { ROLE_ORDER, hasRolePermission, getHighestRole, isAdminRole, isOwnerRole } from './roles';
 
-// Production-ready error reporting
-export const report = (err: unknown) => {
-  if (process.env.NODE_ENV === 'production') {
-    // TODO: import * as Sentry from '@sentry/nextjs'; Sentry.captureException(err);
-    console.error('Production error (Sentry not configured):', err);
-  } else {
-    console.error(err);
-  }
-};
+// Error reporting is now centralized in src/utils/error
+export { report } from '@/utils/error';
 
 // Re-export the MemberRole type from central types
 export type { MemberRole } from '@/types/auth';

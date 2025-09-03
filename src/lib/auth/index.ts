@@ -5,3 +5,4 @@ export * from './server';
 export * from './utils';
 export * from '@/schemas/auth';
 export * from './roles';
+export { report } from '@/utils/error';
