@@ -6,7 +6,7 @@ import {
   getSupabaseBrowserClient,
   isSupabaseConfigured,
   isAdminClientAvailable,
-} from '@/lib/supabase/clients';
+} from '@infra/supabase/clients';
 
 export default function TestSupabasePage() {
   const [connectionStatus, setConnectionStatus] = useState<'loading' | 'success' | 'error'>(

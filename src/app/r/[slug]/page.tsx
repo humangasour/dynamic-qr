@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
 
-import { trpc } from '@/lib/trpc/server-client';
+import { trpc } from '@infra/trpc/server-client';
 
 interface RedirectPageProps {
   params: Promise<{
