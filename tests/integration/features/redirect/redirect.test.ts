@@ -1,8 +1,9 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, expect, it } from 'vitest';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { Database } from '@/types';
 import { getSupabaseBrowserClient, getSupabaseAdminClient } from '@/lib/supabase/clients';
+import { describeIfDb } from '@test/utils';
 
 // For integration tests, we need to import the real clients
 // but we'll handle the GoTrueClient warning by using a single instance
@@ -21,7 +22,7 @@ const getClients = () => {
 
 // Integration tests for the complete redirect feature
 // These tests verify the end-to-end functionality including database operations
-describe('Redirect Feature Integration Tests', () => {
+await describeIfDb('Redirect Feature Integration Tests', () => {
   let testOrgId: string;
   let testUserId: string;
   let testQrId: string;
@@ -30,23 +31,7 @@ describe('Redirect Feature Integration Tests', () => {
   beforeAll(async () => {
     const { supabaseAdminClient } = getClients();
 
-    // Skip if no admin client is available
-    if (!supabaseAdminClient) {
-      console.log('Skipping integration tests: No admin client available');
-      return;
-    }
-
     try {
-      // Test database connection first
-      const { error: connectionError } = await supabaseAdminClient
-        .from('orgs')
-        .select('id')
-        .limit(1);
-
-      if (connectionError) {
-        console.log('Skipping integration tests: Database connection failed');
-        return;
-      }
       // Create test organization
       const { data: orgData, error: orgError } = await supabaseAdminClient
         .from('orgs')
