@@ -2,7 +2,10 @@
 import type { TableName } from '@shared/types';
 
 import { getSupabaseBrowserClient } from './clients';
+// Re-export the browser client for convenience
 import { deleteRows, insertRows, selectRows, updateRows } from './crud';
+
+export { getSupabaseBrowserClient };
 
 export const db = {
   // Generic select function
@@ -43,10 +46,16 @@ export const db = {
 
 // Simple auth utilities
 export const auth = {
-  // Get current session
+  // Get current session with error handling
   getSession: async () => {
     const client = getSupabaseBrowserClient();
-    return client.auth.getSession();
+    const { data, error } = await client.auth.getSession();
+    if (error?.message.includes('refresh_token_not_found')) {
+      // Clear any stale session data
+      await client.auth.signOut({ scope: 'local' });
+      return { data: { session: null }, error: null };
+    }
+    return { data, error };
   },
 
   // Sign in
@@ -65,6 +74,18 @@ export const auth = {
   signOut: async () => {
     const client = getSupabaseBrowserClient();
     return client.auth.signOut();
+  },
+
+  // Get current user with error handling
+  getUser: async () => {
+    const client = getSupabaseBrowserClient();
+    const { data, error } = await client.auth.getUser();
+    if (error?.message.includes('refresh_token_not_found')) {
+      // Clear any stale session data
+      await client.auth.signOut({ scope: 'local' });
+      return { data: { user: null }, error: null };
+    }
+    return { data, error };
   },
 };
 
