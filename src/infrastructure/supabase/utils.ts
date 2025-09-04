@@ -49,17 +49,13 @@ export const auth = {
   // Get current session with error handling
   getSession: async () => {
     const client = getSupabaseBrowserClient();
-    try {
-      return await client.auth.getSession();
-    } catch (error) {
-      // Handle refresh token errors gracefully
-      if (error instanceof Error && error.message.includes('refresh_token_not_found')) {
-        // Clear any stale session data
-        await client.auth.signOut({ scope: 'local' });
-        return { data: { session: null }, error: null };
-      }
-      throw error;
+    const { data, error } = await client.auth.getSession();
+    if (error?.message.includes('refresh_token_not_found')) {
+      // Clear any stale session data
+      await client.auth.signOut({ scope: 'local' });
+      return { data: { session: null }, error: null };
     }
+    return { data, error };
   },
 
   // Sign in
@@ -83,17 +79,13 @@ export const auth = {
   // Get current user with error handling
   getUser: async () => {
     const client = getSupabaseBrowserClient();
-    try {
-      return await client.auth.getUser();
-    } catch (error) {
-      // Handle refresh token errors gracefully
-      if (error instanceof Error && error.message.includes('refresh_token_not_found')) {
-        // Clear any stale session data
-        await client.auth.signOut({ scope: 'local' });
-        return { data: { user: null }, error: null };
-      }
-      throw error;
+    const { data, error } = await client.auth.getUser();
+    if (error?.message.includes('refresh_token_not_found')) {
+      // Clear any stale session data
+      await client.auth.signOut({ scope: 'local' });
+      return { data: { user: null }, error: null };
     }
+    return { data, error };
   },
 };
 
