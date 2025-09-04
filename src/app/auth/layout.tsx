@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 
 import { Container } from '@/components/layout/Container';
+import { Heading } from '@/components/typography/Heading';
+import { Text } from '@/components/typography/Text';
 
 export const metadata: Metadata = {
   title: 'Authentication | Dynamic QR',
@@ -13,8 +15,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <Container className="py-12">
         <div className="max-w-md w-full space-y-8 mx-auto">
           <header className="text-center">
-            <h1 className="text-3xl font-bold text-foreground">Dynamic QR</h1>
-            <p className="mt-2 text-sm text-muted-foreground">Manage your QR codes with ease</p>
+            <Heading as="h1" size="h1">
+              Dynamic QR
+            </Heading>
+            <Text size="sm" tone="muted" className="mt-2">
+              Manage your QR codes with ease
+            </Text>
           </header>
           {children}
         </div>
