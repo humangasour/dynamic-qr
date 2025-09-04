@@ -85,10 +85,12 @@ export const updateProfileSchema = z.object({
   avatar_url: z.url('Please enter a valid URL').nullable().optional(),
 });
 
-/** ---------- Organization mgmt ---------- */
-/**
- * Organization and RBAC schemas were moved to dedicated modules:
- * - org schemas → src/shared/schemas/orgs.ts
- * - role input schema → src/shared/schemas/roles.ts
- * - http response schemas → src/shared/schemas/http.ts
- */
+/** ---------- User & Organization Setup ---------- */
+export const ensureUserAndOrgInputSchema = z.object({
+  userName: personName.optional(),
+});
+
+export const ensureUserAndOrgOutputSchema = z.object({
+  success: z.boolean(),
+  orgId: UUID,
+});

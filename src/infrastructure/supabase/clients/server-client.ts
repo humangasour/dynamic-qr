@@ -7,16 +7,18 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { Database } from '@shared/types';
 
+/**
+ * Get Supabase server client for Server Actions and Route Handlers
+ * This client can read and write cookies
+ */
 export async function getSupabaseServerClient(): Promise<SupabaseClient<Database>> {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    // You can also use NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY if you prefer that var name
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        // NEW in @supabase/ssr 0.7.x
         getAll() {
           return cookieStore.getAll();
         },
@@ -24,6 +26,34 @@ export async function getSupabaseServerClient(): Promise<SupabaseClient<Database
           cookiesToSet.forEach(({ name, value, options }) =>
             cookieStore.set({ name, value, ...options }),
           );
+        },
+      },
+    },
+  );
+}
+
+/**
+ * Get Supabase server client for Server Components (read-only)
+ * This client can only read cookies, not write them
+ */
+export async function getSupabaseServerClientReadOnly(): Promise<SupabaseClient<Database>> {
+  const cookieStore = await cookies();
+
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        // Allow reading existing sessions but don't auto-refresh
+        autoRefreshToken: false,
+        persistSession: true,
+      },
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll() {
+          // No-op for server components - they can't set cookies
         },
       },
     },

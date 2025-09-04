@@ -1,6 +1,7 @@
-import { initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
+import type { User } from '@supabase/supabase-js';
 
-import { getSupabaseBrowserClient } from '@infra/supabase/clients';
+import { getSupabaseServerClient } from '@infra/supabase/clients/server-client';
 
 /**
  * 1. CONTEXT
@@ -11,7 +12,7 @@ import { getSupabaseBrowserClient } from '@infra/supabase/clients';
  */
 
 interface CreateContextOptions {
-  supabase: ReturnType<typeof getSupabaseBrowserClient>;
+  supabase: Awaited<ReturnType<typeof getSupabaseServerClient>>;
 }
 
 /**
@@ -38,7 +39,7 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
  */
 export const createTRPCContext = async () => {
   // Create Supabase client for server-side operations
-  const supabase = getSupabaseBrowserClient();
+  const supabase = await getSupabaseServerClient();
 
   return createInnerTRPCContext({
     supabase,
@@ -52,7 +53,9 @@ export const createTRPCContext = async () => {
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
+type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
+
+const t = initTRPC.context<TRPCContext>().create({
   errorFormatter({ shape, error }) {
     return {
       ...shape,
@@ -86,3 +89,34 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+
+/**
+ * Protected (authenticated) procedure
+ *
+ * Adds a simple auth guard that ensures a Supabase user exists.
+ */
+export type AuthedUser = User;
+
+const authMiddleware = t.middleware(async ({ ctx, next }) => {
+  const {
+    data: { user },
+    error,
+  } = await ctx.supabase.auth.getUser();
+
+  if (error) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: error.message });
+  }
+
+  if (!user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      user,
+    } as TRPCContext & { user: AuthedUser },
+  });
+});
+
+export const protectedProcedure = t.procedure.use(authMiddleware);
