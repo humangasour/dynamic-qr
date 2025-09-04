@@ -176,11 +176,11 @@ export function SignUpForm() {
           {isLoading ? 'Creating your account, please wait...' : ''}
         </div>
 
-        <div className="text-center text-sm text-gray-600">
+        <div className="text-center text-sm text-muted-foreground">
           Already have an account?{' '}
           <Link
             href="/auth/sign-in"
-            className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+            className="font-medium text-primary hover:text-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded"
           >
             Sign in
           </Link>
