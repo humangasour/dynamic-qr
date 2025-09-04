@@ -303,7 +303,7 @@ supabase db push --db-url $PRODUCTION_DB_URL
 
 ```bash
 # After schema changes, regenerate types
-supabase gen types typescript --project-id YOUR_PROJECT_ID > src/types/database.ts
+supabase gen types typescript --project-id YOUR_PROJECT_ID > src/shared/types/database.ts
 
 # Run type checks
 npm run typecheck

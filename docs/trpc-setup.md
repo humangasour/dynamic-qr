@@ -8,17 +8,17 @@ This document describes the tRPC setup for the Dynamic QR project, providing end
 
 ### Core Components
 
-1. **tRPC Server** (`src/lib/trpc/trpc.ts`)
+1. **tRPC Server** (`src/infrastructure/trpc/trpc.ts`)
    - Initializes tRPC with context
    - Provides public procedures
    - Handles error formatting
 
-2. **Schemas** (`src/lib/trpc/schemas/`)
+2. **Schemas** (`src/shared/schemas/`)
    - `redirect.ts` - Input/output validation schemas for redirect procedures
    - Centralized validation logic with Zod
    - Type-safe schema definitions
 
-3. **Routers** (`src/lib/trpc/routers/`)
+3. **Routers** (`src/infrastructure/trpc/routers/`)
    - `public.ts` - Main public router (no authentication required)
    - `redirect.ts` - Redirect-specific procedures
    - Organized by feature/domain for scalability
@@ -28,7 +28,7 @@ This document describes the tRPC setup for the Dynamic QR project, providing end
    - Handles both GET and POST requests
    - Provides development error logging
 
-5. **Client Setup** (`src/lib/trpc/client.ts`, `src/lib/trpc/provider.tsx`)
+5. **Client Setup** (`src/infrastructure/trpc/client.ts`, `src/infrastructure/trpc/provider.tsx`)
    - React Query integration
    - Client-side tRPC client
    - Provider component for app-wide usage
@@ -38,7 +38,7 @@ This document describes the tRPC setup for the Dynamic QR project, providing end
 ### Server-Side (API Routes, Server Components)
 
 ```typescript
-import { trpc } from '@/lib/trpc/server-client';
+import { trpc } from '@infra/trpc/server-client';
 
 // In an API route or server component
 const result = await trpc.public.redirect.handle.query({
@@ -53,7 +53,7 @@ const result = await trpc.public.redirect.handle.query({
 ### Client-Side (React Components)
 
 ```typescript
-import { api } from '@/lib/trpc/client';
+import { api } from '@infra/trpc/client';
 
 function MyComponent() {
   const redirectQuery = api.public.redirect.handle.useQuery({
@@ -120,24 +120,26 @@ The tRPC setup is designed for scalability with a clear separation of concerns:
 ### Directory Structure
 
 ```
-src/lib/trpc/
-├── schemas/           # Validation schemas
-│   ├── redirect.ts   # Redirect-specific schemas
-│   └── index.ts      # Schema exports
-├── routers/          # Feature-based routers
-│   ├── public.ts     # Main public router
-│   ├── redirect.ts   # Redirect sub-router
-│   └── index.ts      # Router exports
-├── trpc.ts          # Core tRPC configuration
-├── root.ts          # App router definition
-└── client.ts        # Client setup
+src/infrastructure/trpc/
+├── routers/            # Feature-based routers
+│   ├── public.ts       # Main public router
+│   └── redirect.ts     # Redirect sub-router
+├── trpc.ts             # Core tRPC configuration
+├── root.ts             # App router definition
+├── client.ts           # Client setup
+├── server-client.ts    # Server-side proxy client
+└── provider.tsx        # React Query + tRPC provider
+
+src/shared/schemas/     # Validation schemas (cross-cutting)
+├── redirect.ts         # Redirect-specific schemas
+└── index.ts            # Schema exports
 ```
 
 ### Adding New Features
 
 To add a new feature (e.g., analytics):
 
-1. **Create schemas** (`src/lib/trpc/schemas/analytics.ts`):
+1. **Create schemas** (`src/shared/schemas/analytics.ts`):
 
 ```typescript
 export const analyticsInputSchema = z.object({
@@ -145,7 +147,7 @@ export const analyticsInputSchema = z.object({
 });
 ```
 
-2. **Create router** (`src/lib/trpc/routers/analytics.ts`):
+2. **Create router** (`src/infrastructure/trpc/routers/analytics.ts`):
 
 ```typescript
 export const analyticsRouter = createTRPCRouter({
@@ -155,7 +157,7 @@ export const analyticsRouter = createTRPCRouter({
 });
 ```
 
-3. **Add to public router** (`src/lib/trpc/routers/public.ts`):
+3. **Add to public router** (`src/infrastructure/trpc/routers/public.ts`):
 
 ```typescript
 export const publicRouter = createTRPCRouter({
