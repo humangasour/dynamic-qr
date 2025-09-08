@@ -94,5 +94,10 @@ export default defineConfig({
     command: `npm run dev -- --port ${port}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
+    // Ensure server-side tRPC client points to the same origin the tests use
+    env: {
+      APP_URL: baseURL,
+      NEXT_PUBLIC_APP_URL: baseURL,
+    },
   },
 });
