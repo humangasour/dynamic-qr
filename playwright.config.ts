@@ -20,6 +20,10 @@ if (isProduction && process.env.E2E_ALLOW_DESTRUCTIVE_TESTS !== 'true') {
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
+const baseURL = process.env.E2E_BASE_URL || 'http://localhost:3001';
+const parsed = new URL(baseURL);
+const port = parsed.port || '3001';
+
 export default defineConfig({
   testDir: './tests/e2e',
   /* Run tests in files in parallel */
@@ -35,7 +39,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.E2E_BASE_URL || 'http://localhost:3001',
+    baseURL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -87,8 +91,8 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run dev -- --port 3001',
-    url: process.env.E2E_BASE_URL || 'http://localhost:3001',
+    command: `npm run dev -- --port ${port}`,
+    url: baseURL,
     reuseExistingServer: !process.env.CI,
   },
 });

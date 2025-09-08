@@ -8,9 +8,9 @@ export default async function Home() {
 
   if (userId) {
     // User is authenticated, redirect to dashboard
-    redirect('/app');
+    redirect('/dashboard');
   } else {
     // User is not authenticated, redirect to sign-in
-    redirect('/auth/sign-in');
+    redirect('/sign-in');
   }
 }

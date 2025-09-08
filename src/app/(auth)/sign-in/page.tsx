@@ -1,7 +1,14 @@
+import type { Metadata } from 'next';
+
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Toaster } from '@/components/ui/sonner';
 import { SignInForm } from '@/components/auth/SignInForm';
 import { redirectIfAuthenticatedForServerComponent } from '@/features/auth/server';
+
+export const metadata: Metadata = {
+  title: 'Sign in | Dynamic QR',
+  description: 'Sign in to your Dynamic QR account',
+};
 
 export default async function SignInPage() {
   await redirectIfAuthenticatedForServerComponent();

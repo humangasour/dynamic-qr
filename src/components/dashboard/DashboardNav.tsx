@@ -23,7 +23,7 @@ export function DashboardNav() {
       }
 
       toast.success('Signed out successfully');
-      router.replace('/auth/sign-in');
+      router.replace('/sign-in');
     } catch (error) {
       toast.error('An unexpected error occurred');
       console.error('Sign out error:', error);

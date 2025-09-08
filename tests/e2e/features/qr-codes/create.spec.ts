@@ -53,7 +53,7 @@ test.describe('QR Codes: Create Flow', () => {
     // Clear all storage and cookies to ensure clean state
     await page.context().clearCookies();
 
-    await page.goto('/auth/sign-in');
+    await page.goto('/sign-in');
 
     // Clear storage after navigation
     await page.evaluate(() => {

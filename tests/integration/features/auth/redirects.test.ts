@@ -41,12 +41,12 @@ function buildOrgMemberChain(data: unknown) {
 }
 
 describe('Auth redirect helpers (integration)', () => {
-  it('redirectIfUnauthenticated → /auth/sign-in when unauthenticated', async () => {
+  it('redirectIfUnauthenticated → /sign-in when unauthenticated', async () => {
     mockClient.auth.getUser.mockResolvedValue({ data: { user: null }, error: null });
-    await expect(redirectIfUnauthenticated()).rejects.toThrowError(/REDIRECT:\/auth\/sign-in/);
+    await expect(redirectIfUnauthenticated()).rejects.toThrowError(/REDIRECT:\/sign-in/);
   });
 
-  it('redirectIfAuthenticated → /app when authenticated', async () => {
+  it('redirectIfAuthenticated → /dashboard when authenticated', async () => {
     mockClient.auth.getUser.mockResolvedValue({ data: { user: { id: 'uid-1' } }, error: null });
     mockClient.from.mockReturnValue(
       buildOrgMemberChain({
@@ -55,6 +55,6 @@ describe('Auth redirect helpers (integration)', () => {
         user: { id: 'uid-1', email: 'u@example.com', name: 'U', avatar_url: null },
       }),
     );
-    await expect(redirectIfAuthenticated()).rejects.toThrowError(/REDIRECT:\/app/);
+    await expect(redirectIfAuthenticated()).rejects.toThrowError(/REDIRECT:\/dashboard/);
   });
 });

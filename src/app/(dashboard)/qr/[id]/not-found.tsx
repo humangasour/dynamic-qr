@@ -10,7 +10,7 @@ export default function QrDetailsNotFound() {
       actions={
         <>
           <Button asChild>
-            <Link href="/app">Back to Dashboard</Link>
+            <Link href="/dashboard">Back to Dashboard</Link>
           </Button>
           <Button asChild variant="outline">
             <Link href="/qr/new">Create New QR Code</Link>

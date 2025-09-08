@@ -38,11 +38,11 @@ export async function waitForAuthenticated(page: Page, opts: { timeout?: number 
     { timeout },
   );
 
-  // 3) Ensure we land on /app and it rendered
-  if (!/\/app\b/.test(page.url())) {
-    await page.goto('/app');
+  // 3) Ensure we land on /dashboard and it rendered
+  if (!/\/dashboard\b/.test(page.url())) {
+    await page.goto('/dashboard');
   }
-  await expect(page).toHaveURL(/\/app\b/, { timeout });
+  await expect(page).toHaveURL(/\/dashboard\b/, { timeout });
   await expect(page.getByRole('heading', { name: 'Welcome to Dynamic QR' })).toBeVisible({
     timeout,
   });

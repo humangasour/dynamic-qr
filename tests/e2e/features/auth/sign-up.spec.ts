@@ -34,7 +34,7 @@ test.describe('Auth: Sign Up', () => {
     const email = `e2e+${Date.now()}@example.com`;
     const password = 'Password1';
 
-    await page.goto('/auth/sign-up');
+    await page.goto('/sign-up');
     await page.getByLabel('Full name').fill('E2E Test');
     await page.getByLabel('Email address').fill(email);
     await page.getByLabel('Password', { exact: true }).fill(password);
@@ -47,10 +47,10 @@ test.describe('Auth: Sign Up', () => {
       await waitForAuthenticated(page, { timeout: 12000 });
       // attempt sign out to reset state
       await page.getByRole('button', { name: /Sign out/ }).click();
-      await expect(page).toHaveURL(/\/auth\/sign-in\b/, { timeout: 20000 });
+      await expect(page).toHaveURL(/\/sign-in\b/, { timeout: 20000 });
     } catch {
       // If not redirected, expect to remain on sign-up and show some message
-      expect(page.url()).toContain('/auth/sign-up');
+      expect(page.url()).toContain('/sign-up');
     } finally {
       await cleanupUserByEmail(email);
     }

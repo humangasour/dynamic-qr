@@ -55,12 +55,10 @@ describe('Auth Server Guards & Helpers', () => {
 
   it('redirectIfUnauthenticated redirects to sign-in when no user', async () => {
     mockClient.auth.getUser.mockResolvedValue({ data: { user: null }, error: null });
-    await expect(authServer.redirectIfUnauthenticated()).rejects.toThrow(
-      /REDIRECT:\/auth\/sign-in/,
-    );
+    await expect(authServer.redirectIfUnauthenticated()).rejects.toThrow(/REDIRECT:\/sign-in/);
   });
 
-  it('redirectIfAuthenticated redirects to /app when user exists', async () => {
+  it('redirectIfAuthenticated redirects to /dashboard when user exists', async () => {
     mockClient.auth.getUser.mockResolvedValue({ data: { user: { id: 'uid-1' } }, error: null });
     mockClient.from.mockReturnValue(
       buildOrgMemberChain({
@@ -69,7 +67,7 @@ describe('Auth Server Guards & Helpers', () => {
         user: { id: 'uid-1', email: 'u@example.com', name: 'U', avatar_url: null },
       }),
     );
-    await expect(authServer.redirectIfAuthenticated()).rejects.toThrow(/REDIRECT:\/app/);
+    await expect(authServer.redirectIfAuthenticated()).rejects.toThrow(/REDIRECT:\/dashboard/);
   });
 
   it('requireUserId returns id when authenticated', async () => {
