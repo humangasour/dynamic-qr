@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { Toaster } from '@/components/ui/sonner';
 import { requireCurrentUserForServerComponent } from '@/features/auth/server';
 import { AccountMenu } from '@/components/dashboard/AccountMenu';
+import { MobileSidebar } from '@/components/dashboard/MobileSidebar';
+import { SidebarNav } from '@/components/dashboard/SidebarNav';
 
 export const metadata: Metadata = {
   title: 'Dashboard | Dynamic QR',
@@ -25,8 +27,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       {/* Top bar */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="px-page h-[var(--topbar-h)] flex items-center justify-between">
+        <div className="px-page h-[calc(var(--topbar-h)-1px)] flex items-center justify-between">
           <div className="flex items-center gap-3">
+            {/* Hamburger on small screens */}
+            <MobileSidebar />
             <Link href="/dashboard" className="font-semibold text-base">
               Dynamic QR
             </Link>
@@ -46,21 +50,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       <div className="grid grid-cols-1 md:grid-cols-[var(--sidebar-w)_1fr]">
         {/* Sidebar */}
-        <aside className="hidden md:block border-r border-border min-h-[calc(100vh-var(--topbar-h))]">
-          <nav className="px-4 py-4 space-y-2">
-            <Link
-              href="/dashboard"
-              className="block rounded px-3 py-2 hover:bg-accent hover:text-accent-foreground"
-            >
-              Overview
-            </Link>
-            <Link
-              href="/qr"
-              className="block rounded px-3 py-2 hover:bg-accent hover:text-accent-foreground"
-            >
-              QR Codes
-            </Link>
-          </nav>
+        <aside
+          className="hidden md:block border-r border-border min-h-[calc(100vh-var(--topbar-h))]"
+          aria-label="Primary"
+        >
+          <SidebarNav />
         </aside>
 
         {/* Main content */}
