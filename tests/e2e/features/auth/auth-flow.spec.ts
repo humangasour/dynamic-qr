@@ -30,8 +30,10 @@ test.describe('Auth Flow', () => {
     await page.getByRole('button', { name: 'Sign in' }).click();
     await waitForAuthenticated(page, { timeout: 30000 });
 
-    // Sign out
-    await page.getByRole('button', { name: /Sign out/ }).click();
+    // Open account menu via stable test id (label may be hidden on small viewports)
+    await page.getByTestId('account-menu-trigger').click();
+    // Click sign out from dropdown menu
+    await page.getByRole('menuitem', { name: /Sign out/i }).click();
     await expect(page).toHaveURL(/\/sign-in\b/, { timeout: 20000 });
   });
 
