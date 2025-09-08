@@ -108,8 +108,10 @@ export type Database = {
           id: string;
           name: string;
           org_id: string;
+          png_path: string | null;
           slug: string;
           status: Database['public']['Enums']['qr_status_t'];
+          svg_path: string | null;
           updated_at: string;
         };
         Insert: {
@@ -119,8 +121,10 @@ export type Database = {
           id?: string;
           name: string;
           org_id: string;
+          png_path?: string | null;
           slug: string;
           status?: Database['public']['Enums']['qr_status_t'];
+          svg_path?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -130,8 +134,10 @@ export type Database = {
           id?: string;
           name?: string;
           org_id?: string;
+          png_path?: string | null;
           slug?: string;
           status?: Database['public']['Enums']['qr_status_t'];
+          svg_path?: string | null;
           updated_at?: string;
         };
         Relationships: [
