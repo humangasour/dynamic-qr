@@ -1,7 +1,10 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import type { User } from '@supabase/supabase-js';
 
-import { getSupabaseServerClient } from '@infra/supabase/clients/server-client';
+import {
+  getSupabaseServerClient,
+  getSupabaseServerClientReadOnly,
+} from '@infra/supabase/clients/server-client';
 
 /**
  * 1. CONTEXT
@@ -44,6 +47,14 @@ export const createTRPCContext = async () => {
   return createInnerTRPCContext({
     supabase,
   });
+};
+
+/**
+ * Read-only context for Server Components to avoid cookie writes
+ */
+export const createTRPCContextReadOnly = async () => {
+  const supabase = await getSupabaseServerClientReadOnly();
+  return createInnerTRPCContext({ supabase });
 };
 
 /**
