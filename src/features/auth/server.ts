@@ -125,7 +125,7 @@ export async function ensureUserAndOrg(
 export async function redirectIfUnauthenticated() {
   noStore();
   const uid = await getUserId();
-  if (!uid) redirect('/auth/sign-in');
+  if (!uid) redirect('/sign-in');
 }
 
 /**
@@ -134,7 +134,7 @@ export async function redirectIfUnauthenticated() {
 export async function redirectIfAuthenticated() {
   noStore();
   const u = await getCurrentUser();
-  if (u) redirect('/app');
+  if (u) redirect('/dashboard');
 }
 
 /**
@@ -170,7 +170,7 @@ export async function getUserOrgId(): Promise<string> {
  */
 export async function requireUserId(): Promise<string> {
   const uid = await getUserId();
-  if (!uid) redirect('/auth/sign-in');
+  if (!uid) redirect('/sign-in');
   return uid;
 }
 
@@ -180,7 +180,7 @@ export async function requireUserId(): Promise<string> {
  */
 export async function requireCurrentUser(): Promise<UserWithOrg> {
   const u = await getCurrentUser();
-  if (!u) redirect('/auth/sign-in');
+  if (!u) redirect('/sign-in');
   return u;
 }
 
@@ -270,7 +270,7 @@ export async function getCurrentUserForServerComponent(): Promise<UserWithOrg | 
 export async function redirectIfAuthenticatedForServerComponent() {
   noStore();
   const u = await getCurrentUserForServerComponent();
-  if (u) redirect('/app');
+  if (u) redirect('/dashboard');
 }
 
 /**
@@ -279,7 +279,7 @@ export async function redirectIfAuthenticatedForServerComponent() {
  */
 export async function requireUserIdForServerComponent(): Promise<string> {
   const uid = await getUserIdForServerComponent();
-  if (!uid) redirect('/auth/sign-in');
+  if (!uid) redirect('/sign-in');
   return uid;
 }
 
@@ -289,6 +289,6 @@ export async function requireUserIdForServerComponent(): Promise<string> {
  */
 export async function requireCurrentUserForServerComponent(): Promise<UserWithOrg> {
   const u = await getCurrentUserForServerComponent();
-  if (!u) redirect('/auth/sign-in');
+  if (!u) redirect('/sign-in');
   return u;
 }

@@ -114,7 +114,7 @@ export function UnauthorizedError({
       actions={
         <>
           <Button asChild>
-            <Link href="/app">Back to Dashboard</Link>
+            <Link href="/dashboard">Back to Dashboard</Link>
           </Button>
           {onRetry && (
             <Button variant="outline" onClick={onRetry}>
@@ -164,7 +164,7 @@ export function NotFoundError({
         actions || (
           <>
             <Button asChild>
-              <Link href="/app">Back to Dashboard</Link>
+              <Link href="/dashboard">Back to Dashboard</Link>
             </Button>
             {onRetry && (
               <Button variant="outline" onClick={onRetry}>
@@ -208,7 +208,7 @@ export function GenericError({ error, onRetry, className }: GenericErrorProps) {
       actions={
         <>
           <Button asChild>
-            <Link href="/app">Back to Dashboard</Link>
+            <Link href="/dashboard">Back to Dashboard</Link>
           </Button>
           {onRetry && (
             <Button variant="outline" onClick={onRetry}>

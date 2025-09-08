@@ -12,10 +12,10 @@ test.describe('Auth Flow', () => {
     ensureNonProduction();
   });
 
-  test('visiting / unauthenticated redirects to /auth/sign-in', async ({ page }) => {
+  test('visiting / unauthenticated redirects to /sign-in', async ({ page }) => {
     await page.context().clearCookies();
     await page.goto('/');
-    await expect(page).toHaveURL(/\/auth\/sign-in\b/, { timeout: 20000 });
+    await expect(page).toHaveURL(/\/sign-in\b/, { timeout: 20000 });
   });
 
   test('signs in and lands on dashboard, can sign out', async ({ page }) => {
@@ -23,26 +23,48 @@ test.describe('Auth Flow', () => {
 
     // Clear any existing session
     await page.context().clearCookies();
-    await page.goto('/auth/sign-in');
+    await page.goto('/sign-in');
 
-    await page.getByLabel('Email address').fill(process.env.E2E_USER_EMAIL || 'user@example.com');
-    await page.getByLabel('Password').fill(process.env.E2E_USER_PASSWORD || 'user-password-123');
+    const email1 = (process.env.E2E_USER_EMAIL || 'user@example.com').trim();
+    const password1 = (process.env.E2E_USER_PASSWORD || 'user-password-123').trim();
+    const emailInput1 = page.getByLabel('Email address');
+    await emailInput1.click();
+    await emailInput1.fill('');
+    await emailInput1.type(email1, { delay: 10 });
+    await page.keyboard.press('Tab');
+
+    const passwordInput1 = page.getByLabel('Password');
+    await passwordInput1.click();
+    await passwordInput1.fill('');
+    await passwordInput1.type(password1, { delay: 10 });
     await page.getByRole('button', { name: 'Sign in' }).click();
     await waitForAuthenticated(page, { timeout: 30000 });
 
-    // Sign out
-    await page.getByRole('button', { name: /Sign out/ }).click();
-    await expect(page).toHaveURL(/\/auth\/sign-in\b/, { timeout: 20000 });
+    // Open account menu via stable test id (label may be hidden on small viewports)
+    await page.getByTestId('account-menu-trigger').click();
+    // Click sign out from dropdown menu
+    await page.getByRole('menuitem', { name: /Sign out/i }).click();
+    await expect(page).toHaveURL(/\/sign-in\b/, { timeout: 20000 });
   });
 
-  test('visiting / when authenticated redirects to /app', async ({ page }) => {
+  test('visiting / when authenticated redirects to /dashboard', async ({ page }) => {
     test.skip(!E2E_AUTH_ENABLED, 'Auth E2E disabled');
 
     // Clear any existing session
     await page.context().clearCookies();
-    await page.goto('/auth/sign-in');
-    await page.getByLabel('Email address').fill(process.env.E2E_USER_EMAIL || 'user@example.com');
-    await page.getByLabel('Password').fill(process.env.E2E_USER_PASSWORD || 'user-password-123');
+    await page.goto('/sign-in');
+    const email2 = (process.env.E2E_USER_EMAIL || 'user@example.com').trim();
+    const password2 = (process.env.E2E_USER_PASSWORD || 'user-password-123').trim();
+    const emailInput2 = page.getByLabel('Email address');
+    await emailInput2.click();
+    await emailInput2.fill('');
+    await emailInput2.type(email2, { delay: 10 });
+    await page.keyboard.press('Tab');
+
+    const passwordInput2 = page.getByLabel('Password');
+    await passwordInput2.click();
+    await passwordInput2.fill('');
+    await passwordInput2.type(password2, { delay: 10 });
     await page.getByRole('button', { name: 'Sign in' }).click();
     await waitForAuthenticated(page, { timeout: 30000 });
 
@@ -50,6 +72,6 @@ test.describe('Auth Flow', () => {
     await page.waitForTimeout(1000);
 
     await page.goto('/');
-    await expect(page).toHaveURL(/\/app\b/, { timeout: 20000 });
+    await expect(page).toHaveURL(/\/dashboard\b/, { timeout: 20000 });
   });
 });
