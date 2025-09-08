@@ -25,8 +25,18 @@ test.describe('Auth Flow', () => {
     await page.context().clearCookies();
     await page.goto('/sign-in');
 
-    await page.getByLabel('Email address').fill(process.env.E2E_USER_EMAIL || 'user@example.com');
-    await page.getByLabel('Password').fill(process.env.E2E_USER_PASSWORD || 'user-password-123');
+    const email1 = (process.env.E2E_USER_EMAIL || 'user@example.com').trim();
+    const password1 = (process.env.E2E_USER_PASSWORD || 'user-password-123').trim();
+    const emailInput1 = page.getByLabel('Email address');
+    await emailInput1.click();
+    await emailInput1.fill('');
+    await emailInput1.type(email1, { delay: 10 });
+    await page.keyboard.press('Tab');
+
+    const passwordInput1 = page.getByLabel('Password');
+    await passwordInput1.click();
+    await passwordInput1.fill('');
+    await passwordInput1.type(password1, { delay: 10 });
     await page.getByRole('button', { name: 'Sign in' }).click();
     await waitForAuthenticated(page, { timeout: 30000 });
 
@@ -43,8 +53,18 @@ test.describe('Auth Flow', () => {
     // Clear any existing session
     await page.context().clearCookies();
     await page.goto('/sign-in');
-    await page.getByLabel('Email address').fill(process.env.E2E_USER_EMAIL || 'user@example.com');
-    await page.getByLabel('Password').fill(process.env.E2E_USER_PASSWORD || 'user-password-123');
+    const email2 = (process.env.E2E_USER_EMAIL || 'user@example.com').trim();
+    const password2 = (process.env.E2E_USER_PASSWORD || 'user-password-123').trim();
+    const emailInput2 = page.getByLabel('Email address');
+    await emailInput2.click();
+    await emailInput2.fill('');
+    await emailInput2.type(email2, { delay: 10 });
+    await page.keyboard.press('Tab');
+
+    const passwordInput2 = page.getByLabel('Password');
+    await passwordInput2.click();
+    await passwordInput2.fill('');
+    await passwordInput2.type(password2, { delay: 10 });
     await page.getByRole('button', { name: 'Sign in' }).click();
     await waitForAuthenticated(page, { timeout: 30000 });
 
