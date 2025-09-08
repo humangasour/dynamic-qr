@@ -30,16 +30,17 @@ This MVP is intended as:
   - (Optional later) invite teammates.
 
 - **QR Creation**
-  - Create QR with name, slug (auto-generated, editable later).
+  - Create QR with name; slug is auto‑generated (editable later).
   - Provide initial target URL.
-  - Generate and download QR in SVG/PNG.
+  - Generate and download QR assets (SVG + PNG) from public storage.
 
 - **Link Management**
   - Update target URL anytime.
   - Maintain version history and rollback.
 
 - **Redirect Service**
-  - Public short link (`r.domain.com/:slug`) with fast 302 redirect.
+  - Public short link (`/r/:slug`) with fast 302 redirect.
+  - Redirect resolution is handled via tRPC → Supabase RPC (`handle_redirect`).
   - Log each scan event (timestamp, referrer, coarse geo, IP hash).
 
 - **Analytics**
@@ -104,16 +105,21 @@ This MVP is intended as:
 2. ~~Set up repo with Next.js, Supabase, tRPC, Tailwind, shadcn/ui.~~
 3. ~~Begin with foundation tasks: auth + orgs + schema.~~
 4. ~~Generate Supabase TS types and set up migrations with seed + RLS.~~
+5. ~~Implement vertical slice for redirect flow~~
+   - `/r/[slug]` route returns 302 to target URL via Next.js.
+   - Public tRPC `public.redirect.handle` calls Supabase RPC `handle_redirect`.
+   - Graceful fallback UI for missing/invalid slugs.
+   - Unit + E2E coverage for redirect paths.
+6. ~~Implement vertical slice for QR code generation~~
+   - Server tRPC `qr.create` with Zod validation and slug uniqueness retries.
+   - Generate SVG (vector) and PNG (print/preview) using `qrcode` library.
+   - Upload assets to Supabase Storage bucket `qr-codes` as `orgId/qrId.{svg,png}` with long‑term caching.
+   - Persist storage paths on `qr_codes` (columns: `svg_path`, `png_path`).
+   - UI: Create page (`/qr/new`) and Details page (`/qr/[id]`) with preview, download, and copy‑to‑clipboard.
 
-🎯 **NEXT:**  
-5. Implement **vertical slice for redirect flow**:
+🎯 **NEXT:** 7. Link management: update target URL + version history (UI for `qr_versions`, rollback). 8. Analytics dashboard: totals, uniques, daily trend, recent scans, top referrers/countries, CSV export. 9. Billing: Stripe Checkout + plan limits (Free vs Pro) enforcement in API. 10. Performance: evaluate moving redirect to Edge Runtime; add CDN caching where safe. 11. Polish: accessibility pass, empty states, loading skeletons.
 
-- `/r/[slug]` route with 302 redirect.
-- Fire-and-forget visit logging via RPC.
-- E2E test: seeded link → redirect works → visit logged.
+📋 **Notes:**
 
-📋 **UPCOMING:**  
-6. Add authentication UI and session management.  
-7. Create QR management interface with create/edit flows.  
-8. Build analytics dashboard (counts, recent scans).  
-9. Add billing and polish for portfolio presentation.
+- Environment: set `APP_URL` (falls back to `NEXT_PUBLIC_APP_URL`) for server‑side URL construction and QR redirect URLs.
+- Storage: public bucket `qr-codes` created with policies for public read and authenticated uploads.
