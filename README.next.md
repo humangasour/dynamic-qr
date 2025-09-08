@@ -32,6 +32,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 ## Project Docs
 
 - [Design System](docs/design-system.md) — tokens, typography, and UI usage conventions.
+- Environment: set `APP_URL` for server-side URL construction (fallbacks to `NEXT_PUBLIC_APP_URL` or `http://localhost:3000`). Used by tRPC client and QR generation to build redirect URLs.
 
 ## Deploy on Vercel
 
