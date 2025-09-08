@@ -56,3 +56,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: ['/(dashboard)/:path*', '/'],
 };
+
+// Use Node.js runtime to avoid Edge Runtime compatibility issues with Supabase
+export const runtime = 'nodejs';

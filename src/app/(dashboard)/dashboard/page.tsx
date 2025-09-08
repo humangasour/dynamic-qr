@@ -30,24 +30,7 @@ export default async function DashboardPage() {
               <Link href="/qr/new">Create New QR Code</Link>
             </Button>
           </div>
-          <div className="bg-card rounded-lg shadow p-8 max-w-2xl mx-auto">
-            <div className="text-center">
-              <div className="text-6xl mb-4">🚧</div>
-              <Heading as="h2" size="h3" className="mb-4">
-                Coming Soon
-              </Heading>
-              <Text tone="muted" className="mb-6">
-                We&apos;re working hard to bring you an amazing QR code management experience. Stay
-                tuned for exciting features!
-              </Text>
-              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
-                <Text as="p" size="sm" className="text-primary">
-                  <strong>What&apos;s coming:</strong> QR code generation, analytics, custom
-                  branding, and much more!
-                </Text>
-              </div>
-            </div>
-          </div>
+          {/* Removed the temporary Coming Soon box */}
         </div>
       </div>
     </main>

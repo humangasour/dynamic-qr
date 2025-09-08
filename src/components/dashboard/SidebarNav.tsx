@@ -21,8 +21,8 @@ type NavItem = {
 const items: NavItem[] = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
   { href: '/qr', label: 'QR Codes', icon: QrCode },
-  { href: '/analytics', label: 'Analytics', icon: BarChart, soon: true },
-  { href: '/settings', label: 'Settings', icon: SettingsIcon, soon: true },
+  { href: '/analytics', label: 'Analytics', icon: BarChart },
+  { href: '/settings', label: 'Settings', icon: SettingsIcon },
 ];
 
 export function SidebarNav() {
