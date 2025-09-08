@@ -52,9 +52,9 @@ export async function middleware(req: NextRequest) {
   return res;
 }
 
-// Run only on dashboard routes and the root path
+// Run on these routes and the root path
 export const config = {
-  matcher: ['/(dashboard)/:path*', '/'],
+  matcher: ['/', '/dashboard/:path*', '/qr/:path*', '/settings/:path*', '/analytics/:path*'],
 };
 
 // Use Node.js runtime to avoid Edge Runtime compatibility issues with Supabase
