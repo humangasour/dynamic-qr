@@ -47,9 +47,8 @@ export function getSupabaseBrowserClient(): SupabaseClient<Database> {
             if (options?.domain) {
               cookieString += `; Domain=${options.domain}`;
             }
-            if (options?.path) {
-              cookieString += `; Path=${options.path}`;
-            }
+            // Ensure cookies are available app-wide by default
+            cookieString += `; Path=${options?.path ?? '/'}`;
             if (options?.secure) {
               cookieString += `; Secure`;
             }
