@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-import { Toaster } from '@/components/ui/sonner';
 import { requireCurrentUserForServerComponent } from '@/features/auth/server';
 import { AccountMenu } from '@/components/dashboard/AccountMenu';
 import { MobileSidebar } from '@/components/dashboard/MobileSidebar';
@@ -63,7 +62,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </main>
       </div>
 
-      <Toaster />
+      {/* Global Toaster now mounted in root layout */}
     </div>
   );
 }

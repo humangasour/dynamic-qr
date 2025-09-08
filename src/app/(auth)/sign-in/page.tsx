@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
-import { Toaster } from '@/components/ui/sonner';
 import { SignInForm } from '@/components/auth/SignInForm';
 import { redirectIfAuthenticatedForServerComponent } from '@/features/auth/server';
 
@@ -27,7 +26,6 @@ export default async function SignInPage() {
           <SignInForm />
         </CardContent>
       </Card>
-      <Toaster />
     </main>
   );
 }
