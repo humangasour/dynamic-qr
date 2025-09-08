@@ -5,6 +5,7 @@ import { requireCurrentUserForServerComponent } from '@/features/auth/server';
 import { AccountMenu } from '@/components/dashboard/AccountMenu';
 import { MobileSidebar } from '@/components/dashboard/MobileSidebar';
 import { SidebarNav } from '@/components/dashboard/SidebarNav';
+import { UserOrgProvider } from '@/features/auth/UserOrgProvider';
 
 export const metadata: Metadata = {
   title: 'Dashboard | Dynamic QR',
@@ -47,20 +48,32 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-[var(--sidebar-w)_1fr]">
-        {/* Sidebar */}
-        <aside
-          className="hidden md:block border-r border-border min-h-[calc(100vh-var(--topbar-h))]"
-          aria-label="Primary"
-        >
-          <SidebarNav />
-        </aside>
+      <UserOrgProvider
+        value={{
+          userId: user.id,
+          email: user.email,
+          name: user.name,
+          avatarUrl: user.avatar_url,
+          orgId: user.org_id,
+          orgName: user.org_name,
+          orgRole: user.org_role,
+        }}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-[var(--sidebar-w)_1fr]">
+          {/* Sidebar */}
+          <aside
+            className="hidden md:block border-r border-border min-h-[calc(100vh-var(--topbar-h))]"
+            aria-label="Primary"
+          >
+            <SidebarNav />
+          </aside>
 
-        {/* Main content */}
-        <main id="content" className="min-h-[calc(100vh-var(--topbar-h))]">
-          {children}
-        </main>
-      </div>
+          {/* Main content */}
+          <main id="content" className="min-h-[calc(100vh-var(--topbar-h))]">
+            {children}
+          </main>
+        </div>
+      </UserOrgProvider>
 
       {/* Global Toaster now mounted in root layout */}
     </div>
