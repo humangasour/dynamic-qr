@@ -96,6 +96,9 @@ CREATE TABLE public.qr_codes (
   slug TEXT NOT NULL UNIQUE,
   current_target_url TEXT NOT NULL,
   status qr_status_t NOT NULL DEFAULT 'active',
+  -- Public storage asset paths (if generated)
+  svg_path TEXT, -- e.g., org-uuid/qr-uuid.svg
+  png_path TEXT, -- e.g., org-uuid/qr-uuid.png
   created_by UUID NOT NULL REFERENCES public.users(id) ON DELETE RESTRICT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -108,6 +111,11 @@ CREATE TABLE public.qr_codes (
 
 - Users can only access QR codes from their organizations
 - Public read access for active QR codes (redirect service)
+
+**Notes**:
+
+- When QR assets are generated, their storage paths are persisted on the row via `svg_path` and `png_path`.
+- Public asset URLs are derived from these paths via Supabase Storage `getPublicUrl`.
 
 ### 5. QR Versions (`public.qr_versions`)
 
@@ -235,6 +243,52 @@ CREATE INDEX idx_scan_events_geo ON public.scan_events(country, city);
 ```sql
 CREATE INDEX idx_qr_versions_qr_created ON public.qr_versions(qr_id, created_at DESC);
 ```
+
+## Storage Buckets
+
+### QR Code Assets (bucket: `qr-codes`)
+
+```sql
+-- Bucket configuration (idempotent)
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'qr-codes',
+  'qr-codes',
+  true,
+  5242880, -- 5MB limit
+  ARRAY['image/svg+xml', 'image/png']
+)
+ON CONFLICT (id) DO NOTHING;
+
+-- RLS policies (idempotent)
+-- Public can view QR code assets
+CREATE POLICY "Public can view QR codes"
+ON storage.objects
+FOR SELECT
+TO public
+USING (bucket_id = 'qr-codes');
+
+-- Authenticated users can upload/update/delete their own objects in this bucket
+CREATE POLICY "Authenticated users can upload QR codes"
+ON storage.objects
+FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'qr-codes');
+
+CREATE POLICY "Users can update their own QR codes"
+ON storage.objects
+FOR UPDATE
+TO authenticated
+USING (bucket_id = 'qr-codes' AND owner = auth.uid());
+
+CREATE POLICY "Users can delete their own QR codes"
+ON storage.objects
+FOR DELETE
+TO authenticated
+USING (bucket_id = 'qr-codes' AND owner = auth.uid());
+```
+
+**Purpose**: Store generated QR assets (SVG/PNG) at `orgId/qrId.svg|png` with public read and authenticated write.
 
 ## Row Level Security Policies
 
