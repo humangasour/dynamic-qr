@@ -13,6 +13,8 @@ export const testQrCodes: QrCode[] = [
     created_by: 'user-001',
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-01T00:00:00Z',
+    svg_path: 'org-001/qr-001.svg',
+    png_path: 'org-001/qr-001.png',
   },
   {
     id: 'qr-002',
@@ -24,6 +26,8 @@ export const testQrCodes: QrCode[] = [
     created_by: 'user-001',
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-01T00:00:00Z',
+    svg_path: 'org-001/qr-002.svg',
+    png_path: 'org-001/qr-002.png',
   },
   {
     id: 'qr-003',
@@ -35,6 +39,8 @@ export const testQrCodes: QrCode[] = [
     created_by: 'user-001',
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-01T00:00:00Z',
+    svg_path: 'org-001/qr-003.svg',
+    png_path: 'org-001/qr-003.png',
   },
 ];
 

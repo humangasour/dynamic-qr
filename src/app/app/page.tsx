@@ -1,8 +1,11 @@
+import Link from 'next/link';
+
 import { requireUserIdForServerComponent } from '@/features/auth/server';
 import { Toaster } from '@/components/ui/sonner';
 import { DashboardNav } from '@/components/dashboard/DashboardNav';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
+import { Button } from '@/components/ui/button';
 
 export default async function DashboardPage() {
   // This will redirect to sign-in if user is not authenticated (server component safe)
@@ -20,6 +23,11 @@ export default async function DashboardPage() {
             <Text size="lead" tone="muted" className="mb-8">
               Your QR code management dashboard
             </Text>
+            <div className="mb-8">
+              <Button asChild size="lg">
+                <Link href="/qr/new">Create New QR Code</Link>
+              </Button>
+            </div>
             <div className="bg-card rounded-lg shadow p-8 max-w-2xl mx-auto">
               <div className="text-center">
                 <div className="text-6xl mb-4">🚧</div>
