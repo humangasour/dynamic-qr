@@ -53,22 +53,8 @@ describe('Auth Server Guards & Helpers', () => {
     expect(uid).toBeNull();
   });
 
-  it('redirectIfUnauthenticated redirects to sign-in when no user', async () => {
-    mockClient.auth.getUser.mockResolvedValue({ data: { user: null }, error: null });
-    await expect(authServer.redirectIfUnauthenticated()).rejects.toThrow(/REDIRECT:\/sign-in/);
-  });
-
-  it('redirectIfAuthenticated redirects to /dashboard when user exists', async () => {
-    mockClient.auth.getUser.mockResolvedValue({ data: { user: { id: 'uid-1' } }, error: null });
-    mockClient.from.mockReturnValue(
-      buildOrgMemberChain({
-        role: 'owner',
-        org: { id: 'org-1', name: 'Org' },
-        user: { id: 'uid-1', email: 'u@example.com', name: 'U', avatar_url: null },
-      }),
-    );
-    await expect(authServer.redirectIfAuthenticated()).rejects.toThrow(/REDIRECT:\/dashboard/);
-  });
+  // Note: redirectIfUnauthenticated/redirectIfAuthenticated helpers were removed as unused.
+  // Their behavior is covered by requireUserId/requireCurrentUser (redirects on unauthenticated).
 
   it('requireUserId returns id when authenticated', async () => {
     mockClient.auth.getUser.mockResolvedValue({ data: { user: { id: 'uid-9' } }, error: null });

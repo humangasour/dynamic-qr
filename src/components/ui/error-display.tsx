@@ -1,5 +1,9 @@
-import Link from 'next/link';
+'use client';
 
+import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
+
+import { withLocaleHref } from '@/i18n/routing';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/typography/Heading';
@@ -24,6 +28,7 @@ export function ErrorDisplay({
   error,
   className = '',
 }: ErrorDisplayProps) {
+  const t = useTranslations('errors');
   return (
     <div className={`min-h-screen bg-background flex items-center justify-center ${className}`}>
       <div className="w-full px-page">
@@ -65,7 +70,7 @@ export function ErrorDisplay({
               {showErrorDetails && error && process.env.NODE_ENV === 'development' && (
                 <details className="mt-4 text-left">
                   <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
-                    Error Details (Development)
+                    {t('dev.detailsTitle')}
                   </summary>
                   <pre className="mt-2 text-xs bg-muted p-3 rounded overflow-auto">
                     {error.message}
@@ -87,15 +92,13 @@ interface UnauthorizedErrorProps {
   className?: string;
 }
 
-export function UnauthorizedError({
-  message = "You don't have permission to access this resource. It may belong to a different organization.",
-  onRetry,
-  className,
-}: UnauthorizedErrorProps) {
+export function UnauthorizedError({ message, onRetry, className }: UnauthorizedErrorProps) {
+  const t = useTranslations('errors');
+  const locale = useLocale();
   return (
     <ErrorDisplay
-      title="Access Denied"
-      description={message}
+      title={t('accessDenied.title')}
+      description={message ?? t('accessDenied.defaultDescription')}
       icon={
         <svg
           className="h-6 w-6 text-destructive"
@@ -114,11 +117,11 @@ export function UnauthorizedError({
       actions={
         <>
           <Button asChild>
-            <Link href="/dashboard">Back to Dashboard</Link>
+            <Link href={withLocaleHref('/dashboard', locale)}>{t('actions.backToDashboard')}</Link>
           </Button>
           {onRetry && (
             <Button variant="outline" onClick={onRetry}>
-              Try Again
+              {t('actions.tryAgain')}
             </Button>
           )}
         </>
@@ -135,16 +138,13 @@ interface NotFoundErrorProps {
   className?: string;
 }
 
-export function NotFoundError({
-  message = "The resource you're looking for doesn't exist or may have been deleted.",
-  onRetry,
-  actions,
-  className,
-}: NotFoundErrorProps) {
+export function NotFoundError({ message, onRetry, actions, className }: NotFoundErrorProps) {
+  const t = useTranslations('errors');
+  const locale = useLocale();
   return (
     <ErrorDisplay
-      title="Not Found"
-      description={message}
+      title={t('notFound.title')}
+      description={message ?? t('notFound.defaultDescription')}
       icon={
         <svg
           className="h-6 w-6 text-muted-foreground"
@@ -164,11 +164,13 @@ export function NotFoundError({
         actions || (
           <>
             <Button asChild>
-              <Link href="/dashboard">Back to Dashboard</Link>
+              <Link href={withLocaleHref('/dashboard', locale)}>
+                {t('actions.backToDashboard')}
+              </Link>
             </Button>
             {onRetry && (
               <Button variant="outline" onClick={onRetry}>
-                Try Again
+                {t('actions.tryAgain')}
               </Button>
             )}
           </>
@@ -186,10 +188,12 @@ interface GenericErrorProps {
 }
 
 export function GenericError({ error, onRetry, className }: GenericErrorProps) {
+  const t = useTranslations('errors');
+  const locale = useLocale();
   return (
     <ErrorDisplay
-      title="Something went wrong"
-      description="An unexpected error occurred. Please try again or contact support if the problem persists."
+      title={t('generic.title')}
+      description={t('generic.description')}
       icon={
         <svg
           className="h-6 w-6 text-destructive"
@@ -208,11 +212,11 @@ export function GenericError({ error, onRetry, className }: GenericErrorProps) {
       actions={
         <>
           <Button asChild>
-            <Link href="/dashboard">Back to Dashboard</Link>
+            <Link href={withLocaleHref('/dashboard', locale)}>{t('actions.backToDashboard')}</Link>
           </Button>
           {onRetry && (
             <Button variant="outline" onClick={onRetry}>
-              Try Again
+              {t('actions.tryAgain')}
             </Button>
           )}
         </>

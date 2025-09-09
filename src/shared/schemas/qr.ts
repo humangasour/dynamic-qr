@@ -8,6 +8,7 @@ import { UUID } from './primitives';
 export const createQrInputSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(255, 'Name too long'),
   targetUrl: z
+    .string()
     .url('Please enter a valid URL')
     .trim()
     .refine(

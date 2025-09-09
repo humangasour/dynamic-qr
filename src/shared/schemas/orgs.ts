@@ -6,9 +6,9 @@ import { Email, UUID } from './primitives';
 // Organization name reusable validator
 const orgName = z
   .string()
-  .min(1, 'Organization name is required')
-  .max(255, 'Organization name must be less than 255 characters')
-  .regex(/^[a-zA-Z0-9\s\-_&.,()]+$/, 'Organization name contains invalid characters');
+  .min(1)
+  .max(255)
+  .regex(/^[a-zA-Z0-9\s\-_&.,()]+$/);
 
 export const createOrganizationSchema = z.object({ name: orgName });
 

@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -29,6 +30,8 @@ export function AccountMenu({ user }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const t = useTranslations();
+  const locale = useLocale();
 
   const initials = useMemo(() => getInitials(user?.name, user?.email), [user?.name, user?.email]);
 
@@ -37,13 +40,13 @@ export function AccountMenu({ user }: Props) {
     try {
       const { error } = await auth.signOut();
       if (error) {
-        toast.error('Failed to sign out');
+        toast.error(t('dashboard.nav.signOutError'));
         return;
       }
-      toast.success('Signed out successfully');
-      router.replace('/sign-in');
+      toast.success(t('dashboard.nav.signOutSuccess'));
+      router.replace(`/${locale}/sign-in`);
     } catch (err) {
-      toast.error('An unexpected error occurred');
+      toast.error(t('dashboard.nav.unexpectedError'));
       console.error('Sign out error:', err);
     } finally {
       setIsSigningOut(false);
@@ -58,30 +61,38 @@ export function AccountMenu({ user }: Props) {
           variant="ghost"
           size="sm"
           className="h-8 px-3 -mr-3"
-          aria-label="Account menu"
+          aria-label={t('dashboard.accountMenu.ariaLabel')}
           data-testid="account-menu-trigger"
         >
           <Avatar className="h-6 w-6">
             <AvatarImage
               src={user?.avatarUrl}
-              alt={user?.name ? `${user.name} avatar` : 'User avatar'}
+              alt={
+                user?.name
+                  ? t('dashboard.accountMenu.avatarAltNamed', { name: user.name })
+                  : t('dashboard.accountMenu.avatarAlt')
+              }
               referrerPolicy="no-referrer"
             />
             <AvatarFallback className="text-xs font-medium">{initials}</AvatarFallback>
           </Avatar>
-          <span className="hidden sm:inline text-sm">{user?.name || user?.email || 'Account'}</span>
+          <span className="hidden sm:inline text-sm">
+            {user?.name || user?.email || t('dashboard.accountMenu.fallbackAccount')}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-48">
         <DropdownMenuLabel>
           <div className="text-xs text-muted-foreground">
-            <div className="truncate font-medium text-foreground">{user?.name || 'User'}</div>
+            <div className="truncate font-medium text-foreground">
+              {user?.name || t('dashboard.accountMenu.fallbackUser')}
+            </div>
             <div className="truncate">{user?.email}</div>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-          {isSigningOut ? 'Signing out…' : 'Sign out'}
+          {isSigningOut ? t('dashboard.nav.signingOut') : t('dashboard.nav.signOut')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

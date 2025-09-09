@@ -4,10 +4,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import type { z } from 'zod';
+import { useLocale, useTranslations } from 'next-intl';
 
+import { withLocaleHref } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -28,6 +30,9 @@ export function SignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const ensureUserAndOrgMutation = api.auth.ensureUserAndOrg.useMutation();
+  const t = useTranslations('auth.form.signUp');
+  const locale = useLocale();
+  useTranslations();
 
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
@@ -47,13 +52,13 @@ export function SignUpForm() {
       const { data: authData, error: signUpError } = await auth.signUp(data.email, data.password);
 
       if (signUpError) {
-        toast.error(signUpError.message || 'Failed to create account');
+        toast.error(signUpError.message || t('errorCreate'));
         return;
       }
 
       // If email confirmation is enabled, user/session may be missing
       if (!authData.session) {
-        toast.success('Account created! Check your email to verify your address.');
+        toast.success(t('emailVerify'));
         return;
       }
 
@@ -61,14 +66,14 @@ export function SignUpForm() {
       const result = await ensureUserAndOrgMutation.mutateAsync({ userName: data.name });
 
       if (!result.success) {
-        toast.error('Failed to set up your account');
+        toast.error(t('setupError'));
         return;
       }
 
-      toast.success('Account created successfully!');
-      router.replace('/dashboard');
+      toast.success(t('success'));
+      router.replace(withLocaleHref('/dashboard', locale));
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast.error(t('unexpectedError'));
       console.error('Sign up error:', error);
     } finally {
       setIsLoading(false);
@@ -80,7 +85,7 @@ export function SignUpForm() {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
-        aria-label="Sign up form"
+        aria-label={t('ariaLabel')}
         noValidate
       >
         <FormField
@@ -88,11 +93,11 @@ export function SignUpForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full name</FormLabel>
+              <FormLabel>{t('name.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="text"
-                  placeholder="Enter your full name"
+                  placeholder={t('name.placeholder')}
                   autoComplete="name"
                   {...field}
                   disabled={isLoading}
@@ -108,11 +113,11 @@ export function SignUpForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email address</FormLabel>
+              <FormLabel>{t('email.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t('email.placeholder')}
                   autoComplete="email"
                   {...field}
                   disabled={isLoading}
@@ -128,11 +133,11 @@ export function SignUpForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t('password.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Create a password"
+                  placeholder={t('password.createPlaceholder')}
                   autoComplete="new-password"
                   {...field}
                   disabled={isLoading}
@@ -148,11 +153,11 @@ export function SignUpForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm password</FormLabel>
+              <FormLabel>{t('passwordConfirm.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Confirm your password"
+                  placeholder={t('passwordConfirm.placeholder')}
                   autoComplete="new-password"
                   {...field}
                   disabled={isLoading}
@@ -169,20 +174,20 @@ export function SignUpForm() {
           disabled={isLoading}
           aria-describedby="signup-status"
         >
-          {isLoading ? 'Creating account...' : 'Create account'}
+          {isLoading ? t('creating') : t('create')}
         </Button>
 
         <div id="signup-status" className="sr-only" aria-live="polite" aria-atomic="true">
-          {isLoading ? 'Creating your account, please wait...' : ''}
+          {isLoading ? t('creatingStatus') : ''}
         </div>
 
         <div className="text-center text-sm text-muted-foreground">
-          Already have an account?{' '}
+          {t('alreadyHave')}{' '}
           <Link
-            href="/sign-in"
+            href={withLocaleHref('/sign-in', locale)}
             className="font-medium text-primary hover:text-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded"
           >
-            Sign in
+            {t('signInLinkLabel')}
           </Link>
         </div>
       </form>

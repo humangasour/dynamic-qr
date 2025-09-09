@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ interface QrDetailsProps {
 
 export function QrDetails(props: QrDetailsProps) {
   const { name, targetUrl, slug, svgUrl, pngUrl } = props;
+  const t = useTranslations('qr.details');
 
   const shortPath = `/r/${slug}`;
   const fullLink =
@@ -26,10 +28,10 @@ export function QrDetails(props: QrDetailsProps) {
   const copyText = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(`${label} copied to clipboard`);
+      toast.success(t('toast.copied', { label }));
     } catch (err) {
       console.error('Copy failed', err);
-      toast.error(`Failed to copy ${label}`);
+      toast.error(t('toast.copyFail', { label }));
     }
   };
 
@@ -50,14 +52,14 @@ export function QrDetails(props: QrDetailsProps) {
         } else if (navigator.clipboard?.writeText) {
           await navigator.clipboard.writeText(url);
         }
-        toast.success(`${label} copied to clipboard`);
+        toast.success(t('toast.copied', { label }));
         return;
       }
 
       // Fallback 1: copy URL text instead of image
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(url);
-        toast.success(`${label} URL copied to clipboard`);
+        toast.success(t('toast.urlCopied', { label }));
         return;
       }
 
@@ -68,10 +70,10 @@ export function QrDetails(props: QrDetailsProps) {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      toast.success(`${label} download started`);
+      toast.success(t('toast.downloadStarted', { label }));
     } catch (err) {
       console.error('Copy image failed', err);
-      toast.error(`Failed to copy ${label}`);
+      toast.error(t('toast.copyFail', { label }));
     }
   };
 
@@ -83,7 +85,7 @@ export function QrDetails(props: QrDetailsProps) {
         <CardHeader>
           <CardTitle>
             <Heading as="h2" size="h3">
-              Preview (PNG)
+              {t('preview.pngTitle')}
             </Heading>
           </CardTitle>
         </CardHeader>
@@ -103,15 +105,15 @@ export function QrDetails(props: QrDetailsProps) {
             <div className="flex flex-wrap gap-3">
               <Button asChild>
                 <a href={pngUrl} download={`${fileBase}.png`}>
-                  Download PNG
+                  {t('download.png')}
                 </a>
               </Button>
               <Button
                 variant="outline"
-                aria-label="Copy PNG to clipboard"
+                aria-label={t('copy.pngAria')}
                 onClick={() => copyImage(pngUrl, 'image/png', 'PNG')}
               >
-                Copy PNG
+                {t('copy.png')}
               </Button>
             </div>
           </div>
@@ -122,7 +124,7 @@ export function QrDetails(props: QrDetailsProps) {
         <CardHeader>
           <CardTitle>
             <Heading as="h2" size="h3">
-              Preview (SVG)
+              {t('preview.svgTitle')}
             </Heading>
           </CardTitle>
         </CardHeader>
@@ -142,15 +144,15 @@ export function QrDetails(props: QrDetailsProps) {
             <div className="flex flex-wrap gap-3">
               <Button asChild>
                 <a href={svgUrl} download={`${fileBase}.svg`}>
-                  Download SVG
+                  {t('download.svg')}
                 </a>
               </Button>
               <Button
                 variant="outline"
-                aria-label="Copy SVG to clipboard"
+                aria-label={t('copy.svgAria')}
                 onClick={() => copyImage(svgUrl, 'image/svg+xml', 'SVG')}
               >
-                Copy SVG
+                {t('copy.svg')}
               </Button>
             </div>
           </div>
@@ -161,7 +163,7 @@ export function QrDetails(props: QrDetailsProps) {
         <CardHeader>
           <CardTitle>
             <Heading as="h2" size="h3">
-              Link & Target
+              {t('linkSection.title')}
             </Heading>
           </CardTitle>
         </CardHeader>
@@ -170,18 +172,18 @@ export function QrDetails(props: QrDetailsProps) {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <Text as="p" className="font-medium">
-                  Short Link
+                  {t('linkSection.shortLinkLabel')}
                 </Text>
                 <Text tone="muted">{shortPath}</Text>
               </div>
               <div className="flex gap-2">
-                <Button asChild variant="outline" aria-label="Open short link in new tab">
+                <Button asChild variant="outline" aria-label={t('linkSection.openLinkAria')}>
                   <Link href={shortPath} target="_blank" rel="noopener noreferrer">
-                    Open Link
+                    {t('linkSection.openLink')}
                   </Link>
                 </Button>
-                <Button aria-label="Copy short link" onClick={() => copyText(fullLink, 'link')}>
-                  Copy Link
+                <Button aria-label={t('copy.linkAria')} onClick={() => copyText(fullLink, 'link')}>
+                  {t('copy.link')}
                 </Button>
               </div>
             </div>
@@ -189,23 +191,23 @@ export function QrDetails(props: QrDetailsProps) {
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <Text as="p" className="font-medium">
-                  Current Target URL
+                  {t('linkSection.targetUrlLabel')}
                 </Text>
                 <Text tone="muted" className="truncate max-w-[60ch]" title={targetUrl}>
                   {targetUrl}
                 </Text>
               </div>
               <div className="flex gap-2">
-                <Button asChild variant="outline" aria-label="Open target URL in new tab">
+                <Button asChild variant="outline" aria-label={t('linkSection.openTargetAria')}>
                   <a href={targetUrl} target="_blank" rel="noopener noreferrer">
-                    Open Target
+                    {t('linkSection.openTarget')}
                   </a>
                 </Button>
                 <Button
-                  aria-label="Copy target URL"
+                  aria-label={t('copy.targetAria')}
                   onClick={() => copyText(targetUrl, 'target URL')}
                 >
-                  Copy Target
+                  {t('copy.target')}
                 </Button>
               </div>
             </div>

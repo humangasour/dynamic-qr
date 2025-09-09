@@ -119,25 +119,6 @@ export async function ensureUserAndOrg(
 }
 
 /**
- * Redirect unauthenticated users to sign-in page
- * Uses getUserId() for better performance and reliability
- */
-export async function redirectIfUnauthenticated() {
-  noStore();
-  const uid = await getUserId();
-  if (!uid) redirect('/sign-in');
-}
-
-/**
- * Redirect authenticated users away from auth pages
- */
-export async function redirectIfAuthenticated() {
-  noStore();
-  const u = await getCurrentUser();
-  if (u) redirect('/dashboard');
-}
-
-/**
  * Check if user has required role in organization
  * Optimized with role order map outside function
  */
@@ -170,7 +151,11 @@ export async function getUserOrgId(): Promise<string> {
  */
 export async function requireUserId(): Promise<string> {
   const uid = await getUserId();
-  if (!uid) redirect('/sign-in');
+  if (!uid) {
+    const { getLocale } = await import('next-intl/server');
+    const locale = await getLocale();
+    redirect(`/${locale}/sign-in`);
+  }
   return uid;
 }
 
@@ -180,7 +165,11 @@ export async function requireUserId(): Promise<string> {
  */
 export async function requireCurrentUser(): Promise<UserWithOrg> {
   const u = await getCurrentUser();
-  if (!u) redirect('/sign-in');
+  if (!u) {
+    const { getLocale } = await import('next-intl/server');
+    const locale = await getLocale();
+    redirect(`/${locale}/sign-in`);
+  }
   return u;
 }
 
@@ -270,7 +259,10 @@ export async function getCurrentUserForServerComponent(): Promise<UserWithOrg | 
 export async function redirectIfAuthenticatedForServerComponent() {
   noStore();
   const u = await getCurrentUserForServerComponent();
-  if (u) redirect('/dashboard');
+  if (!u) return;
+  const { getLocale } = await import('next-intl/server');
+  const locale = await getLocale();
+  redirect(`/${locale}/dashboard`);
 }
 
 /**
@@ -279,8 +271,10 @@ export async function redirectIfAuthenticatedForServerComponent() {
  */
 export async function requireUserIdForServerComponent(): Promise<string> {
   const uid = await getUserIdForServerComponent();
-  if (!uid) redirect('/sign-in');
-  return uid;
+  if (uid) return uid;
+  const { getLocale } = await import('next-intl/server');
+  const locale = await getLocale();
+  redirect(`/${locale}/sign-in`);
 }
 
 /**
@@ -289,6 +283,8 @@ export async function requireUserIdForServerComponent(): Promise<string> {
  */
 export async function requireCurrentUserForServerComponent(): Promise<UserWithOrg> {
   const u = await getCurrentUserForServerComponent();
-  if (!u) redirect('/sign-in');
-  return u;
+  if (u) return u;
+  const { getLocale } = await import('next-intl/server');
+  const locale = await getLocale();
+  redirect(`/${locale}/sign-in`);
 }

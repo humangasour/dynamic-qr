@@ -21,18 +21,11 @@ export function UserOrgProvider({
   value: UserOrgContextValue;
   children: React.ReactNode;
 }) {
+  const { userId, email, name, avatarUrl, orgId, orgName, orgRole } = value;
   // Memoize to avoid unnecessary re-renders of consumers
-  const memo = useMemo(
-    () => value,
-    [
-      value.userId,
-      value.email,
-      value.name,
-      value.avatarUrl,
-      value.orgId,
-      value.orgName,
-      value.orgRole,
-    ],
+  const memo = useMemo<UserOrgContextValue>(
+    () => ({ userId, email, name, avatarUrl, orgId, orgName, orgRole }),
+    [userId, email, name, avatarUrl, orgId, orgName, orgRole],
   );
 
   return <UserOrgContext.Provider value={memo}>{children}</UserOrgContext.Provider>;
