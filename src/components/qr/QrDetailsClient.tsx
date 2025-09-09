@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { api } from '@/infrastructure/trpc/client';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,8 @@ import { Text } from '@/components/typography/Text';
 import { QrDetails } from './QrDetails';
 
 export function QrDetailsClient({ id }: { id: string }) {
+  const t = useTranslations('qr.details.page');
+  const locale = useLocale();
   const { data, error, isLoading } = api.qr.getById.useQuery(
     { id },
     {
@@ -39,12 +42,12 @@ export function QrDetailsClient({ id }: { id: string }) {
           <div className="mb-6 flex items-center justify-between gap-4">
             <div>
               <Heading as="h1" size="h1" className="mb-2">
-                QR not found
+                {t('notFoundTitle')}
               </Heading>
-              <Text tone="muted">We couldn’t load this QR code.</Text>
+              <Text tone="muted">{t('notFoundDescription')}</Text>
             </div>
             <Button asChild variant="outline">
-              <Link href="/dashboard">Back to Dashboard</Link>
+              <Link href={`/${locale}/dashboard`}>{t('backToDashboard')}</Link>
             </Button>
           </div>
         </div>
@@ -60,10 +63,10 @@ export function QrDetailsClient({ id }: { id: string }) {
             <Heading as="h1" size="h1" className="mb-2">
               {data.name}
             </Heading>
-            <Text tone="muted">QR details and asset downloads</Text>
+            <Text tone="muted">{t('subtitle')}</Text>
           </div>
           <Button asChild variant="outline">
-            <Link href="/dashboard">Back to Dashboard</Link>
+            <Link href={`/${locale}/dashboard`}>{t('backToDashboard')}</Link>
           </Button>
         </div>
 

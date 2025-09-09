@@ -4,10 +4,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import type { z } from 'zod';
+import { useLocale, useTranslations } from 'next-intl';
 
+import { withLocaleHref } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -26,6 +28,9 @@ type SignInFormData = z.infer<typeof signInSchema>;
 export function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const t = useTranslations('auth.form.signIn');
+  const locale = useLocale();
+  useTranslations();
 
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -42,14 +47,14 @@ export function SignInForm() {
       const { error } = await auth.signIn(data.email, data.password);
 
       if (error) {
-        toast.error(error.message || 'Failed to sign in');
+        toast.error(error.message || t('errorToast'));
         return;
       }
 
-      toast.success('Successfully signed in!');
-      router.replace('/dashboard');
+      toast.success(t('successToast'));
+      router.replace(withLocaleHref('/dashboard', locale));
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast.error(t('unexpectedError'));
       console.error('Sign in error:', error);
     } finally {
       setIsLoading(false);
@@ -61,7 +66,7 @@ export function SignInForm() {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
-        aria-label="Sign in form"
+        aria-label={t('ariaLabel')}
         noValidate
       >
         <FormField
@@ -69,11 +74,11 @@ export function SignInForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email address</FormLabel>
+              <FormLabel>{t('email.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t('email.placeholder')}
                   autoComplete="email"
                   {...field}
                   disabled={isLoading}
@@ -89,11 +94,11 @@ export function SignInForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t('password.label')}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder={t('password.placeholder')}
                   autoComplete="current-password"
                   {...field}
                   disabled={isLoading}
@@ -110,20 +115,20 @@ export function SignInForm() {
           disabled={isLoading}
           aria-describedby="signin-status"
         >
-          {isLoading ? 'Signing in...' : 'Sign in'}
+          {isLoading ? t('submitting') : t('submit')}
         </Button>
 
         <div id="signin-status" className="sr-only" aria-live="polite" aria-atomic="true">
-          {isLoading ? 'Signing in, please wait...' : ''}
+          {isLoading ? t('submittingStatus') : ''}
         </div>
 
         <div className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{' '}
+          {t('noAccount')}{' '}
           <Link
-            href="/sign-up"
+            href={withLocaleHref('/sign-up', locale)}
             className="font-medium text-primary hover:text-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded"
           >
-            Sign up
+            {t('signUpLinkLabel')}
           </Link>
         </div>
       </form>

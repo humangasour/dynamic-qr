@@ -29,6 +29,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Lint i18n messages
+        run: npm run lint:i18n
+
       - name: Type check
         run: npm run typecheck
 

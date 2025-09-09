@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { useLocale, useTranslations } from 'next-intl';
 
+import { withLocaleHref } from '@/i18n/routing';
 import { api } from '@/infrastructure/trpc/client';
 import { createQrInputSchema, type CreateQrInput } from '@shared/schemas/qr';
 import { mapTrpcError } from '@/shared/utils/trpc-ui-errors';
@@ -23,6 +25,8 @@ import { Heading } from '@/components/typography/Heading';
 
 export function CreateQrForm() {
   const router = useRouter();
+  const t = useTranslations('qr.form.create');
+  const locale = useLocale();
   const form = useForm<CreateQrInput>({
     resolver: zodResolver(createQrInputSchema),
     defaultValues: {
@@ -33,8 +37,8 @@ export function CreateQrForm() {
 
   const createQrMutation = api.qr.create.useMutation({
     onSuccess: (result) => {
-      toast.success('QR code created successfully!');
-      router.push(`/qr/${result.id}`);
+      toast.success(t('toast.success'));
+      router.push(withLocaleHref(`/qr/${result.id}`, locale));
     },
     onError: (error) => {
       const ui = mapTrpcError(error);
@@ -43,8 +47,8 @@ export function CreateQrForm() {
         ui.type === 'bad_request'
           ? ui.message
           : ui.type === 'unauthorized'
-            ? 'You do not have permission to create QR codes.'
-            : 'Failed to create QR code. Please try again.';
+            ? t('error.unauthorized')
+            : t('error.generic');
       toast.error(friendly);
       form.setError('root', { type: 'server', message: friendly });
     },
@@ -60,12 +64,10 @@ export function CreateQrForm() {
       <CardHeader>
         <CardTitle>
           <Heading as="h2" size="h3">
-            QR Code Details
+            {t('heading')}
           </Heading>
         </CardTitle>
-        <CardDescription>
-          Enter the details for your new QR code. It will redirect users to your target URL.
-        </CardDescription>
+        <CardDescription>{t('description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -79,10 +81,10 @@ export function CreateQrForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>{t('name.label')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="My QR Code"
+                      placeholder={t('name.placeholder')}
                       autoComplete="off"
                       maxLength={255}
                       {...field}
@@ -99,11 +101,11 @@ export function CreateQrForm() {
               name="targetUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Target URL</FormLabel>
+                  <FormLabel>{t('targetUrl.label')}</FormLabel>
                   <FormControl>
                     <Input
                       type="url"
-                      placeholder="https://example.com"
+                      placeholder={t('targetUrl.placeholder')}
                       autoComplete="url"
                       {...field}
                       disabled={createQrMutation.isPending}
@@ -120,7 +122,7 @@ export function CreateQrForm() {
 
             <div className="flex gap-4">
               <Button type="submit" disabled={createQrMutation.isPending} className="flex-1">
-                {createQrMutation.isPending ? 'Creating...' : 'Create QR Code'}
+                {createQrMutation.isPending ? t('submitting') : t('submit')}
               </Button>
               <Button
                 type="button"
@@ -128,7 +130,7 @@ export function CreateQrForm() {
                 onClick={() => router.back()}
                 disabled={createQrMutation.isPending}
               >
-                Cancel
+                {t('cancel')}
               </Button>
             </div>
           </form>

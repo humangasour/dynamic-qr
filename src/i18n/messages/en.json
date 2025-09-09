@@ -1,0 +1,312 @@
+{
+  "app": {
+    "title": "Dynamic QR",
+    "description": "Create and manage dynamic QR codes with analytics",
+    "tagline": "Manage your QR codes with ease"
+  },
+  "common": {
+    "a11y": {
+      "skipToContent": "Skip to content"
+    },
+    "nav": {
+      "primaryAria": "Primary",
+      "openMenu": "Open menu",
+      "mobileNavigation": "Mobile navigation"
+    }
+  },
+  "validation": {
+    "unknown": "Invalid value",
+    "email": "Please enter a valid email address",
+    "string": {
+      "required": "This field is required",
+      "min": "Must be at least {min} characters",
+      "max": "Must be at most {max} characters",
+      "invalid": "Invalid string",
+      "regex": "Invalid format"
+    },
+    "array": {
+      "min": "Must contain at least {min} items",
+      "max": "Must contain at most {max} items"
+    },
+    "password": {
+      "min": "Password must be at least {min} characters",
+      "complexity": "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+      "confirmMismatch": "Passwords don't match"
+    },
+    "name": {
+      "required": "Name is required",
+      "max": "Name must be less than {max} characters",
+      "invalid": "Name can only contain letters, spaces, hyphens, and apostrophes"
+    },
+    "organization": {
+      "nameRequired": "Organization name is required",
+      "nameMax": "Organization name must be less than {max} characters",
+      "nameInvalid": "Organization name contains invalid characters"
+    },
+    "url": {
+      "invalid": "Please enter a valid URL",
+      "httpOnly": "Only http(s) URLs allowed"
+    },
+    "slug": {
+      "required": "Slug is required",
+      "max": "Slug too long"
+    }
+  },
+  "nav": {
+    "overview": "Overview",
+    "qrCodes": "QR Codes",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "soon": "Soon"
+  },
+  "dashboard": {
+    "nav": {
+      "signOut": "Sign out",
+      "signingOut": "Signing out...",
+      "signOutSuccess": "Signed out successfully",
+      "signOutError": "Failed to sign out",
+      "unexpectedError": "An unexpected error occurred"
+    },
+    "accountMenu": {
+      "ariaLabel": "Account menu",
+      "avatarAltNamed": "{name} avatar",
+      "avatarAlt": "User avatar",
+      "fallbackAccount": "Account",
+      "fallbackUser": "User"
+    },
+    "layout": {
+      "title": "Dashboard | Dynamic QR",
+      "description": "Manage your QR codes and view analytics"
+    },
+    "page": {
+      "title": "Dashboard | Dynamic QR",
+      "description": "Your QR code management dashboard",
+      "welcomeTitle": "Welcome to Dynamic QR",
+      "welcomeSubtitle": "Your QR code management dashboard",
+      "createCta": "Create New QR Code"
+    }
+  },
+  "errors": {
+    "accessDenied": {
+      "title": "Access Denied",
+      "defaultDescription": "You don't have permission to access this resource. It may belong to a different organization."
+    },
+    "notFound": {
+      "title": "Not Found",
+      "defaultDescription": "The resource you're looking for doesn't exist or may have been deleted."
+    },
+    "generic": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again or contact support if the problem persists."
+    },
+    "actions": {
+      "backToDashboard": "Back to Dashboard",
+      "tryAgain": "Try Again"
+    },
+    "dev": {
+      "detailsTitle": "Error Details (Development)"
+    }
+  },
+  "auth": {
+    "layout": {
+      "title": "Authentication | Dynamic QR",
+      "description": "Sign in or create an account to access Dynamic QR features"
+    },
+    "page": {
+      "signIn": {
+        "title": "Sign in",
+        "description": "Enter your email and password to sign in to your account"
+      },
+      "signUp": {
+        "title": "Sign up",
+        "description": "Create a new account to get started with Dynamic QR"
+      }
+    },
+    "form": {
+      "signIn": {
+        "email": {
+          "label": "Email address",
+          "placeholder": "Enter your email"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter your password"
+        },
+        "submit": "Sign in",
+        "submitting": "Signing in...",
+        "submittingStatus": "Signing in, please wait...",
+        "ariaLabel": "Sign in form",
+        "successToast": "Successfully signed in!",
+        "errorToast": "Failed to sign in",
+        "unexpectedError": "An unexpected error occurred",
+        "noAccount": "Don't have an account?",
+        "signUpLinkLabel": "Sign up"
+      },
+      "signUp": {
+        "name": {
+          "label": "Full name",
+          "placeholder": "Enter your full name"
+        },
+        "email": {
+          "label": "Email address",
+          "placeholder": "Enter your email"
+        },
+        "password": {
+          "label": "Password",
+          "createPlaceholder": "Create a password"
+        },
+        "passwordConfirm": {
+          "label": "Confirm password",
+          "placeholder": "Confirm your password"
+        },
+        "create": "Create account",
+        "creating": "Creating account...",
+        "creatingStatus": "Creating your account, please wait...",
+        "ariaLabel": "Sign up form",
+        "alreadyHave": "Already have an account?",
+        "signInLinkLabel": "Sign in",
+        "errorCreate": "Failed to create account",
+        "emailVerify": "Account created! Check your email to verify your address.",
+        "setupError": "Failed to set up your account",
+        "success": "Account created successfully!",
+        "unexpectedError": "An unexpected error occurred"
+      }
+    }
+  },
+  "analytics": {
+    "page": {
+      "title": "Analytics",
+      "description": "Track total scans, daily activity, and top sources. We’re polishing the dashboards and charts."
+    }
+  },
+  "settings": {
+    "page": {
+      "title": "Settings",
+      "description": "Manage your profile, organization, and billing. Sections are being built out."
+    },
+    "profile": {
+      "page": {
+        "title": "Profile Settings",
+        "description": "Update your name, email, and personal preferences."
+      }
+    },
+    "billing": {
+      "page": {
+        "title": "Billing",
+        "description": "Manage your plan, payment method, and invoices."
+      }
+    }
+  },
+  "qr": {
+    "page": {
+      "index": {
+        "title": "Your QR Codes",
+        "description": "We’re building the list view. In the meantime, you can create a new dynamic QR and start using it right away.",
+        "createCta": "Create New QR Code"
+      },
+      "create": {
+        "title": "Create New QR Code",
+        "description": "Generate a dynamic QR code that redirects to your target URL"
+      },
+      "details": {
+        "metadataTitle": "QR Details • {id}",
+        "metadataDescription": "View and download your QR code assets"
+      }
+    },
+    "form": {
+      "create": {
+        "heading": "QR Code Details",
+        "description": "Enter the details for your new QR code. It will redirect users to your target URL.",
+        "name": {
+          "label": "Name",
+          "placeholder": "My QR Code"
+        },
+        "targetUrl": {
+          "label": "Target URL",
+          "placeholder": "https://example.com"
+        },
+        "submit": "Create QR Code",
+        "submitting": "Creating...",
+        "cancel": "Cancel",
+        "toast": {
+          "success": "QR code created successfully!"
+        },
+        "error": {
+          "unauthorized": "You do not have permission to create QR codes.",
+          "generic": "Failed to create QR code. Please try again."
+        }
+      }
+    },
+    "details": {
+      "page": {
+        "notFoundTitle": "QR not found",
+        "notFoundDescription": "We couldn’t load this QR code.",
+        "subtitle": "QR details and asset downloads",
+        "backToDashboard": "Back to Dashboard"
+      },
+      "preview": {
+        "pngTitle": "Preview (PNG)",
+        "svgTitle": "Preview (SVG)"
+      },
+      "download": {
+        "png": "Download PNG",
+        "svg": "Download SVG"
+      },
+      "copy": {
+        "png": "Copy PNG",
+        "pngAria": "Copy PNG to clipboard",
+        "svg": "Copy SVG",
+        "svgAria": "Copy SVG to clipboard",
+        "link": "Copy Link",
+        "linkAria": "Copy short link",
+        "target": "Copy Target",
+        "targetAria": "Copy target URL"
+      },
+      "linkSection": {
+        "title": "Link & Target",
+        "shortLinkLabel": "Short Link",
+        "openLink": "Open Link",
+        "openLinkAria": "Open short link in new tab",
+        "targetUrlLabel": "Current Target URL",
+        "openTarget": "Open Target",
+        "openTargetAria": "Open target URL in new tab"
+      },
+      "toast": {
+        "copied": "{label} copied to clipboard",
+        "copyFail": "Failed to copy {label}",
+        "urlCopied": "{label} URL copied to clipboard",
+        "downloadStarted": "{label} download started"
+      }
+    }
+  },
+  "redirect": {
+    "page": {
+      "root": {
+        "metadataTitle": "Dynamic QR Codes - Redirect",
+        "metadataDescription": "QR code redirect service - no slug provided",
+        "heading": "Link Not Found",
+        "noSlugDescription": "No redirect slug provided. Please provide a valid QR code slug.",
+        "reasonsIntro": "This could happen if:",
+        "reasons": {
+          "incompleteUrl": "The URL is incomplete",
+          "malformed": "The QR code link is malformed",
+          "directAccess": "You're accessing the redirect service directly"
+        },
+        "poweredBy": "Powered by Dynamic QR Codes"
+      },
+      "slug": {
+        "metadataTitle": "Dynamic QR Codes - Redirect",
+        "metadataDescription": "Redirecting to target URL for QR code: {slug}",
+        "heading": "Link Not Found",
+        "notFoundDescription": "The short link <code>/r/{slug}</code> could not be found or may have been deactivated.",
+        "reasonsIntro": "This could happen if:",
+        "reasons": {
+          "deleted": "The QR code has been deleted",
+          "deactivated": "The link has been deactivated",
+          "typo": "There was a typo in the URL"
+        },
+        "poweredBy": "Powered by Dynamic QR Codes"
+      }
+    }
+  }
+}

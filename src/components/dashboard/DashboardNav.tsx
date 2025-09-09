@@ -3,13 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useLocale, useTranslations } from 'next-intl';
 
+import { withLocaleHref } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { auth } from '@/infrastructure/supabase/utils';
 
 export function DashboardNav() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const router = useRouter();
+  const t = useTranslations();
+  const locale = useLocale();
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -18,14 +22,14 @@ export function DashboardNav() {
       const { error } = await auth.signOut();
 
       if (error) {
-        toast.error('Failed to sign out');
+        toast.error(t('dashboard.nav.signOutError'));
         return;
       }
 
-      toast.success('Signed out successfully');
-      router.replace('/sign-in');
+      toast.success(t('dashboard.nav.signOutSuccess'));
+      router.replace(withLocaleHref('/sign-in', locale));
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast.error(t('dashboard.nav.unexpectedError'));
       console.error('Sign out error:', error);
     } finally {
       setIsSigningOut(false);
@@ -41,7 +45,7 @@ export function DashboardNav() {
       <div className="px-page">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <h1 className="text-xl font-semibold text-foreground">Dynamic QR</h1>
+            <h1 className="text-xl font-semibold text-foreground">{t('app.title')}</h1>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -49,9 +53,9 @@ export function DashboardNav() {
               variant="outline"
               onClick={handleSignOut}
               disabled={isSigningOut}
-              aria-label="Sign out of your account"
+              aria-label={t('dashboard.nav.signOut')}
             >
-              {isSigningOut ? 'Signing out...' : 'Sign out'}
+              {isSigningOut ? t('dashboard.nav.signingOut') : t('dashboard.nav.signOut')}
             </Button>
           </div>
         </div>

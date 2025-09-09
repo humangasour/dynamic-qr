@@ -1,0 +1,312 @@
+{
+  "app": {
+    "title": "QR Dinámico",
+    "description": "Crea y gestiona códigos QR dinámicos con analíticas",
+    "tagline": "Gestiona tus códigos QR fácilmente"
+  },
+  "common": {
+    "a11y": {
+      "skipToContent": "Saltar al contenido"
+    },
+    "nav": {
+      "primaryAria": "Principal",
+      "openMenu": "Abrir menú",
+      "mobileNavigation": "Navegación móvil"
+    }
+  },
+  "validation": {
+    "unknown": "Valor inválido",
+    "email": "Introduce un correo electrónico válido",
+    "string": {
+      "required": "Este campo es obligatorio",
+      "min": "Debe tener al menos {min} caracteres",
+      "max": "Debe tener como máximo {max} caracteres",
+      "invalid": "Cadena inválida",
+      "regex": "Formato inválido"
+    },
+    "array": {
+      "min": "Debe contener al menos {min} elementos",
+      "max": "Debe contener como máximo {max} elementos"
+    },
+    "password": {
+      "min": "La contraseña debe tener al menos {min} caracteres",
+      "complexity": "La contraseña debe contener mayúsculas, minúsculas y un número",
+      "confirmMismatch": "Las contraseñas no coinciden"
+    },
+    "name": {
+      "required": "El nombre es obligatorio",
+      "max": "El nombre debe tener menos de {max} caracteres",
+      "invalid": "El nombre solo puede contener letras, espacios, guiones y apóstrofes"
+    },
+    "organization": {
+      "nameRequired": "El nombre de la organización es obligatorio",
+      "nameMax": "El nombre de la organización debe tener menos de {max} caracteres",
+      "nameInvalid": "El nombre de la organización contiene caracteres inválidos"
+    },
+    "url": {
+      "invalid": "Introduce una URL válida",
+      "httpOnly": "Solo se permiten URLs http(s)"
+    },
+    "slug": {
+      "required": "El slug es obligatorio",
+      "max": "Slug demasiado largo"
+    }
+  },
+  "nav": {
+    "overview": "Resumen",
+    "qrCodes": "Códigos QR",
+    "analytics": "Analíticas",
+    "settings": "Ajustes",
+    "soon": "Pronto"
+  },
+  "dashboard": {
+    "nav": {
+      "signOut": "Cerrar sesión",
+      "signingOut": "Cerrando sesión...",
+      "signOutSuccess": "Sesión cerrada correctamente",
+      "signOutError": "No se pudo cerrar sesión",
+      "unexpectedError": "Ocurrió un error inesperado"
+    },
+    "accountMenu": {
+      "ariaLabel": "Menú de cuenta",
+      "avatarAltNamed": "Avatar de {name}",
+      "avatarAlt": "Avatar del usuario",
+      "fallbackAccount": "Cuenta",
+      "fallbackUser": "Usuario"
+    },
+    "layout": {
+      "title": "Panel | QR Dinámico",
+      "description": "Gestiona tus códigos QR y ve analíticas"
+    },
+    "page": {
+      "title": "Panel | QR Dinámico",
+      "description": "Tu panel de gestión de códigos QR",
+      "welcomeTitle": "Bienvenido a QR Dinámico",
+      "welcomeSubtitle": "Tu panel de gestión de códigos QR",
+      "createCta": "Crear nuevo código QR"
+    }
+  },
+  "errors": {
+    "accessDenied": {
+      "title": "Acceso denegado",
+      "defaultDescription": "No tienes permiso para acceder a este recurso. Puede pertenecer a otra organización."
+    },
+    "notFound": {
+      "title": "No encontrado",
+      "defaultDescription": "El recurso que buscas no existe o pudo haber sido eliminado."
+    },
+    "generic": {
+      "title": "Algo salió mal",
+      "description": "Ocurrió un error inesperado. Inténtalo de nuevo o contacta soporte."
+    },
+    "actions": {
+      "backToDashboard": "Volver al panel",
+      "tryAgain": "Intentar de nuevo"
+    },
+    "dev": {
+      "detailsTitle": "Detalles del error (Desarrollo)"
+    }
+  },
+  "auth": {
+    "layout": {
+      "title": "Autenticación | QR Dinámico",
+      "description": "Inicia sesión o crea una cuenta para acceder a QR Dinámico"
+    },
+    "page": {
+      "signIn": {
+        "title": "Iniciar sesión",
+        "description": "Introduce tu correo y contraseña para acceder"
+      },
+      "signUp": {
+        "title": "Crear cuenta",
+        "description": "Crea una nueva cuenta para empezar"
+      }
+    },
+    "form": {
+      "signIn": {
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "Introduce tu correo"
+        },
+        "password": {
+          "label": "Contraseña",
+          "placeholder": "Introduce tu contraseña"
+        },
+        "submit": "Iniciar sesión",
+        "submitting": "Iniciando sesión...",
+        "submittingStatus": "Iniciando sesión, por favor espera...",
+        "ariaLabel": "Formulario de inicio de sesión",
+        "successToast": "Inicio de sesión exitoso",
+        "errorToast": "Error al iniciar sesión",
+        "unexpectedError": "Ocurrió un error inesperado",
+        "noAccount": "¿No tienes cuenta?",
+        "signUpLinkLabel": "Crear cuenta"
+      },
+      "signUp": {
+        "name": {
+          "label": "Nombre completo",
+          "placeholder": "Introduce tu nombre"
+        },
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "Introduce tu correo"
+        },
+        "password": {
+          "label": "Contraseña",
+          "createPlaceholder": "Crea una contraseña"
+        },
+        "passwordConfirm": {
+          "label": "Confirmar contraseña",
+          "placeholder": "Confirma tu contraseña"
+        },
+        "create": "Crear cuenta",
+        "creating": "Creando cuenta...",
+        "creatingStatus": "Creando tu cuenta, por favor espera...",
+        "ariaLabel": "Formulario de registro",
+        "alreadyHave": "¿Ya tienes cuenta?",
+        "signInLinkLabel": "Iniciar sesión",
+        "errorCreate": "No se pudo crear la cuenta",
+        "emailVerify": "¡Cuenta creada! Revisa tu correo para verificarla.",
+        "setupError": "No se pudo configurar tu cuenta",
+        "success": "¡Cuenta creada correctamente!",
+        "unexpectedError": "Ocurrió un error inesperado"
+      }
+    }
+  },
+  "analytics": {
+    "page": {
+      "title": "Analíticas",
+      "description": "Seguimiento de escaneos, actividad diaria y fuentes principales."
+    }
+  },
+  "settings": {
+    "page": {
+      "title": "Ajustes",
+      "description": "Gestiona tu perfil, organización y facturación."
+    },
+    "profile": {
+      "page": {
+        "title": "Ajustes de perfil",
+        "description": "Actualiza tu nombre, correo y preferencias."
+      }
+    },
+    "billing": {
+      "page": {
+        "title": "Facturación",
+        "description": "Gestiona tu plan, método de pago y facturas."
+      }
+    }
+  },
+  "qr": {
+    "page": {
+      "index": {
+        "title": "Tus códigos QR",
+        "description": "Estamos construyendo la lista. Mientras tanto, puedes crear un QR dinámico y usarlo al instante.",
+        "createCta": "Crear nuevo código QR"
+      },
+      "create": {
+        "title": "Crear nuevo código QR",
+        "description": "Genera un código QR dinámico que redirige a tu URL objetivo"
+      },
+      "details": {
+        "metadataTitle": "Detalles del QR • {id}",
+        "metadataDescription": "Ver y descargar tus recursos del QR"
+      }
+    },
+    "form": {
+      "create": {
+        "heading": "Detalles del código QR",
+        "description": "Introduce los detalles para tu nuevo código QR. Redirigirá a los usuarios a tu URL objetivo.",
+        "name": {
+          "label": "Nombre",
+          "placeholder": "Mi código QR"
+        },
+        "targetUrl": {
+          "label": "URL objetivo",
+          "placeholder": "https://ejemplo.com"
+        },
+        "submit": "Crear código QR",
+        "submitting": "Creando...",
+        "cancel": "Cancelar",
+        "toast": {
+          "success": "¡Código QR creado correctamente!"
+        },
+        "error": {
+          "unauthorized": "No tienes permiso para crear códigos QR.",
+          "generic": "No se pudo crear el código QR. Inténtalo de nuevo."
+        }
+      }
+    },
+    "details": {
+      "page": {
+        "notFoundTitle": "QR no encontrado",
+        "notFoundDescription": "No pudimos cargar este código QR.",
+        "subtitle": "Detalles del QR y descargas",
+        "backToDashboard": "Volver al panel"
+      },
+      "preview": {
+        "pngTitle": "Vista previa (PNG)",
+        "svgTitle": "Vista previa (SVG)"
+      },
+      "download": {
+        "png": "Descargar PNG",
+        "svg": "Descargar SVG"
+      },
+      "copy": {
+        "png": "Copiar PNG",
+        "pngAria": "Copiar PNG al portapapeles",
+        "svg": "Copiar SVG",
+        "svgAria": "Copiar SVG al portapapeles",
+        "link": "Copiar enlace",
+        "linkAria": "Copiar enlace corto",
+        "target": "Copiar destino",
+        "targetAria": "Copiar URL objetivo"
+      },
+      "linkSection": {
+        "title": "Enlace y destino",
+        "shortLinkLabel": "Enlace corto",
+        "openLink": "Abrir enlace",
+        "openLinkAria": "Abrir enlace corto en nueva pestaña",
+        "targetUrlLabel": "URL objetivo actual",
+        "openTarget": "Abrir destino",
+        "openTargetAria": "Abrir URL objetivo en nueva pestaña"
+      },
+      "toast": {
+        "copied": "{label} copiado al portapapeles",
+        "copyFail": "Error al copiar {label}",
+        "urlCopied": "URL de {label} copiada",
+        "downloadStarted": "Descarga de {label} iniciada"
+      }
+    }
+  },
+  "redirect": {
+    "page": {
+      "root": {
+        "metadataTitle": "Códigos QR Dinámicos - Redirección",
+        "metadataDescription": "Servicio de redirección de QR - sin slug",
+        "heading": "Enlace no encontrado",
+        "noSlugDescription": "No se proporcionó un slug. Proporciona un slug válido.",
+        "reasonsIntro": "Esto puede ocurrir si:",
+        "reasons": {
+          "incompleteUrl": "La URL está incompleta",
+          "malformed": "El enlace del QR es inválido",
+          "directAccess": "Estás accediendo al servicio directamente"
+        },
+        "poweredBy": "Con la tecnología de Códigos QR Dinámicos"
+      },
+      "slug": {
+        "metadataTitle": "Códigos QR Dinámicos - Redirección",
+        "metadataDescription": "Redirigiendo a la URL objetivo para el QR: {slug}",
+        "heading": "Enlace no encontrado",
+        "notFoundDescription": "El enlace corto <code>/r/{slug}</code> no se encontró o puede estar desactivado.",
+        "reasonsIntro": "Esto puede ocurrir si:",
+        "reasons": {
+          "deleted": "El código QR ha sido eliminado",
+          "deactivated": "El enlace ha sido desactivado",
+          "typo": "Hay un error tipográfico en la URL"
+        },
+        "poweredBy": "Con la tecnología de Códigos QR Dinámicos"
+      }
+    }
+  }
+}

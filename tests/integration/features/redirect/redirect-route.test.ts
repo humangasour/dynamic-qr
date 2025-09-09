@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 
-import RedirectPage from '@/app/(redirect)/r/[slug]/page';
+import RedirectPage from '@/app/[locale]/(redirect)/r/[slug]/page';
 import { trpc } from '@infra/trpc/server-client';
 
 vi.mock('next/navigation', () => ({

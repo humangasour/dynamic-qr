@@ -26,22 +26,19 @@ export type UserWithOrg = z.infer<typeof userWithOrgSchema>;
 /** ---------- Auth flows ---------- */
 export const signInSchema = z.object({
   email: Email,
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z.string().min(8),
 });
 
 const strongPassword = z
   .string()
   .min(8)
-  .regex(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-    'Password must contain at least one uppercase letter, one lowercase letter, and one number',
-  );
+  .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/);
 
 const personName = z
   .string()
-  .min(1, 'Name is required')
-  .max(255, 'Name must be less than 255 characters')
-  .regex(/^[a-zA-Z\s'-]+$/, 'Name can only contain letters, spaces, hyphens, and apostrophes');
+  .min(1)
+  .max(255)
+  .regex(/^[a-zA-Z\s'-]+$/);
 
 export const signUpSchema = z
   .object({
@@ -51,7 +48,6 @@ export const signUpSchema = z
     confirmPassword: z.string(),
   })
   .refine((d) => d.password === d.confirmPassword, {
-    message: "Passwords don't match",
     path: ['confirmPassword'],
   });
 
@@ -75,14 +71,13 @@ export const resetPasswordSchema = z
     confirmPassword: z.string(),
   })
   .refine((d) => d.password === d.confirmPassword, {
-    message: "Passwords don't match",
     path: ['confirmPassword'],
   });
 
 /** ---------- Profile ---------- */
 export const updateProfileSchema = z.object({
   name: personName.optional(),
-  avatar_url: z.url('Please enter a valid URL').nullable().optional(),
+  avatar_url: z.url().nullable().optional(),
 });
 
 /** ---------- User & Organization Setup ---------- */
