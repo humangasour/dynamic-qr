@@ -1,12 +1,12 @@
 export type TFn = (key: string, values?: Record<string, unknown>) => string;
-type IssueLike = {
+interface IssueLike {
   code: string;
   path?: Array<string | number>;
   type?: string;
   minimum?: number;
   maximum?: number;
   validation?: string;
-};
+}
 export type ZodErrorMapLike = (
   issue: IssueLike,
   ctx: { defaultError?: string },

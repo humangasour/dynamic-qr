@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useMemo } from 'react';
 
-type UserOrgContextValue = {
+interface UserOrgContextValue {
   userId: string;
   email: string;
   name?: string | null;
@@ -10,7 +10,7 @@ type UserOrgContextValue = {
   orgId: string;
   orgName: string;
   orgRole: string; // keep as string to avoid importing enums here
-};
+}
 
 const UserOrgContext = createContext<UserOrgContextValue | null>(null);
 

@@ -6,20 +6,20 @@ import type { Database, TableName } from '@shared/types';
 type Filter = Record<string, string | number | boolean>;
 
 // Minimal builder shapes to avoid strict generic coupling with Supabase's internal types
-type InsertBuilder<TValues> = {
+interface InsertBuilder<TValues> {
   insert: (values: TValues) => {
     select: () => Promise<{ data: unknown; error: PostgrestError | null }>;
   };
-};
+}
 
-type UpdateFilterBuilder = {
+interface UpdateFilterBuilder {
   eq: (column: string, value: string | number | boolean) => UpdateFilterBuilder;
   select: () => Promise<{ data: unknown; error: PostgrestError | null }>;
-};
+}
 
-type UpdateBuilder<TValues> = {
+interface UpdateBuilder<TValues> {
   update: (values: TValues) => UpdateFilterBuilder;
-};
+}
 
 // (DeleteFilterBuilder removed to avoid unused type)
 

@@ -4,7 +4,7 @@ import type { AppRouter } from '@infra/trpc/root';
 
 type Ctx = Parameters<AppRouter['createCaller']>[0];
 
-type QrRowSubset = {
+interface QrRowSubset {
   id: string;
   org_id: string;
   name: string;
@@ -13,7 +13,7 @@ type QrRowSubset = {
   svg_path: string | null;
   png_path: string | null;
   status: string;
-};
+}
 
 function createCtx(opts?: {
   user?: { id: string; email: string } | null;
