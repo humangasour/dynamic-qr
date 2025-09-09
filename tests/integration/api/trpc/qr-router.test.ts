@@ -21,6 +21,7 @@ function createCtx(opts?: {
   isMember?: boolean;
   uploadError?: boolean;
   uniqueViolationOnce?: boolean;
+  updateError?: boolean;
 }): Ctx {
   const isMember = opts?.isMember ?? true;
   const defaultQrRow = {
@@ -80,7 +81,10 @@ function createCtx(opts?: {
             })),
           })),
           update: vi.fn(() => ({
-            eq: vi.fn(async () => ({ error: null }) as const),
+            eq: vi.fn(
+              async () =>
+                ({ error: opts?.updateError ? { message: 'update failed' } : null }) as const,
+            ),
           })),
           delete: vi.fn(() => ({
             eq: vi.fn(async () => ({ error: null }) as const),
@@ -202,6 +206,16 @@ describe('QR router (tRPC) integration', () => {
       await expect(
         caller.qr.create({ name: 'X', targetUrl: 'https://example.com' }),
       ).rejects.toThrow(/Failed to upload QR code assets/);
+    });
+
+    it('succeeds even if updating asset paths fails (logs only)', async () => {
+      const caller = appRouter.createCaller(createCtx({ updateError: true }));
+      const result = await caller.qr.create({ name: 'Hello', targetUrl: 'https://example.com' });
+      expect(result.success).toBe(true);
+      expect(result.id).toBe('qr-created');
+      expect(result.slug).toBeTypeOf('string');
+      expect(result.svgUrl).toContain('/qr-codes/');
+      expect(result.pngUrl).toContain('/qr-codes/');
     });
 
     it('rejects when unauthenticated', async () => {
