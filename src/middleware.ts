@@ -13,6 +13,9 @@ const intlMiddleware = createIntlMiddleware({
 export async function middleware(req: NextRequest) {
   // Run next-intl middleware first to resolve locale and apply locale prefixes
   let res = intlMiddleware(req);
+  // If next-intl decided to redirect (e.g., from '/' -> '/<detected-locale>'), honor it
+  const location = res?.headers.get('Location');
+  if (location) return res;
   if (!res) res = NextResponse.next();
 
   // Create a Supabase client tied to this request/response for cookie-based auth
