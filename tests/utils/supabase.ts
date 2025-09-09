@@ -38,6 +38,7 @@ export const createMockSupabaseClient = () =>
     })),
     auth: {
       getUser: vi.fn(),
+      getSession: vi.fn(),
       signIn: vi.fn(),
       signOut: vi.fn(),
     },
@@ -62,3 +63,29 @@ export const setupGlobalMocks = () => {
 export const cleanupGlobalMocks = () => {
   vi.clearAllMocks();
 };
+
+// Build a chained org_members query ending in maybeSingle()
+export function buildOrgMemberMaybeSingle(data: unknown, error: unknown = null) {
+  return {
+    select: vi.fn(() => ({
+      eq: vi.fn(() => ({
+        order: vi.fn(() => ({
+          limit: vi.fn(() => ({
+            maybeSingle: vi.fn(async () => ({ data, error })),
+          })),
+        })),
+      })),
+    })),
+  } as unknown;
+}
+
+// Factory to mock server client modules at callsite
+export function serverClientMockFactory(
+  rwClient: SupabaseClient<Database>,
+  roClient?: SupabaseClient<Database>,
+) {
+  return () => ({
+    getSupabaseServerClient: async () => rwClient,
+    getSupabaseServerClientReadOnly: async () => roClient ?? rwClient,
+  });
+}

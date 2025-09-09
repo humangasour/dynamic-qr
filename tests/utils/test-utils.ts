@@ -159,3 +159,34 @@ export async function cleanupTestData() {
     console.warn('Cleanup error (ignored):', error);
   }
 }
+
+// Assert that a function/promise results in a redirect with expected URL
+export async function expectRedirect(
+  fnOrPromise: (() => unknown | Promise<unknown>) | Promise<unknown>,
+  to: string,
+) {
+  try {
+    if (typeof fnOrPromise === 'function') {
+      await fnOrPromise();
+    } else {
+      await fnOrPromise;
+    }
+    throw new Error('Expected redirect to be thrown, but none occurred');
+  } catch (e) {
+    if (e instanceof Error) {
+      const msg = e.message || '';
+      if (msg.startsWith('REDIRECT:')) {
+        if (msg !== `REDIRECT:${to}`) {
+          throw new Error(`Expected redirect to ${to} but got ${msg}`);
+        }
+        return;
+      }
+    }
+    throw e;
+  }
+}
+
+// Treat a function as a Vitest mock to access mock* helpers in tests
+export function asMock<T>(fn: T) {
+  return fn as unknown as ReturnType<typeof vi.fn>;
+}
