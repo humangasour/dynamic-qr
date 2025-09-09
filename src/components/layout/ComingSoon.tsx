@@ -6,20 +6,21 @@ import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Button } from '@/components/ui/button';
 
-type Cta = {
+interface Cta {
   href: string;
   label: string;
-};
+}
 
-type Props = {
+interface Props {
   title: string;
   description?: string;
   icon?: React.ComponentType<{ className?: string }>;
   cta?: Cta;
   className?: string;
-};
+}
 
-export function ComingSoon({ title, description, icon: Icon = Clock, cta, className }: Props) {
+export function ComingSoon({ title, description, icon: iconProp = Clock, cta, className }: Props) {
+  const Icon = iconProp;
   return (
     <section className={className} aria-labelledby="coming-soon-title">
       <div className="py-10 md:py-16 px-page max-w-2xl mx-auto text-center">

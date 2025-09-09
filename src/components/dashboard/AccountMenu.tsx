@@ -18,13 +18,13 @@ import {
 import { auth } from '@/infrastructure/supabase/utils';
 import { getInitials } from '@/shared/utils/user';
 
-type Props = {
+interface Props {
   user: {
     name?: string;
     email?: string;
     avatarUrl?: string;
   };
-};
+}
 
 export function AccountMenu({ user }: Props) {
   const router = useRouter();
