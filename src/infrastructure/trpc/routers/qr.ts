@@ -5,6 +5,8 @@ import {
   createQrOutputSchema,
   getQrByIdInputSchema,
   getQrByIdOutputSchema,
+  listQrInputSchema,
+  listQrOutputSchema,
 } from '@shared/schemas/qr';
 import { generateSlug } from '@/lib/slug';
 import { generateQRSVG, generateQRPNG, QR_PRESETS } from '@/lib/qr-generator';
@@ -15,6 +17,138 @@ import { createTRPCRouter, protectedProcedure } from '../trpc';
  * QR router containing QR code-related procedures
  */
 export const qrRouter = createTRPCRouter({
+  /**
+   * List QRs with cursor pagination and totals
+   */
+  list: protectedProcedure
+    .input(listQrInputSchema)
+    .output(listQrOutputSchema)
+    .query(async ({ input, ctx }) => {
+      const { limit, cursor } = input;
+      const userId = ctx.user.id;
+
+      // Resolve the user's org_id (single-org assumption for MVP)
+      const { data: orgMember, error: orgError } = await ctx.supabase
+        .from('org_members')
+        .select('org_id')
+        .eq('user_id', userId)
+        .single();
+
+      if (orgError || !orgMember) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User must belong to an organization',
+        });
+      }
+
+      const orgId = orgMember.org_id;
+
+      // Build base query for qr_codes
+      let query = ctx.supabase
+        .from('qr_codes')
+        .select('id, org_id, name, slug, current_target_url, svg_path, updated_at', {
+          count: 'exact',
+        })
+        .eq('org_id', orgId)
+        .order('updated_at', { ascending: false })
+        .order('id', { ascending: false });
+
+      // Cursor format: `${updated_at}|${id}`
+      if (cursor) {
+        const [cUpdatedAt, cId] = cursor.split('|');
+        if (cUpdatedAt && cId) {
+          // PostgREST composite pagination using OR
+          // (updated_at < cUpdatedAt) OR (updated_at = cUpdatedAt AND id < cId)
+          query = query.or(
+            `updated_at.lt.${cUpdatedAt},and(updated_at.eq.${cUpdatedAt},id.lt.${cId})`,
+          );
+        }
+      }
+
+      // Fetch one extra to determine nextCursor
+      const { data: rows, error, count } = await query.limit(limit + 1);
+      if (error) {
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to fetch QR list' });
+      }
+
+      const totalCount = typeof count === 'number' ? count : 0;
+      const hasMore = !!rows && rows.length > limit;
+      const pageItems = (rows ?? []).slice(0, limit);
+
+      // Aggregate analytics in batches
+      const ids = pageItems.map((r) => r.id);
+      let versionCounts = new Map<string, number>();
+      let weekScanCounts = new Map<string, number>();
+
+      if (ids.length > 0) {
+        // Version counts (count rows grouped by qr_id). Fetch and aggregate client-side for simplicity.
+        const { data: versionRows, error: versionErr } = await ctx.supabase
+          .from('qr_versions')
+          .select('qr_id')
+          .in('qr_id', ids);
+        if (versionErr) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to fetch versions',
+          });
+        }
+        versionCounts = new Map<string, number>();
+        for (const v of versionRows ?? []) {
+          versionCounts.set(v.qr_id, (versionCounts.get(v.qr_id) ?? 0) + 1);
+        }
+
+        // Week scans from daily_aggregates (last 7 days)
+        const start = new Date();
+        start.setDate(start.getDate() - 6); // include today + previous 6 days
+        const startStr = start.toISOString().slice(0, 10); // YYYY-MM-DD
+
+        const { data: aggRows, error: aggErr } = await ctx.supabase
+          .from('daily_aggregates')
+          .select('qr_id, day, scans')
+          .in('qr_id', ids)
+          .gte('day', startStr);
+        if (aggErr) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to fetch aggregates',
+          });
+        }
+        weekScanCounts = new Map<string, number>();
+        for (const a of aggRows ?? []) {
+          weekScanCounts.set(a.qr_id, (weekScanCounts.get(a.qr_id) ?? 0) + (a.scans ?? 0));
+        }
+      }
+
+      // Map rows to output items with computed svgUrl
+      const items = pageItems.map((qr) => {
+        const guessedSvg = qr.svg_path == null;
+        const guessSvgPath = qr.svg_path ?? `${qr.org_id}/${qr.id}.svg`;
+        if (guessedSvg) {
+          console.warn('QR asset svg_path missing; using guessed path', {
+            id: qr.id,
+            orgId: qr.org_id,
+          });
+        }
+        const svgUrl = ctx.supabase.storage.from('qr-codes').getPublicUrl(guessSvgPath)
+          .data.publicUrl;
+
+        return {
+          id: qr.id,
+          name: qr.name,
+          slug: qr.slug,
+          svgUrl,
+          current_target_url: qr.current_target_url,
+          versionCount: versionCounts.get(qr.id) ?? 0,
+          weekScans: weekScanCounts.get(qr.id) ?? 0,
+          updated_at: qr.updated_at,
+        };
+      });
+
+      const last = hasMore ? rows![limit - 1] : items[items.length - 1];
+      const nextCursor = hasMore && last ? `${last.updated_at}|${last.id}` : null;
+
+      return { items, nextCursor, totalCount };
+    }),
   /**
    * Get QR code details by ID
    */
