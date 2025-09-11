@@ -6,6 +6,7 @@ import { ThemeProvider } from 'next-themes';
 import { TRPCProvider } from '@infra/trpc/provider';
 import { Toaster } from '@/components/ui/sonner';
 import { defaultLocale } from '@/i18n/config';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 import './globals.css';
 
@@ -34,8 +35,10 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TRPCProvider>
-            {children}
-            <Toaster />
+            <TooltipProvider>
+              {children}
+              <Toaster />
+            </TooltipProvider>
           </TRPCProvider>
         </ThemeProvider>
       </body>

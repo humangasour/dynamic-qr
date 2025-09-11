@@ -202,7 +202,14 @@
       "index": {
         "title": "Your QR Codes",
         "description": "We’re building the list view. In the meantime, you can create a new dynamic QR and start using it right away.",
-        "createCta": "Create New QR Code"
+        "createCta": "Create New QR Code",
+        "totalLabel": "Total",
+        "emptyTitle": "No QR codes yet",
+        "emptyDescription": "Create your first QR code to get started.",
+        "loadMore": "Load more",
+        "loading": "Loading…",
+        "loadMoreErrorTitle": "Could not load more",
+        "loadMoreErrorDescription": "Something went wrong while fetching the next page."
       },
       "create": {
         "title": "Create New QR Code",
@@ -211,6 +218,13 @@
       "details": {
         "metadataTitle": "QR Details • {id}",
         "metadataDescription": "View and download your QR code assets"
+      }
+    },
+    "card": {
+      "linkSection": {
+        "short": "Short",
+        "target": "Target",
+        "open": "Open"
       }
     },
     "form": {
