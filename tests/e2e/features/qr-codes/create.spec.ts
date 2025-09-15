@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 
 import { ensureNonProduction } from '../../shared/safety';
-import { waitForAuthenticated } from '../../shared/auth';
+import { signInAndEnsureOrg } from '../../shared/auth';
 
 const E2E_AUTH_ENABLED = process.env.E2E_AUTH_ENABLED === 'true';
 
@@ -44,42 +44,6 @@ test.describe('QR Codes: Create Flow', () => {
       console.warn('QR test user creation error (ignored):', e);
     }
   });
-
-  async function signInAndEnsureOrg(page: import('@playwright/test').Page) {
-    // Use a different user for QR tests to avoid conflicts with auth flow tests
-    const qrTestEmail = process.env.E2E_QR_USER_EMAIL || 'qr-test@example.com';
-    const qrTestPassword = process.env.E2E_QR_USER_PASSWORD || 'qr-test-password-123';
-
-    // Clear all storage and cookies to ensure clean state
-    await page.context().clearCookies();
-
-    await page.goto('/sign-in');
-
-    // Clear storage after navigation
-    await page.evaluate(() => {
-      localStorage.clear();
-      sessionStorage.clear();
-    });
-
-    await page.getByLabel('Email address').fill(qrTestEmail);
-    await page.getByLabel('Password').fill(qrTestPassword);
-    await page.getByRole('button', { name: 'Sign in' }).click();
-    await waitForAuthenticated(page, { timeout: 30000 });
-
-    // Add a small delay to ensure session is fully established
-    await page.waitForTimeout(1000);
-
-    try {
-      const ensureRes = await page.request.post('/api/trpc/auth.ensureUserAndOrg', {
-        data: { 0: { json: { userName: `QR Test User ${Date.now()}` } } },
-      });
-      if (!ensureRes.ok()) {
-        console.warn('ensureUserAndOrg failed with status:', ensureRes.status());
-      }
-    } catch (e) {
-      console.warn('ensureUserAndOrg request error (ignored):', e);
-    }
-  }
 
   test('creates a new QR and shows details page', async ({ page }) => {
     test.skip(!E2E_AUTH_ENABLED, 'Auth E2E disabled');

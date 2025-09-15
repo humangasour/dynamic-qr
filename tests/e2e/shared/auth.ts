@@ -47,3 +47,31 @@ export async function waitForAuthenticated(page: Page, opts: { timeout?: number 
     timeout,
   });
 }
+
+// Sign in via UI and ensure org exists using tRPC auth.ensureUserAndOrg
+export async function signInAndEnsureOrg(page: Page) {
+  const email = process.env.E2E_QR_USER_EMAIL || 'qr-test@example.com';
+  const password = process.env.E2E_QR_USER_PASSWORD || 'qr-test-password-123';
+
+  await page.context().clearCookies();
+  await page.goto('/sign-in');
+  await page.evaluate(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+  await page.getByLabel('Email address').fill(email);
+  await page.getByLabel('Password').fill(password);
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  await waitForAuthenticated(page, { timeout: 30000 });
+
+  try {
+    const ensureRes = await page.request.post('/api/trpc/auth.ensureUserAndOrg', {
+      data: { 0: { json: { userName: `QR Test User ${Date.now()}` } } },
+    });
+    if (!ensureRes.ok()) {
+      console.warn('ensureUserAndOrg failed with status:', ensureRes.status());
+    }
+  } catch (e) {
+    console.warn('ensureUserAndOrg request error (ignored):', e);
+  }
+}
