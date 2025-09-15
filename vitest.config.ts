@@ -7,6 +7,10 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./tests/utils/global.ts'],
+    // Enable JSX transform for React components
+    testTransformMode: {
+      web: ['**/*.{js,ts,tsx}'],
+    },
     // Test file patterns
     include: ['tests/**/*.{test,spec}.{js,ts,tsx}', 'src/**/*.{test,spec}.{js,ts,tsx}'],
     // Exclude patterns

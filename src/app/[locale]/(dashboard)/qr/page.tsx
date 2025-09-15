@@ -21,7 +21,7 @@ export default async function QrIndexPage() {
   await requireUserIdForServerComponent();
   const t = await getTranslations('qr.page.index');
   const locale = await getLocale();
-  const PAGE_SIZE = 2;
+  const PAGE_SIZE = 10;
 
   // SSR: fetch first page (10 items) and pass as initial data
   const caller = await getTrpcCallerReadOnly();

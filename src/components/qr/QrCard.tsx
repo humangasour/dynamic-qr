@@ -107,12 +107,12 @@ export function QrCard(props: Props) {
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
                   <a href={withDownloadParam(resolvedPngUrl, `${fileBase}.png`)}>
-                    <DownloadIcon className="mr-2 size-4" /> Download PNG
+                    <DownloadIcon className="mr-2 size-4" /> {tCard('actions.downloadPng')}
                   </a>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <a href={withDownloadParam(svgUrl, `${fileBase}.svg`)}>
-                    <DownloadIcon className="mr-2 size-4" /> Download SVG
+                    <DownloadIcon className="mr-2 size-4" /> {tCard('actions.downloadSvg')}
                   </a>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -221,7 +221,7 @@ export function QrCard(props: Props) {
             </Link>
           </Button>
           <Button asChild size="sm" variant="outline" aria-label="Edit details" className="w-full">
-            <Link href={detailsHref}>Edit</Link>
+            <Link href={detailsHref}>{tCard('actions.edit')}</Link>
           </Button>
         </div>
       </CardFooter>
