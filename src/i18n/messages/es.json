@@ -224,7 +224,12 @@
       "linkSection": {
         "short": "Corto",
         "target": "Destino",
-        "open": "Abrir"
+        "open": "Abrir",
+        "actions": {
+          "edit": "Editar",
+          "downloadPng": "Descargar PNG",
+          "downloadSvg": "Descargar SVG"
+        }
       }
     },
     "form": {
