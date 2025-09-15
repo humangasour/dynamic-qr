@@ -1,5 +1,10 @@
 import { beforeEach } from 'vitest';
 import { z } from 'zod';
+import React from 'react';
+import '@testing-library/jest-dom';
+
+// Make React available globally for JSX
+(global as unknown as { React: typeof React }).React = React;
 
 import en from '../../src/i18n/messages/en.json';
 import type { Messages } from '../../src/i18n/config';
@@ -37,6 +42,23 @@ import { cleanupGlobalMocks, setupGlobalMocks } from './supabase';
 
 // Setup global mocks
 setupGlobalMocks();
+
+// Polyfill IntersectionObserver for JSDOM-based tests
+if (typeof globalThis.IntersectionObserver === 'undefined') {
+  class IO implements IntersectionObserver {
+    readonly root: Element | Document | null = null;
+    readonly rootMargin: string = '';
+    readonly thresholds: ReadonlyArray<number> = [];
+    constructor() {}
+    disconnect(): void {}
+    observe(): void {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+    unobserve(): void {}
+  }
+  globalThis.IntersectionObserver = IO as unknown as typeof IntersectionObserver;
+}
 
 // Global test setup
 beforeEach(() => {
