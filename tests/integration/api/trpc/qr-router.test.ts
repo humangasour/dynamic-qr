@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { AppRouter } from '@infra/trpc/root';
 
@@ -225,5 +225,43 @@ describe('QR router (tRPC) integration', () => {
         caller.qr.create({ name: 'X', targetUrl: 'https://example.com' }),
       ).rejects.toMatchObject({ code: 'UNAUTHORIZED' });
     });
+  });
+
+  describe('list', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    it('returns first page with totals and nextCursor', async () => {
+      const { createAuthedCtxWithQrList } = await import('@test/utils/trpc');
+      const { makeCursor } = await import('@test/utils/cursor');
+      const caller = appRouter.createCaller(createAuthedCtxWithQrList());
+      const res = await caller.qr.list({ limit: 2, cursor: null });
+
+      expect(res.totalCount).toBe(3);
+      expect(res.items).toHaveLength(2);
+      // Sorted by updated_at desc then id desc
+      expect(res.items[0]).toMatchObject({ id: 'qr-3', slug: 'third' });
+      expect(res.items[1]).toMatchObject({ id: 'qr-2', slug: 'second' });
+      // Computed fields
+      expect(res.items[0].svgUrl).toContain('/qr-codes/org-1/qr-3.svg');
+      expect(res.items[0].versionCount).toBe(2);
+      expect(res.items[1].versionCount).toBe(1);
+      expect(res.items[0].weekScans).toBe(5);
+
+      // nextCursor should point at the last visible item
+      expect(res.nextCursor).toBe(makeCursor('2024-09-10T11:00:00.000Z', 'qr-2'));
+    });
+
+    it('applies cursor to fetch the next page', async () => {
+      const { createAuthedCtxWithQrList } = await import('@test/utils/trpc');
+      const caller = appRouter.createCaller(createAuthedCtxWithQrList());
+      const first = await caller.qr.list({ limit: 2, cursor: null });
+      expect(first.items).toHaveLength(2);
+      const second = await caller.qr.list({ limit: 2, cursor: first.nextCursor });
+      expect(second.items).toHaveLength(1);
+      expect(second.items[0].id).toBe('qr-1');
+      expect(second.nextCursor).toBeNull();
+    });
+
+    afterAll(() => warnSpy.mockRestore());
   });
 });
