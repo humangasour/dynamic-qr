@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/typography/Text';
 import { Heading } from '@/components/typography/Heading';
+import { copyTextToClipboard, copyImageWithFallback, withDownloadParam } from '@/lib/clipboard';
 
 interface QrDetailsProps {
   id: string;
@@ -26,55 +27,17 @@ export function QrDetails(props: QrDetailsProps) {
     typeof window !== 'undefined' ? `${window.location.origin}${shortPath}` : shortPath;
 
   const copyText = async (text: string, label: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success(t('toast.copied', { label }));
-    } catch (err) {
-      console.error('Copy failed', err);
-      toast.error(t('toast.copyFail', { label }));
-    }
+    const ok = await copyTextToClipboard(text);
+    if (ok) toast.success(t('toast.copied', { label }));
+    else toast.error(t('toast.copyFail', { label }));
   };
 
   const copyImage = async (url: string, mime: 'image/png' | 'image/svg+xml', label: string) => {
-    try {
-      // Primary path: ClipboardItem API (not supported everywhere, e.g., Safari)
-      const hasClipboardItem = typeof window !== 'undefined' && 'ClipboardItem' in window;
-      if (hasClipboardItem && navigator.clipboard?.write) {
-        const res = await fetch(url);
-        const blob = await res.blob();
-        const typedBlob = blob.type ? blob : new Blob([blob], { type: mime });
-        type ClipboardItemCtor = new (items: Record<string, Blob>) => ClipboardItem;
-        const ClipboardItemCtor = (globalThis as unknown as { ClipboardItem?: ClipboardItemCtor })
-          .ClipboardItem;
-        if (ClipboardItemCtor) {
-          const item = new ClipboardItemCtor({ [mime]: typedBlob });
-          await navigator.clipboard.write([item]);
-        } else if (navigator.clipboard?.writeText) {
-          await navigator.clipboard.writeText(url);
-        }
-        toast.success(t('toast.copied', { label }));
-        return;
-      }
-
-      // Fallback 1: copy URL text instead of image
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
-        toast.success(t('toast.urlCopied', { label }));
-        return;
-      }
-
-      // Fallback 2: trigger a download
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = '';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      toast.success(t('toast.downloadStarted', { label }));
-    } catch (err) {
-      console.error('Copy image failed', err);
-      toast.error(t('toast.copyFail', { label }));
-    }
+    const result = await copyImageWithFallback(url, mime, { downloadFallback: true });
+    if (result === 'image') toast.success(t('toast.copied', { label }));
+    else if (result === 'url') toast.success(t('toast.urlCopied', { label }));
+    else if (result === 'download') toast.success(t('toast.downloadStarted', { label }));
+    else toast.error(t('toast.copyFail', { label }));
   };
 
   const fileBase = slug || name || 'qr-code';
@@ -104,9 +67,7 @@ export function QrDetails(props: QrDetailsProps) {
             </div>
             <div className="flex flex-wrap gap-3">
               <Button asChild>
-                <a href={pngUrl} download={`${fileBase}.png`}>
-                  {t('download.png')}
-                </a>
+                <a href={withDownloadParam(pngUrl, `${fileBase}.png`)}>{t('download.png')}</a>
               </Button>
               <Button
                 variant="outline"
@@ -143,9 +104,7 @@ export function QrDetails(props: QrDetailsProps) {
             </div>
             <div className="flex flex-wrap gap-3">
               <Button asChild>
-                <a href={svgUrl} download={`${fileBase}.svg`}>
-                  {t('download.svg')}
-                </a>
+                <a href={withDownloadParam(svgUrl, `${fileBase}.svg`)}>{t('download.svg')}</a>
               </Button>
               <Button
                 variant="outline"

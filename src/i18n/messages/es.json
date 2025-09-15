@@ -202,7 +202,14 @@
       "index": {
         "title": "Tus códigos QR",
         "description": "Estamos construyendo la lista. Mientras tanto, puedes crear un QR dinámico y usarlo al instante.",
-        "createCta": "Crear nuevo código QR"
+        "createCta": "Crear nuevo código QR",
+        "totalLabel": "Total",
+        "emptyTitle": "Aún no hay códigos QR",
+        "emptyDescription": "Crea tu primer código QR para comenzar.",
+        "loadMore": "Cargar más",
+        "loading": "Cargando…",
+        "loadMoreErrorTitle": "No se pudo cargar más",
+        "loadMoreErrorDescription": "Ocurrió un error al obtener la siguiente página."
       },
       "create": {
         "title": "Crear nuevo código QR",
@@ -211,6 +218,18 @@
       "details": {
         "metadataTitle": "Detalles del QR • {id}",
         "metadataDescription": "Ver y descargar tus recursos del QR"
+      }
+    },
+    "card": {
+      "linkSection": {
+        "short": "Corto",
+        "target": "Destino",
+        "open": "Abrir",
+        "actions": {
+          "edit": "Editar",
+          "downloadPng": "Descargar PNG",
+          "downloadSvg": "Descargar SVG"
+        }
       }
     },
     "form": {

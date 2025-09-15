@@ -65,17 +65,17 @@ export default async function DashboardLayout({ children }: { children: React.Re
           orgRole: user.org_role,
         }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-[var(--sidebar-w)_1fr]">
+        <div className="grid grid-cols-1 md:grid-cols-[var(--sidebar-w)_1fr] h-[calc(100vh-var(--topbar-h))]">
           {/* Sidebar */}
           <aside
-            className="hidden md:block border-r border-border min-h-[calc(100vh-var(--topbar-h))]"
+            className="hidden md:block border-r border-border sticky top-[var(--topbar-h)] h-[calc(100vh-var(--topbar-h))] overflow-y-auto"
             aria-label={t('common.nav.primaryAria')}
           >
             <SidebarNav />
           </aside>
 
           {/* Main content */}
-          <main id="content" className="min-h-[calc(100vh-var(--topbar-h))]">
+          <main id="content" className="h-[calc(100vh-var(--topbar-h))] overflow-y-auto">
             {children}
           </main>
         </div>
