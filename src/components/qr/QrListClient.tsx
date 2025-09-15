@@ -47,6 +47,8 @@ export function QrListClient({ createHref, initialPage, pageSize = 10 }: Props) 
 
   const items = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data]);
   const totalCount = data?.pages?.[0]?.totalCount ?? 0;
+  const remainingCount = Math.max(0, totalCount - items.length);
+  const nextPageSkeletonCount = Math.min(pageSize, remainingCount);
 
   // Auto-load next page when sentinel enters viewport
   useEffect(() => {
@@ -131,7 +133,9 @@ export function QrListClient({ createHref, initialPage, pageSize = 10 }: Props) 
           />
         ))}
         {isFetchingNextPage &&
-          Array.from({ length: pageSize }).map((_, i) => <QrCardSkeleton key={`more-${i}`} />)}
+          Array.from({ length: nextPageSkeletonCount }).map((_, i) => (
+            <QrCardSkeleton key={`more-${i}`} />
+          ))}
       </div>
 
       {hasNextPage ? (

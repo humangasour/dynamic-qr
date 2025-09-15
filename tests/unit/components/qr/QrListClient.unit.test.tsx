@@ -113,4 +113,30 @@ describe('QrListClient', () => {
     const skeletons = container.querySelectorAll('div[aria-hidden="true"][data-slot="card"]');
     expect(skeletons.length).toBe(3);
   });
+
+  it('shows only remaining skeletons when fewer than page size', () => {
+    const items = Array.from({ length: 10 }).map((_, i) => ({
+      id: `qr-${i + 1}`,
+      name: `Item ${i + 1}`,
+      slug: `slug-${i + 1}`,
+      svgUrl: 'https://cdn/example.svg',
+      current_target_url: 'https://example.com',
+      versionCount: 0,
+      weekScans: 0,
+      updated_at: '2024-09-10T10:00:00.000Z',
+    }));
+    useInfiniteQueryMock.mockReturnValue({
+      data: { pages: [{ items, totalCount: 14, nextCursor: 'cursor' }], pageParams: [null] },
+      error: null,
+      isLoading: false,
+      hasNextPage: true,
+      isFetchingNextPage: true,
+      fetchNextPage: vi.fn(),
+    });
+
+    const { container } = render(<QrListClient createHref="/en/qr/new" pageSize={10} />);
+    // Only 4 items remain, so 4 skeletons
+    const skeletons = container.querySelectorAll('div[aria-hidden="true"][data-slot="card"]');
+    expect(skeletons.length).toBe(4);
+  });
 });
