@@ -32,6 +32,7 @@ export const createQrOutputSchema = z.object({
   name: z.string(),
   targetUrl: z.string(),
   slug: z.string(),
+  versionCount: z.number().int(),
   svgUrl: z.string(),
   pngUrl: z.string(),
 });

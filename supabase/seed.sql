@@ -119,14 +119,22 @@ INSERT INTO public.qr_versions (id, qr_id, target_url, note, created_by) VALUES
   ('550e8400-e29b-41d4-a716-446655440015', '550e8400-e29b-41d4-a716-446655440012', 'https://techstartup.com/product', 'Initial version', '550e8400-e29b-41d4-a716-446655440011'),
   ('550e8400-e29b-41d4-a716-446655440016', '550e8400-e29b-41d4-a716-446655440012', 'https://techstartup.com/product-v2', 'Updated with new features', '550e8400-e29b-41d4-a716-446655440011'),
   ('550e8400-e29b-41d4-a716-446655440017', '550e8400-e29b-41d4-a716-446655440012', 'https://techstartup.com/product', 'Reverted to stable version', '550e8400-e29b-41d4-a716-446655440011'),
+  ('550e8400-e29b-41d4-a716-446655440018', '550e8400-e29b-41d4-a716-446655440013', 'https://techstartup.com/support', 'Initial support page', '550e8400-e29b-41d4-a716-446655440011'),
+  ('550e8400-e29b-41d4-a716-446655440019', '550e8400-e29b-41d4-a716-446655440014', 'https://techstartup.com/old', 'Initial marketing archive', '550e8400-e29b-41d4-a716-446655440011'),
   
   -- Restaurant QR versions
   ('550e8400-e29b-41d4-a716-446655440024', '550e8400-e29b-41d4-a716-446655440022', 'https://restaurant.com/menu', 'Initial menu QR', '550e8400-e29b-41d4-a716-446655440021'),
   ('550e8400-e29b-41d4-a716-446655440025', '550e8400-e29b-41d4-a716-446655440022', 'https://restaurant.com/menu-summer', 'Updated for summer menu', '550e8400-e29b-41d4-a716-446655440021'),
+  ('550e8400-e29b-41d4-a716-446655440026', '550e8400-e29b-41d4-a716-446655440023', 'https://restaurant.com/reserve', 'Initial reservation QR', '550e8400-e29b-41d4-a716-446655440021'),
   
   -- Event QR versions
   ('550e8400-e29b-41d4-a716-446655440035', '550e8400-e29b-41d4-a716-446655440032', 'https://events.com/register', 'Initial registration page', '550e8400-e29b-41d4-a716-446655440031'),
-  ('550e8400-e29b-41d4-a716-446655440036', '550e8400-e29b-41d4-a716-446655440032', 'https://events.com/register-early', 'Early bird registration', '550e8400-e29b-41d4-a716-446655440031');
+  ('550e8400-e29b-41d4-a716-446655440036', '550e8400-e29b-41d4-a716-446655440032', 'https://events.com/register-early', 'Early bird registration', '550e8400-e29b-41d4-a716-446655440031'),
+  ('550e8400-e29b-41d4-a716-446655440037', '550e8400-e29b-41d4-a716-446655440033', 'https://events.com/schedule', 'Initial event schedule', '550e8400-e29b-41d4-a716-446655440031'),
+  ('550e8400-e29b-41d4-a716-446655440038', '550e8400-e29b-41d4-a716-446655440034', 'https://events.com/speakers', 'Initial speaker bios', '550e8400-e29b-41d4-a716-446655440031'),
+  
+  -- Archived business QR versions
+  ('550e8400-e29b-41d4-a716-446655440043', '550e8400-e29b-41d4-a716-446655440042', 'https://archived.com', 'Original archived site', '550e8400-e29b-41d4-a716-446655440041');
 
 -- ===== Sample Scan Events (for analytics demo)
 INSERT INTO public.scan_events (qr_id, ip_hash, user_agent, referrer, country, city) VALUES 
@@ -192,3 +200,4 @@ INSERT INTO public.daily_aggregates (qr_id, day, scans, uniques) VALUES
   ('550e8400-e29b-41d4-a716-446655440032', CURRENT_DATE - INTERVAL '2 days', 82, 59),
   ('550e8400-e29b-41d4-a716-446655440032', CURRENT_DATE - INTERVAL '1 day', 91, 65),
   ('550e8400-e29b-41d4-a716-446655440032', CURRENT_DATE, 45, 32);
+

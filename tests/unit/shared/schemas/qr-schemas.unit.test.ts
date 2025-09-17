@@ -42,6 +42,7 @@ describe('QR Schemas', () => {
         name: 'My QR',
         targetUrl: 'https://example.com',
         slug: 'slug-1',
+        versionCount: 1,
         svgUrl: 'https://cdn/svg',
         pngUrl: 'https://cdn/png',
       };

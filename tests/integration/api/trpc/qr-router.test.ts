@@ -22,6 +22,7 @@ function createCtx(opts?: {
   uploadError?: boolean;
   uniqueViolationOnce?: boolean;
   updateError?: boolean;
+  versionInsertError?: boolean;
 }): Ctx {
   const isMember = opts?.isMember ?? true;
   const defaultQrRow = {
@@ -125,6 +126,14 @@ function createCtx(opts?: {
           })),
         } as unknown as Record<string, unknown>;
       }
+      if (table === 'qr_versions') {
+        return {
+          insert: vi.fn(async () => ({
+            data: {},
+            error: opts?.versionInsertError ? { message: 'insert failed' } : null,
+          })),
+        } as unknown as Record<string, unknown>;
+      }
       return {} as Record<string, unknown>;
     }),
     storage: {
@@ -190,6 +199,7 @@ describe('QR router (tRPC) integration', () => {
       expect(result.success).toBe(true);
       expect(result.id).toBe('qr-created');
       expect(result.slug).toBeTypeOf('string');
+      expect(result.versionCount).toBe(1);
       expect(result.svgUrl).toContain('/qr-codes/');
       expect(result.pngUrl).toContain('/qr-codes/');
     });
@@ -199,6 +209,7 @@ describe('QR router (tRPC) integration', () => {
       const result = await caller.qr.create({ name: 'Hello', targetUrl: 'https://example.com' });
       expect(result.success).toBe(true);
       expect(result.id).toBe('qr-created');
+      expect(result.versionCount).toBe(1);
     });
 
     it('cleans up and throws if asset upload fails', async () => {
@@ -214,6 +225,7 @@ describe('QR router (tRPC) integration', () => {
       expect(result.success).toBe(true);
       expect(result.id).toBe('qr-created');
       expect(result.slug).toBeTypeOf('string');
+      expect(result.versionCount).toBe(1);
       expect(result.svgUrl).toContain('/qr-codes/');
       expect(result.pngUrl).toContain('/qr-codes/');
     });

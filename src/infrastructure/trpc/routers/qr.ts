@@ -305,6 +305,21 @@ export const qrRouter = createTRPCRouter({
           });
         }
 
+        const { error: versionInsertError } = await ctx.supabase.from('qr_versions').insert({
+          qr_id: data.id,
+          target_url: targetUrl,
+          created_by: userId,
+        });
+
+        if (versionInsertError) {
+          console.error('Failed to create initial QR version:', versionInsertError);
+          await ctx.supabase.from('qr_codes').delete().eq('id', data.id);
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to create QR code',
+          });
+        }
+
         // Generate QR code redirect URL
         const baseAppUrl =
           process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
@@ -380,6 +395,7 @@ export const qrRouter = createTRPCRouter({
           name,
           targetUrl,
           slug,
+          versionCount: 1,
           svgUrl,
           pngUrl,
         };
