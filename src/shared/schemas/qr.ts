@@ -9,7 +9,6 @@ import { ISODateTime } from './primitives';
 export const createQrInputSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(255, 'Name too long'),
   targetUrl: z
-    .string()
     .url('Please enter a valid URL')
     .trim()
     .refine(
@@ -22,6 +21,27 @@ export const createQrInputSchema = z.object({
  * Type inference for QR creation input
  */
 export type CreateQrInput = z.infer<typeof createQrInputSchema>;
+
+/**
+ * Schema for QR code update input validation
+ */
+export const updateQrInputSchema = z.object({
+  id: UUID,
+  name: z.string().trim().min(1, 'Name is required').max(255, 'Name too long').optional(),
+  targetUrl: z
+    .url('Please enter a valid URL')
+    .trim()
+    .refine(
+      (u) => u.startsWith('http://') || u.startsWith('https://'),
+      'Only http(s) URLs allowed',
+    ),
+  note: z.string().trim().min(1, 'Note cannot be empty').max(500, 'Note too long').optional(),
+});
+
+/**
+ * Type inference for QR update input
+ */
+export type UpdateQrInput = z.infer<typeof updateQrInputSchema>;
 
 /**
  * Schema for QR code creation output
@@ -88,3 +108,23 @@ export const listQrOutputSchema = z.object({
 
 export type ListQrInput = z.infer<typeof listQrInputSchema>;
 export type ListQrOutput = z.infer<typeof listQrOutputSchema>;
+
+/**
+ * Schema describing a QR version history item
+ */
+export const qrVersionSchema = z.object({
+  id: UUID,
+  qrId: UUID,
+  targetUrl: z
+    .url('Please enter a valid URL')
+    .trim()
+    .refine(
+      (u) => u.startsWith('http://') || u.startsWith('https://'),
+      'Only http(s) URLs allowed',
+    ),
+  note: z.string().trim().max(500, 'Note too long').nullable(),
+  createdBy: UUID,
+  createdAt: ISODateTime,
+});
+
+export type QrVersion = z.infer<typeof qrVersionSchema>;

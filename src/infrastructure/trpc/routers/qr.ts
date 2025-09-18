@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
 
 import {
   createQrInputSchema,
@@ -7,11 +8,18 @@ import {
   getQrByIdOutputSchema,
   listQrInputSchema,
   listQrOutputSchema,
+  qrVersionSchema,
+  updateQrInputSchema,
 } from '@shared/schemas/qr';
 import { generateSlug } from '@/lib/slug';
 import { generateQRSVG, generateQRPNG, QR_PRESETS } from '@/lib/qr-generator';
 
 import { createTRPCRouter, protectedProcedure } from '../trpc';
+
+const rollbackInputSchema = z.object({
+  qrId: z.uuid(),
+  versionId: z.uuid(),
+});
 
 /**
  * QR router containing QR code-related procedures
@@ -409,5 +417,254 @@ export const qrRouter = createTRPCRouter({
           message: 'Failed to create QR code',
         });
       }
+    }),
+  /**
+   * Update QR target URL (and optionally name) while recording a version entry
+   */
+  update: protectedProcedure
+    .input(updateQrInputSchema)
+    .output(getQrByIdOutputSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { id, name, targetUrl, note } = input;
+      const userId = ctx.user.id;
+
+      const { data: qr, error: qrError } = await ctx.supabase
+        .from('qr_codes')
+        .select('id, org_id, name, slug, current_target_url, svg_path, png_path')
+        .eq('id', id)
+        .single();
+
+      if (qrError || !qr) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'QR code not found' });
+      }
+
+      const { data: member, error: memberError } = await ctx.supabase
+        .from('org_members')
+        .select('org_id')
+        .eq('org_id', qr.org_id)
+        .eq('user_id', userId)
+        .single();
+
+      if (memberError || !member) {
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Access denied' });
+      }
+
+      const updatePayload: Record<string, unknown> = {
+        current_target_url: targetUrl,
+      };
+      if (typeof name === 'string') {
+        updatePayload.name = name;
+      }
+
+      const { error: updateError } = await ctx.supabase
+        .from('qr_codes')
+        .update(updatePayload)
+        .eq('id', id);
+
+      if (updateError) {
+        console.error('Failed to update QR code', { id, updateError });
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to update QR code' });
+      }
+
+      const { error: versionError } = await ctx.supabase.from('qr_versions').insert({
+        qr_id: id,
+        target_url: targetUrl,
+        note: note ?? null,
+        created_by: userId,
+      });
+
+      if (versionError) {
+        console.error('Failed to record QR version', { id, versionError });
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to record QR version',
+        });
+      }
+
+      const updatedQr = {
+        ...qr,
+        name: typeof name === 'string' ? name : qr.name,
+        current_target_url: targetUrl,
+      };
+
+      const guessedSvg = updatedQr.svg_path == null;
+      const guessedPng = updatedQr.png_path == null;
+      const guessSvgPath = updatedQr.svg_path ?? `${updatedQr.org_id}/${updatedQr.id}.svg`;
+      const guessPngPath = updatedQr.png_path ?? `${updatedQr.org_id}/${updatedQr.id}.png`;
+
+      if (guessedSvg || guessedPng) {
+        console.warn('QR asset paths missing; using guessed paths', {
+          id: updatedQr.id,
+          orgId: updatedQr.org_id,
+          guessedSvg,
+          guessedPng,
+        });
+      }
+
+      const svgUrl = ctx.supabase.storage.from('qr-codes').getPublicUrl(guessSvgPath)
+        .data.publicUrl;
+      const pngUrl = ctx.supabase.storage.from('qr-codes').getPublicUrl(guessPngPath)
+        .data.publicUrl;
+
+      return {
+        id: updatedQr.id,
+        name: updatedQr.name,
+        targetUrl: updatedQr.current_target_url,
+        slug: updatedQr.slug,
+        svgUrl,
+        pngUrl,
+      };
+    }),
+  /**
+   * List QR version history items (most recent first)
+   */
+  versions: protectedProcedure
+    .input(getQrByIdInputSchema)
+    .output(z.array(qrVersionSchema))
+    .query(async ({ input, ctx }) => {
+      const { id } = input;
+      const userId = ctx.user.id;
+
+      const { data: qr, error: qrError } = await ctx.supabase
+        .from('qr_codes')
+        .select('id, org_id')
+        .eq('id', id)
+        .single();
+
+      if (qrError || !qr) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'QR code not found' });
+      }
+
+      const { data: member, error: memberError } = await ctx.supabase
+        .from('org_members')
+        .select('org_id')
+        .eq('org_id', qr.org_id)
+        .eq('user_id', userId)
+        .single();
+
+      if (memberError || !member) {
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Access denied' });
+      }
+
+      const { data: versions, error } = await ctx.supabase
+        .from('qr_versions')
+        .select('id, qr_id, target_url, note, created_by, created_at')
+        .eq('qr_id', id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Failed to list QR versions', { id, error });
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to load QR versions',
+        });
+      }
+
+      return (versions ?? []).map((v) => ({
+        id: v.id,
+        qrId: v.qr_id,
+        targetUrl: v.target_url,
+        note: v.note ?? null,
+        createdBy: v.created_by,
+        createdAt: v.created_at,
+      }));
+    }),
+  /**
+   * Roll back a QR to a prior version (records rollback as a new version)
+   */
+  rollback: protectedProcedure
+    .input(rollbackInputSchema)
+    .output(getQrByIdOutputSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { qrId, versionId } = input;
+      const userId = ctx.user.id;
+
+      const { data: qr, error: qrError } = await ctx.supabase
+        .from('qr_codes')
+        .select('id, org_id, name, slug, current_target_url, svg_path, png_path')
+        .eq('id', qrId)
+        .single();
+
+      if (qrError || !qr) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'QR code not found' });
+      }
+
+      const { data: member, error: memberError } = await ctx.supabase
+        .from('org_members')
+        .select('org_id')
+        .eq('org_id', qr.org_id)
+        .eq('user_id', userId)
+        .single();
+
+      if (memberError || !member) {
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Access denied' });
+      }
+
+      const { data: version, error: versionError } = await ctx.supabase
+        .from('qr_versions')
+        .select('id, qr_id, target_url')
+        .eq('id', versionId)
+        .eq('qr_id', qrId)
+        .single();
+
+      if (versionError || !version) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Version not found' });
+      }
+
+      const { error: updateError } = await ctx.supabase
+        .from('qr_codes')
+        .update({ current_target_url: version.target_url })
+        .eq('id', qrId);
+
+      if (updateError) {
+        console.error('Failed to roll back QR code', { qrId, versionId, updateError });
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to roll back QR code',
+        });
+      }
+
+      const { error: insertError } = await ctx.supabase.from('qr_versions').insert({
+        qr_id: qrId,
+        target_url: version.target_url,
+        note: `Rolled back to version ${versionId}`,
+        created_by: userId,
+      });
+
+      if (insertError) {
+        console.error('Failed to record rollback version', { qrId, versionId, insertError });
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to record QR version',
+        });
+      }
+
+      const guessSvgPath = qr.svg_path ?? `${qr.org_id}/${qr.id}.svg`;
+      const guessPngPath = qr.png_path ?? `${qr.org_id}/${qr.id}.png`;
+      const guessedSvg = qr.svg_path == null;
+      const guessedPng = qr.png_path == null;
+
+      if (guessedSvg || guessedPng) {
+        console.warn('QR asset paths missing; using guessed paths', {
+          id: qr.id,
+          orgId: qr.org_id,
+          guessedSvg,
+          guessedPng,
+        });
+      }
+
+      const svgUrl = ctx.supabase.storage.from('qr-codes').getPublicUrl(guessSvgPath)
+        .data.publicUrl;
+      const pngUrl = ctx.supabase.storage.from('qr-codes').getPublicUrl(guessPngPath)
+        .data.publicUrl;
+
+      return {
+        id: qr.id,
+        name: qr.name,
+        targetUrl: version.target_url,
+        slug: qr.slug,
+        svgUrl,
+        pngUrl,
+      };
     }),
 });

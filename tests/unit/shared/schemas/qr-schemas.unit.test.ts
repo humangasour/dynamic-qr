@@ -5,6 +5,8 @@ import {
   createQrOutputSchema,
   getQrByIdInputSchema,
   getQrByIdOutputSchema,
+  qrVersionSchema,
+  updateQrInputSchema,
 } from '@shared/schemas/qr';
 
 describe('QR Schemas', () => {
@@ -74,6 +76,48 @@ describe('QR Schemas', () => {
         pngUrl: 'https://cdn/png',
       };
       const result = getQrByIdOutputSchema.safeParse(output);
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe('updateQrInputSchema', () => {
+    it('accepts valid input with optional fields', () => {
+      const result = updateQrInputSchema.safeParse({
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        name: 'Updated Name',
+        targetUrl: 'https://example.com/new',
+        note: 'Deeplink campaign',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('permits omitting optional fields', () => {
+      const result = updateQrInputSchema.safeParse({
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        targetUrl: 'https://example.com/new',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects invalid target URL', () => {
+      const result = updateQrInputSchema.safeParse({
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        targetUrl: 'ftp://example.com/new',
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('qrVersionSchema', () => {
+    it('validates version history items', () => {
+      const result = qrVersionSchema.safeParse({
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        qrId: '223e4567-e89b-12d3-a456-426614174000',
+        targetUrl: 'https://example.com',
+        note: null,
+        createdBy: '323e4567-e89b-12d3-a456-426614174000',
+        createdAt: '2024-01-01T00:00:00.000Z',
+      });
       expect(result.success).toBe(true);
     });
   });
