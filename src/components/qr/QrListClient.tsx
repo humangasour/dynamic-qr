@@ -12,6 +12,7 @@ import QrCardSkeleton from '@/components/qr/QrCardSkeleton';
 import { Text } from '@/components/typography/Text';
 import { ErrorDisplay } from '@/components/ui/error-display';
 import type { ListQrOutput } from '@/shared/schemas/qr';
+import { cn } from '@/lib/utils';
 
 export interface Props {
   createHref: string;
@@ -34,7 +35,7 @@ export function QrListClient({ createHref, initialPage, pageSize = 10 }: Props) 
         initialCursor: null,
         retry: 1,
         staleTime: 60_000,
-        refetchOnMount: false,
+        refetchOnMount: 'always',
         refetchOnWindowFocus: false,
         initialData: initialPage
           ? ({
@@ -49,6 +50,11 @@ export function QrListClient({ createHref, initialPage, pageSize = 10 }: Props) 
   const totalCount = data?.pages?.[0]?.totalCount ?? 0;
   const remainingCount = Math.max(0, totalCount - items.length);
   const nextPageSkeletonCount = Math.min(pageSize, remainingCount);
+
+  const gridClass = cn(
+    'grid gap-5',
+    '[grid-template-columns:repeat(auto-fit,minmax(300px,clamp(320px,30vw,360px)))]',
+  );
 
   // Auto-load next page when sentinel enters viewport
   useEffect(() => {
@@ -73,7 +79,7 @@ export function QrListClient({ createHref, initialPage, pageSize = 10 }: Props) 
       <div>
         <div className="mb-4 text-sm text-muted-foreground">{`${t('totalLabel')}: …`}</div>
         {/* Auto-fit grid prevents card squish/merging at narrow widths */}
-        <div className="grid [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))] gap-5">
+        <div className={gridClass}>
           {Array.from({ length: 8 }).map((_, i) => (
             <QrCardSkeleton key={i} />
           ))}
@@ -118,7 +124,7 @@ export function QrListClient({ createHref, initialPage, pageSize = 10 }: Props) 
       <div className="mb-4 text-sm text-muted-foreground">{`${t('totalLabel')}: ${totalCount}`}</div>
 
       {/* Auto-fit minmax grid prevents layout collisions as viewport changes */}
-      <div className="grid [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))] gap-5">
+      <div className={gridClass}>
         {items.map((qr) => (
           <QrCard
             key={qr.id}

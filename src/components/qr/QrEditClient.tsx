@@ -10,9 +10,10 @@ import { Text } from '@/components/typography/Text';
 import { GenericError, NotFoundError } from '@/components/ui/error-display';
 import { Skeleton } from '@/components/ui/skeleton';
 
+import { EditQrForm } from './EditQrForm';
 import { QrDetails } from './QrDetails';
 
-export function QrDetailsClient({ id }: { id: string }) {
+export function QrEditClient({ id }: { id: string }) {
   const t = useTranslations('qr.details.page');
   const locale = useLocale();
   const { data, error, isLoading, refetch } = api.qr.getById.useQuery(
@@ -25,7 +26,7 @@ export function QrDetailsClient({ id }: { id: string }) {
   if (isLoading) {
     return (
       <main className="py-6 px-page">
-        <div className="py-6 max-w-5xl mx-auto">
+        <div className="py-6 max-w-7xl mx-auto">
           <div className="mb-6 flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <Skeleton className="h-8 w-64" />
@@ -64,7 +65,7 @@ export function QrDetailsClient({ id }: { id: string }) {
 
   return (
     <main className="py-6 px-page">
-      <div className="py-6 max-w-5xl mx-auto">
+      <div className="py-6 max-w-7xl mx-auto">
         <div className="mb-6 flex items-center justify-between gap-4">
           <div>
             <Heading as="h1" size="h1" className="mb-2">
@@ -77,14 +78,17 @@ export function QrDetailsClient({ id }: { id: string }) {
           </Button>
         </div>
 
-        <QrDetails
-          id={data.id}
-          name={data.name}
-          targetUrl={data.targetUrl}
-          slug={data.slug}
-          svgUrl={data.svgUrl}
-          pngUrl={data.pngUrl}
-        />
+        <div className="space-y-6">
+          <EditQrForm id={data.id} initialData={data} />
+          <QrDetails
+            id={data.id}
+            name={data.name}
+            targetUrl={data.targetUrl}
+            slug={data.slug}
+            svgUrl={data.svgUrl}
+            pngUrl={data.pngUrl}
+          />
+        </div>
       </div>
     </main>
   );

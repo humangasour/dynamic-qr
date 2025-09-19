@@ -46,6 +46,7 @@ export function QrCard(props: Props) {
 
   // SSR-safe origin for absolute copy
   const [origin, setOrigin] = useState('');
+  const [relativeUpdated, setRelativeUpdated] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') setOrigin(window.location.origin);
@@ -57,6 +58,15 @@ export function QrCard(props: Props) {
     () => pngUrl ?? svgUrl.replace(/\.svg(\?.*)?$/i, '.png$1'),
     [pngUrl, svgUrl],
   );
+
+  useEffect(() => {
+    const updateRelative = () => {
+      setRelativeUpdated(fromNow(updatedAt));
+    };
+    updateRelative();
+    const timer = window.setInterval(updateRelative, 30_000);
+    return () => window.clearInterval(timer);
+  }, [updatedAt]);
 
   async function handleCopy(value: string, label: string) {
     const ok = await copyTextToClipboard(value);
@@ -206,7 +216,7 @@ export function QrCard(props: Props) {
           ) : null}
 
           <Text as="span" size="xs" tone="muted" className="ml-auto whitespace-nowrap">
-            Updated {fromNow(updatedAt)}
+            Updated {relativeUpdated ?? '…'}
           </Text>
         </div>
       </CardContent>

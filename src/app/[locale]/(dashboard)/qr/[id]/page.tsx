@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import { requireUserIdForServerComponent } from '@/features/auth/server';
-import { QrDetailsClient } from '@/components/qr/QrDetailsClient';
+import { QrEditClient } from '@/components/qr/QrEditClient';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -17,11 +17,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function QrDetailsPage({ params }: PageProps) {
+export default async function QrEditPage({ params }: PageProps) {
   await requireUserIdForServerComponent();
   const { id } = await params;
 
-  return <QrDetailsClient id={id} />;
+  return <QrEditClient id={id} />;
 }
 
 // TODO: generateDynamicParams, loading.tsx in the dynamic route

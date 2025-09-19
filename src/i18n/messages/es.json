@@ -254,6 +254,29 @@
           "unauthorized": "No tienes permiso para crear códigos QR.",
           "generic": "No se pudo crear el código QR. Inténtalo de nuevo."
         }
+      },
+      "edit": {
+        "heading": "Editar código QR",
+        "description": "Actualiza los detalles de este código QR y publica una nueva versión.",
+        "name": {
+          "label": "Nombre",
+          "placeholder": "Mi código QR"
+        },
+        "targetUrl": {
+          "label": "URL objetivo",
+          "placeholder": "https://ejemplo.com"
+        },
+        "submit": "Guardar cambios",
+        "submitting": "Guardando...",
+        "cancel": "Cancelar",
+        "toast": {
+          "success": "¡Código QR actualizado correctamente!"
+        },
+        "error": {
+          "unauthorized": "No tienes permiso para actualizar este código QR.",
+          "notFound": "No encontramos ese código QR.",
+          "generic": "No se pudo actualizar el código QR. Inténtalo de nuevo."
+        }
       }
     },
     "details": {

@@ -254,6 +254,29 @@
           "unauthorized": "You do not have permission to create QR codes.",
           "generic": "Failed to create QR code. Please try again."
         }
+      },
+      "edit": {
+        "heading": "Edit QR Code",
+        "description": "Update the details for this QR code and publish a new version.",
+        "name": {
+          "label": "Name",
+          "placeholder": "My QR Code"
+        },
+        "targetUrl": {
+          "label": "Target URL",
+          "placeholder": "https://example.com"
+        },
+        "submit": "Save changes",
+        "submitting": "Saving...",
+        "cancel": "Cancel",
+        "toast": {
+          "success": "QR code updated successfully!"
+        },
+        "error": {
+          "unauthorized": "You do not have permission to update this QR code.",
+          "notFound": "We couldn't find that QR code.",
+          "generic": "Failed to update QR code. Please try again."
+        }
       }
     },
     "details": {
