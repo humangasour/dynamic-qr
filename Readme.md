@@ -67,10 +67,17 @@ If using the deploy workflow, add these secrets to your GitHub repository:
 
 ---
 
+## Project Setup
+
+Follow the [Project Setup guide](./docs/project-setup.md) for detailed instructions on installing dependencies, configuring Supabase credentials, and running the app locally.
+
+---
+
 ## Documentation
 
 - [Product Spec](./docs/product-spec.md)
 - [Husky Workflow](./docs/husky-workflow.md)
+- [Project Setup](./docs/project-setup.md)
 
 ---
 
